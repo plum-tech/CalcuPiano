@@ -1,4 +1,5 @@
 import 'package:calcupiano/ui/piano.dart';
+import 'package:calcupiano/ui/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -48,9 +49,7 @@ class _HomePortraitState extends State<HomePortrait> {
         title: "Calcu Piano".text(),
       ),
       body: [
-        const Text(
-          'You have pushed the button this many times:',
-        ).expanded(),
+        const Screen().expanded(),
         // Why doesn't the constraint apply on this?
         const PianoKeyboard().expanded(),
       ]
@@ -116,9 +115,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
 
   Widget buildBody() {
     return [
-      const Text(
-        'You have pushed the button this many times:',
-      ).expanded(),
+      const Screen().expanded(),
       // Why doesn't the constraint apply on this?
       const PianoKeyboard().expanded(),
     ].row(

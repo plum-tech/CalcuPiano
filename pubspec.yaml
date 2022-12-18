@@ -41,6 +41,7 @@ dependencies:
   rettulf: ^0.0.7
   audioplayers: ^1.1.1
   auto_size_text: ^3.0.0
+  event_bus: ^2.0.0
 
 dev_dependencies:
   flutter_test:
