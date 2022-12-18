@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -11,15 +12,16 @@ class PianoKeyboard extends StatefulWidget {
 class _PianoKeyboardState extends State<PianoKeyboard> {
   @override
   Widget build(BuildContext context) {
-    final full = context.mediaQuery.size;
-    final keySize = Size(full.width / 5, full.height / 8);
-    return [
-      buildColumn0(keySize),
-      buildColumn1(keySize),
-      buildColumn2(keySize),
-      buildColumn3(keySize),
-      buildColumn4(keySize),
-    ].row();
+    return LayoutBuilder(builder: (ctx, box) {
+      final keySize = Size(box.maxWidth / 5, box.maxHeight / 3);
+      return [
+        buildColumn0(keySize),
+        buildColumn1(keySize),
+        buildColumn2(keySize),
+        buildColumn3(keySize),
+        buildColumn4(keySize),
+      ].row();
+    });
   }
 
   Widget buildColumn0(Size size) {
@@ -49,7 +51,7 @@ class _PianoKeyboardState extends State<PianoKeyboard> {
   Widget buildColumn3(Size size) {
     return [
       PianoKey(note: "x").sizedIn(size),
-      PianoKey(note: "+").sized(w:size.width,h: size.height * 2),
+      PianoKey(note: "+").sized(w: size.width, h: size.height * 2),
     ].column();
   }
 
@@ -80,6 +82,9 @@ class _PianoKeyState extends State<PianoKey> {
   }
 
   Widget buildKey(BuildContext context) {
-    return note.text().center().inCard();
+    return AutoSizeText(
+      note,
+      style: TextStyle(fontSize: 24),
+    ).center().inCard();
   }
 }

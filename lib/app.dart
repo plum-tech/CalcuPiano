@@ -29,14 +29,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = context.mediaQuery.size;
@@ -45,17 +37,33 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Text(
-            'You have pushed the button this many times:',
-          ).expanded(),
-          // Why doesn't the constraint apply on this?
-          const PianoKeyboard(),
-        ],
-      ),
+      body: buildBody(context),
     );
+  }
+
+  Widget buildBody(BuildContext ctx) {
+    if (ctx.isPortrait) {
+      return [
+        const Text(
+          'You have pushed the button this many times:',
+        ).expanded(),
+        // Why doesn't the constraint apply on this?
+        const PianoKeyboard().expanded(),
+      ].column(
+        mas: MainAxisSize.min,
+        maa: MainAxisAlignment.center,
+      );
+    } else {
+      return [
+        const Text(
+          'You have pushed the button this many times:',
+        ).expanded(),
+        // Why doesn't the constraint apply on this?
+        const PianoKeyboard().expanded(),
+      ].row(
+        mas: MainAxisSize.min,
+        maa: MainAxisAlignment.center,
+      );
+    }
   }
 }
