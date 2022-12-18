@@ -11,7 +11,7 @@ class KeyUserPressedEvent {
 }
 
 /// Fire when a Piano Key will be pressed automatically.
-/// The sound and ripple effect should be played in subscribers.
+/// The sound and ripple effect should be played in subscribers
 class KeyAutoWillPressEvent {
   final String key;
 

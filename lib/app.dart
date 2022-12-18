@@ -2,6 +2,7 @@ import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class CalcuPianoApp extends StatelessWidget {
   const CalcuPianoApp({super.key});
@@ -34,18 +35,27 @@ class _CalcuPianoHomePageState extends State<CalcuPianoHomePage> {
   }
 }
 
-class HomePortrait extends StatefulWidget {
+class HomePortrait extends HookWidget {
   const HomePortrait({super.key});
 
   @override
-  State<HomePortrait> createState() => _HomePortraitState();
-}
-
-class _HomePortraitState extends State<HomePortrait> {
-  @override
   Widget build(BuildContext context) {
+    final ctrl = useAnimationController(duration: const Duration(milliseconds: 500));
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_close,
+            progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+          ),
+          onPressed: () {
+            if (ctrl.isCompleted) {
+              ctrl.reverse();
+            } else {
+              ctrl.forward();
+            }
+          },
+        ),
         title: "Calcu Piano".text(),
       ),
       body: [
@@ -108,8 +118,8 @@ class _HomeLandscapeState extends State<HomeLandscape> {
           ],
         ),
         const VerticalDivider(thickness: 1, width: 1),
-        buildBody().expanded(),
-      ].row().safeArea(),
+        buildBody().safeArea().expanded(),
+      ].row(),
     );
   }
 
