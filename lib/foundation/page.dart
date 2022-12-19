@@ -2,6 +2,7 @@ part of '../foundation.dart';
 
 mixin LockOrientationMixin<T extends StatefulWidget> on State<T> {
   @override
+  @mustCallSuper
   void dispose() {
     super.dispose();
     // Now unlock the orientation.
@@ -12,7 +13,9 @@ mixin LockOrientationMixin<T extends StatefulWidget> on State<T> {
       DeviceOrientation.landscapeRight,
     ]);
   }
+
   @override
+  @mustCallSuper
   Widget build(BuildContext context) {
     // Lock the orientation to avoid navigation bar disappearing.
     if (context.isPortrait) {

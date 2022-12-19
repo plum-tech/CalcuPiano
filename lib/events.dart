@@ -1,3 +1,4 @@
+import 'package:calcupiano/foundation.dart';
 import 'package:event_bus/event_bus.dart';
 
 final eventBus = EventBus();
@@ -7,7 +8,7 @@ final eventBus = EventBus();
 class KeyUserPressedEvent {
   final String key;
 
-  KeyUserPressedEvent(this.key);
+  const KeyUserPressedEvent(this.key);
 }
 
 /// Fire when a Piano Key will be pressed automatically.
@@ -15,5 +16,11 @@ class KeyUserPressedEvent {
 class KeyAutoWillPressEvent {
   final String key;
 
-  KeyAutoWillPressEvent(this.key);
+  const KeyAutoWillPressEvent(this.key);
+}
+
+class SoundpackChangeEvent {
+  final Soundpack newSoundpack;
+
+  const SoundpackChangeEvent(this.newSoundpack);
 }

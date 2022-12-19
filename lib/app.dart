@@ -3,6 +3,7 @@ import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
+import 'package:calcupiano/ui/soundpack.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
@@ -232,6 +233,7 @@ class CalcuPianoDrawer extends HookWidget {
                 trailing: Icon(Icons.navigate_next),
                 onTap: () {
                   closeDrawer();
+                  context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
                 },
               )
             ],
