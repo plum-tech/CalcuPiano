@@ -18,7 +18,12 @@ class _SettingsPageState extends State<Settings> {
   }
 
   Widget buildPortrait(BuildContext ctx) {
-    return buildSettings(ctx);
+    return Scaffold(
+      appBar: AppBar(
+        title: "Settings".text(),
+      ),
+      body: buildSettings(ctx),
+    );
   }
 
   Widget buildLandscape(BuildContext ctx) {
@@ -45,7 +50,12 @@ class _SettingsPageState extends State<Settings> {
                 Provider.of<BrightnessModel>(ctx, listen: false).isDarkMode = value;
               },
               initialValue: isDarkMode,
-              leading: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+              leading: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                child: isDarkMode
+                    ? Icon(key: ValueKey("Light"), Icons.light_mode)
+                    : Icon(key: ValueKey("Dark"), Icons.dark_mode),
+              ),
               title: Text("Dark Mode"),
             ),
           ],

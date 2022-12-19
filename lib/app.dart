@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:calcupiano/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
@@ -18,14 +19,23 @@ class CalcuPianoApp extends StatelessWidget {
       child: Consumer<BrightnessModel>(
         builder: (_, model, __) {
           return MaterialApp(
-            theme: ThemeData.light(), // Provide light theme.
-            darkTheme: ThemeData.dark(), // Provide dark theme.
-            themeMode: model.resolve(), // Decides which theme to show.
+            theme: bakeTheme(ThemeData.light()),
+            darkTheme: bakeTheme(ThemeData.dark()),
+            themeMode: model.resolve(),
             home: const CalcuPianoHomePage(),
           );
         },
       ),
     );
+  }
+
+  ThemeData bakeTheme(ThemeData raw) {
+    return raw.copyWith(
+        pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+    }));
   }
 }
 
@@ -39,43 +49,79 @@ class CalcuPianoHomePage extends StatefulWidget {
 class _CalcuPianoHomePageState extends State<CalcuPianoHomePage> {
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? const HomePortrait() : const HomeLandscape();
+    return context.isPortrait ? HomePortrait() : const HomeLandscape();
   }
 }
 
 class HomePortrait extends HookWidget {
-  const HomePortrait({super.key});
+  HomePortrait({super.key});
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openDrawer();
+  }
+
+  void _closeDrawer(BuildContext ctx) {
+    ctx.navigator.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = useAnimationController(duration: const Duration(milliseconds: 500));
+    final ctrl = useAnimationController(
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 500),
+    );
+    final isDrawerOpen = useState(false);
+
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_close,
-            progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
-          ),
-          onPressed: () {
-            if (ctrl.isCompleted) {
-              ctrl.reverse();
-            } else {
-              ctrl.forward();
-            }
-          },
-        ),
-        title: "Calcu Piano".text(),
+      key: _scaffoldKey,
+      drawer: CalcuPianoDrawer(
+        onCloseDrawer: () {
+          _closeDrawer(context);
+        },
       ),
-      body: [
-        const Screen().expanded(),
-        // Why doesn't the constraint apply on this?
-        const PianoKeyboard().expanded(),
-      ]
-          .column(
-            mas: MainAxisSize.min,
-            maa: MainAxisAlignment.center,
-          )
-          .safeArea(),
+      onDrawerChanged: (isOpened) {
+        if (!isOpened) {
+          ctrl.reverse();
+        }
+        isDrawerOpen.value = isOpened;
+      },
+      body: AnimatedSlide(
+        offset: isDrawerOpen.value ? Offset(0.03, -0.003) : Offset.zero,
+        curve: Curves.fastLinearToSlowEaseIn,
+        duration: Duration(milliseconds: 1000),
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: AnimatedIcon(
+                icon: AnimatedIcons.menu_close,
+                progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+              ),
+              onPressed: () {
+                if (ctrl.isCompleted) {
+                  ctrl.reverse();
+                } else {
+                  ctrl.forward().then((value) {
+                    _openDrawer();
+                  });
+                }
+              },
+            ),
+            title: "Calcu Piano".text(),
+          ),
+          body: [
+            const Screen().expanded(),
+            // Why doesn't the constraint apply on this?
+            const PianoKeyboard().expanded(),
+          ]
+              .column(
+                mas: MainAxisSize.min,
+                maa: MainAxisAlignment.center,
+              )
+              .safeArea(),
+        ),
+      ),
     );
   }
 }
@@ -116,7 +162,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
             NavigationRailDestination(
               icon: const Icon(Icons.piano_outlined),
               selectedIcon: const Icon(Icons.piano),
-              label: "Piano".text(),
+              label: "Music".text(),
             ),
             NavigationRailDestination(
               icon: const Icon(Icons.settings_outlined),
@@ -139,10 +185,12 @@ class _HomeLandscapeState extends State<HomeLandscape> {
       const Screen().expanded(),
       // Why doesn't the constraint apply on this?
       const PianoKeyboard().expanded(),
-    ].row(
-      mas: MainAxisSize.min,
-      maa: MainAxisAlignment.center,
-    ).safeArea();
+    ]
+        .row(
+          mas: MainAxisSize.min,
+          maa: MainAxisAlignment.center,
+        )
+        .safeArea();
   }
 
   Widget routePage() {
@@ -152,5 +200,41 @@ class _HomeLandscapeState extends State<HomeLandscape> {
       default:
         return const Settings();
     }
+  }
+}
+
+class CalcuPianoDrawer extends HookWidget {
+  final VoidCallback? onCloseDrawer;
+
+  const CalcuPianoDrawer({super.key, this.onCloseDrawer});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Drawer(
+        child: [
+          ListView(
+            children: [
+              DrawerHeader(child: SizedBox()),
+              ListTile(
+                leading: Icon(Icons.favorite),
+                title: Text('Item 1'),
+              )
+            ],
+          ).expanded(),
+          Spacer(),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              context.navigator.pop();
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => Settings()));
+            },
+          ),
+        ].column(),
+      ),
+    );
   }
 }
