@@ -34,6 +34,11 @@ class CalcuPianoApp extends StatelessWidget {
 
   ThemeData bakeTheme(ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
+      cardTheme: raw.cardTheme.copyWith(
+        shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent), //the outline color
+            borderRadius: BorderRadius.all(Radius.circular(16))),
+      ),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {

@@ -1,3 +1,4 @@
+import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:flutter/material.dart';
@@ -64,9 +65,49 @@ class BuiltinSoundpackItem extends StatefulWidget {
 }
 
 class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
+  BuiltinSoundpack get soundpack => widget.soundpack;
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return buildCardWithContextMenu(context);
+  }
+
+  Widget buildCardWithContextMenu(BuildContext ctx) {
+    return H.listenToCurrentSoundpackID() <<
+        (ctx, _, __) {
+          final isSelected = H.currentSoundpackID == soundpack.id;
+          return CupertinoContextMenu.builder(
+              actions: [
+                if (!isSelected)
+                  CupertinoContextMenuAction(
+                    trailingIcon: CupertinoIcons.checkmark,
+                    child: "Use".text(),
+                    onPressed: (){
+                      ctx.navigator.pop();
+                      eventBus.fire(SoundpackChangeEvent(soundpack));
+                    },
+                  ),
+                // TODO: builtin soundpack can't be deleted.
+                CupertinoContextMenuAction(
+                    trailingIcon: CupertinoIcons.delete,
+                    child: "Delete".text(),
+                  ),
+              ],
+              builder: (ctx, anim) {
+                return buildCard(ctx, isSelected);
+              });
+        };
+  }
+
+  Widget buildCard(BuildContext ctx, bool isSelected) {
+    return ListTile(
+      leading: isSelected ? Icon(Icons.done,size: 36) : null,
+      selected: isSelected,
+      titleTextStyle: ctx.textTheme.headlineSmall,
+      title: soundpack.name.text(),
+      subtitle: soundpack.description.text(),
+      trailing: Icon(Icons.navigate_next_rounded),
+    ).inCard();
   }
 }
 
