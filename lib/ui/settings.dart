@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -14,7 +15,26 @@ class Settings extends StatefulWidget {
 
 class _SettingsPageState extends State<Settings> {
   @override
+  void dispose() {
+    super.dispose();
+    // Now unlock the orientation.
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Lock the orientation to avoid navigation bar disappearing.
+    if (context.isPortrait) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
     return context.isPortrait ? buildPortrait(context) : buildLandscape(context);
   }
 

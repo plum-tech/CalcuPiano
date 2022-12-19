@@ -21,8 +21,8 @@ class CalcuPianoApp extends StatelessWidget {
       child: Consumer<CalcuPianoThemeModel>(
         builder: (_, model, __) {
           return MaterialApp(
-            theme: bakeTheme(ThemeData.light()),
-            darkTheme: bakeTheme(ThemeData.dark()),
+            theme: bakeTheme(ThemeData.light(), model.data),
+            darkTheme: bakeTheme(ThemeData.dark(), model.data),
             themeMode: model.resolveThemeMode(),
             home: const CalcuPianoHomePage(),
           );
@@ -31,10 +31,10 @@ class CalcuPianoApp extends StatelessWidget {
     );
   }
 
-  ThemeData bakeTheme(ThemeData raw) {
+  ThemeData bakeTheme(ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
+      splashColor: theme.enableRipple ? null : Colors.transparent,
+      highlightColor: theme.enableRipple ? null : Colors.transparent,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -213,6 +213,10 @@ class CalcuPianoDrawer extends HookWidget {
 
   const CalcuPianoDrawer({super.key, this.onCloseDrawer});
 
+  void closeDrawer() {
+    onCloseDrawer?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -223,18 +227,21 @@ class CalcuPianoDrawer extends HookWidget {
             children: [
               DrawerHeader(child: SizedBox()),
               ListTile(
-                leading: Icon(Icons.favorite),
-                title: Text('Item 1'),
+                leading: Icon(Icons.music_note),
+                title: Text('Soundpack'),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () {
+                  closeDrawer();
+                },
               )
             ],
           ).expanded(),
           Spacer(),
-          Divider(),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
             onTap: () {
-              context.navigator.pop();
+              closeDrawer();
               context.navigator.push(MaterialPageRoute(builder: (ctx) => Settings()));
             },
           ),
