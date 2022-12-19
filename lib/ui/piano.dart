@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
-
+import '../foundation.dart';
+import 'package:audioplayers/audioplayers.dart';
 class PianoKeyboard extends StatefulWidget {
   const PianoKeyboard({super.key});
 
@@ -26,55 +27,55 @@ class _PianoKeyboardState extends State<PianoKeyboard> {
 
   Widget buildColumn0(Size size) {
     return [
-      PianoKey(note: "7").sizedIn(size),
-      PianoKey(note: "4").sizedIn(size),
-      PianoKey(note: "1").sizedIn(size),
+      PianoKey(Note.$7).sizedIn(size),
+      PianoKey(Note.$4).sizedIn(size),
+      PianoKey(Note.$1).sizedIn(size),
     ].column();
   }
 
   Widget buildColumn1(Size size) {
     return [
-      PianoKey(note: "8").sizedIn(size),
-      PianoKey(note: "5").sizedIn(size),
-      PianoKey(note: "2").sizedIn(size),
+      PianoKey(Note.$8).sizedIn(size),
+      PianoKey(Note.$5).sizedIn(size),
+      PianoKey(Note.$2).sizedIn(size),
     ].column();
   }
 
   Widget buildColumn2(Size size) {
     return [
-      PianoKey(note: "9").sizedIn(size),
-      PianoKey(note: "6").sizedIn(size),
-      PianoKey(note: "3").sizedIn(size),
+      PianoKey(Note.$9).sizedIn(size),
+      PianoKey(Note.$6).sizedIn(size),
+      PianoKey(Note.$3).sizedIn(size),
     ].column();
   }
 
   Widget buildColumn3(Size size) {
     return [
-      PianoKey(note: "x").sizedIn(size),
-      PianoKey(note: "+").sized(w: size.width, h: size.height * 2),
+      PianoKey(Note.$mul).sizedIn(size),
+      PianoKey(Note.$plus).sized(w: size.width, h: size.height * 2),
     ].column();
   }
 
   Widget buildColumn4(Size size) {
     return [
-      PianoKey(note: "/").sizedIn(size),
-      PianoKey(note: "-").sizedIn(size),
-      PianoKey(note: "=").sizedIn(size),
+      PianoKey(Note.$div).sizedIn(size),
+      PianoKey(Note.$minus).sizedIn(size),
+      PianoKey(Note.$eq).sizedIn(size),
     ].column();
   }
 }
 
 class PianoKey extends StatefulWidget {
-  final String note;
+  final Note note;
 
-  const PianoKey({super.key, required this.note});
+  const PianoKey(this.note, {super.key});
 
   @override
   State<PianoKey> createState() => _PianoKeyState();
 }
 
 class _PianoKeyState extends State<PianoKey> {
-  String get note => widget.note;
+  Note get note => widget.note;
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +84,14 @@ class _PianoKeyState extends State<PianoKey> {
 
   Widget buildKey(BuildContext context) {
     return AutoSizeText(
-      note,
+      note.number,
       style: TextStyle(fontSize: 24),
-    ).center().inCard();
+    ).center().inCard().onTap(()async {
+      final player = AudioPlayer();
+      await player.setSourceAsset("soundpack/default/${note.path}.wav");
+      await player.setPlayerMode(PlayerMode.lowLatency);
+      await player.setPlaybackRate(1);
+      await player.resume();
+    });
   }
 }
