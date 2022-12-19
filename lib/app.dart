@@ -1,6 +1,9 @@
+import 'package:calcupiano/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
+import 'package:calcupiano/ui/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -10,13 +13,18 @@ class CalcuPianoApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
+    return ChangeNotifierProvider<BrightnessModel>(
+      create: (_) => BrightnessModel(),
+      child: Consumer<BrightnessModel>(
+        builder: (_, model, __) {
+          return MaterialApp(
+            theme: ThemeData.light(), // Provide light theme.
+            darkTheme: ThemeData.dark(), // Provide dark theme.
+            themeMode: model.resolve(), // Decides which theme to show.
+            home: const CalcuPianoHomePage(),
+          );
+        },
       ),
-      home: const CalcuPianoHomePage(),
     );
   }
 }
@@ -118,7 +126,10 @@ class _HomeLandscapeState extends State<HomeLandscape> {
           ],
         ),
         const VerticalDivider(thickness: 1, width: 1),
-        buildBody().safeArea().expanded(),
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          child: routePage(),
+        ).expanded(),
       ].row(),
     );
   }
@@ -131,6 +142,15 @@ class _HomeLandscapeState extends State<HomeLandscape> {
     ].row(
       mas: MainAxisSize.min,
       maa: MainAxisAlignment.center,
-    );
+    ).safeArea();
+  }
+
+  Widget routePage() {
+    switch (_curPage) {
+      case _Page.piano:
+        return buildBody();
+      default:
+        return const Settings();
+    }
   }
 }

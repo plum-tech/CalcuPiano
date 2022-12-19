@@ -88,9 +88,8 @@ class _PianoKeyState extends State<PianoKey> {
       style: TextStyle(fontSize: 24),
     ).center().inCard().gestureDetect(onTapDown: (_) async {
       final player = AudioPlayer();
-      await player.setSourceAsset("soundpack/default/${note.path}.wav");
+      await player.setSourceAsset("soundpack/default/${note.path}");
       await player.setPlayerMode(PlayerMode.lowLatency);
-      await player.setPlaybackRate(1);
       await player.resume();
     });
   }

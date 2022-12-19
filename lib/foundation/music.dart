@@ -2,14 +2,13 @@ part of '../foundation.dart';
 
 class Note {
   final String number;
+  /// The default path is `"$number.wav"`.
   final String path;
-  final bool hasSound;
 
   Note(
     this.number, {
-    String? path,
-    this.hasSound = true,
-  }) : path = path ?? number;
+    String? name,
+  }) : path = name ?? "$number.wav";
 
   static final $1 = Note("1");
   static final $2 = Note("2");
@@ -20,11 +19,11 @@ class Note {
   static final $7 = Note("7");
   static final $8 = Note("8");
   static final $9 = Note("9");
-  static final $plus = Note("+", path: "plus");
-  static final $minus = Note("-", path: "minus");
-  static final $div = Note("/", path: "div");
-  static final $mul = Note("x", path: "mul");
-  static final $eq = Note("=", path: "eq");
+  static final $plus = Note("+", name: "plus.wav");
+  static final $minus = Note("-", name: "minus.wav");
+  static final $div = Note("/", name: "div.wav");
+  static final $mul = Note("x", name: "mul.wav");
+  static final $eq = Note("=", name: "eq.wav");
 }
 
 class Sound {}

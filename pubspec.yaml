@@ -42,6 +42,9 @@ dependencies:
   audioplayers: ^1.1.1
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
+  path_provider: ^2.0.11
+  settings_ui: ^2.0.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
