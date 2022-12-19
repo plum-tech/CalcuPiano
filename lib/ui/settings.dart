@@ -1,8 +1,9 @@
-import 'package:calcupiano/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:settings_ui/settings_ui.dart';
+
+import '../theme/theme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -37,7 +38,7 @@ class _SettingsPageState extends State<Settings> {
   }
 
   Widget buildSettings(BuildContext ctx) {
-    final isDarkMode = Provider.of<BrightnessModel>(ctx).isDarkMode;
+    final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
 
     return SettingsList(
       //platform: DevicePlatform.iOS,
@@ -47,16 +48,16 @@ class _SettingsPageState extends State<Settings> {
           tiles: <SettingsTile>[
             SettingsTile.switchTile(
               onToggle: (value) {
-                Provider.of<BrightnessModel>(ctx, listen: false).isDarkMode = value;
+                Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = value;
               },
               initialValue: isDarkMode,
               leading: AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 child: isDarkMode
-                    ? Icon(key: ValueKey("Light"), Icons.light_mode)
-                    : Icon(key: ValueKey("Dark"), Icons.dark_mode),
+                    ? const Icon(key: ValueKey("Light"), Icons.light_mode)
+                    : const Icon(key: ValueKey("Dark"), Icons.dark_mode),
               ),
-              title: Text("Dark Mode"),
+              title: isDarkMode ? Text("Dark Mode") : Text("Light Mode"),
             ),
           ],
         ),

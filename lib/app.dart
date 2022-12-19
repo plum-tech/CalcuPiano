@@ -1,5 +1,5 @@
 import 'package:animations/animations.dart';
-import 'package:calcupiano/theme.dart';
+import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
@@ -14,14 +14,16 @@ class CalcuPianoApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BrightnessModel>(
-      create: (_) => BrightnessModel(),
-      child: Consumer<BrightnessModel>(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CalcuPianoThemeModel>(create: (_) => CalcuPianoThemeModel()),
+      ],
+      child: Consumer<CalcuPianoThemeModel>(
         builder: (_, model, __) {
           return MaterialApp(
             theme: bakeTheme(ThemeData.light()),
             darkTheme: bakeTheme(ThemeData.dark()),
-            themeMode: model.resolve(),
+            themeMode: model.resolveThemeMode(),
             home: const CalcuPianoHomePage(),
           );
         },
@@ -31,11 +33,14 @@ class CalcuPianoApp extends StatelessWidget {
 
   ThemeData bakeTheme(ThemeData raw) {
     return raw.copyWith(
-        pageTransitionsTheme: const PageTransitionsTheme(builders: {
-      TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
-      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-    }));
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+      }),
+    );
   }
 }
 
