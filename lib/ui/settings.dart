@@ -7,14 +7,14 @@ import 'package:settings_ui/settings_ui.dart';
 
 import '../theme/theme.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
 
   @override
-  State<Settings> createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<Settings> with LockOrientationMixin {
+class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);

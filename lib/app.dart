@@ -203,7 +203,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
       case _Page.piano:
         return buildBody();
       default:
-        return const Settings();
+        return const SettingsPage();
     }
   }
 }
@@ -242,7 +242,7 @@ class CalcuPianoDrawer extends HookWidget {
             title: Text('Settings'),
             onTap: () {
               closeDrawer();
-              context.navigator.push(MaterialPageRoute(builder: (ctx) => Settings()));
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
             },
           ),
         ].column(),
