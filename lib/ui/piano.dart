@@ -86,7 +86,7 @@ class _PianoKeyState extends State<PianoKey> {
     return AutoSizeText(
       note.number,
       style: TextStyle(fontSize: 24),
-    ).center().inCard().onTap(()async {
+    ).center().inCard().gestureDetect(onTapDown: (_) async {
       final player = AudioPlayer();
       await player.setSourceAsset("soundpack/default/${note.path}.wav");
       await player.setPlayerMode(PlayerMode.lowLatency);
