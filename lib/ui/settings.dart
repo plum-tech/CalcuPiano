@@ -1,3 +1,4 @@
+import 'package:calcupiano/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -13,28 +14,10 @@ class Settings extends StatefulWidget {
   State<Settings> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<Settings> {
-  @override
-  void dispose() {
-    super.dispose();
-    // Now unlock the orientation.
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
+class _SettingsPageState extends State<Settings> with LockOrientationMixin {
   @override
   Widget build(BuildContext context) {
-    // Lock the orientation to avoid navigation bar disappearing.
-    if (context.isPortrait) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    }
+    super.build(context);
     return context.isPortrait ? buildPortrait(context) : buildLandscape(context);
   }
 
