@@ -1,6 +1,6 @@
 # Soundpack
 
-## Essential
+## Format
 
 A soundpack is a normal zip.
 
@@ -111,3 +111,44 @@ cascading objects.
   }
 }
 ```
+
+## Implementation
+`SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack.zip file.
+
+`SoundpackProtocol` has several implementations, such as `BuiltinSoundpack`, `LocalSoundpack`, `UrlSoundpack`.
+
+### BuiltinSoundpack
+
+- It must have an ID to be unambiguous from other soundpacks.
+- It can resolve the `SoundFile` of a `Note` to `BundledSoundFile`.
+- It has a name and description.
+- Unmodifiable.
+- Permanent.
+
+#### Proposal
+Users cannot modify a built-in soundpack, but they can duplicate it to a `LocalSoundpack`.
+`BuiltinSoundpack` cannot be deleted.
+
+### LocalSoundpack
+
+- It must have an ID to be unambiguous from other soundpacks.
+- It represents a real soundpack.zip file. After being unpacked, it's a folder in CalcuPiano's local storage. 
+- It can resolve the `SoundFile` of a `Note` to `BundledSoundFile` or `LocalSoundFile`.
+- Modifiable.
+- Deletable.
+
+#### Proposal
+Users can import a `LocalSoundpack` from file or export it to a soundpack.zip file.
+Users can edit the metadata, which allows them to create their own soundpacks.
+
+### UrlSoundpack
+
+- It must have an ID to be unambiguous from other soundpacks.
+- It represents a soundpack downloaded from a URL.
+- It has a MD5 hash code to validate the file and version.
+- It can resolve the `SoundFile` of a `Note` to `LocalSoundFile`.
+- Unmodifiable.
+- Deletable.
+
+#### Proposal
+Users can duplicate a `UrlSoundpack` to modify it. In this way, the source soundpack will be kept.
