@@ -75,3 +75,39 @@ MySoundpack.zip/  # Any name you want
     preview.png # Optional
     soundpack.json  # Optional
 ```
+
+### MetaData
+
+`soundpack.json` contains the metadata of a soundpack.
+
+It's worth noting that it's optional in a [Simple Soundpack](#Simple), so the design should take
+the *placeholders* into account. Also, the authors may not fully use the metadata, for example,
+omit some unnecessary properties, like `url`. Meanwhile, the internationalization support is
+considerate. Therefore, the properties should have a default value and should be checked each time
+it's read.
+
+To simplify serialization, the metadata can be represented by **only one** json object instead of
+cascading objects.
+
+```json
+{
+  "name": "My Soundpack",
+  "description": "My first soundpack of CalcuPiano.",
+  "author": "Liplum",
+  "url": "https://github.com/liplum/calcupiano",
+  "l10n": {
+    "en": {
+      "name": "My Soundpack",
+      "description": "My first soundpack of CalcuPiano."
+    },
+    "ru": {
+      "name": "Мой саундпак",
+      "description": "Мой первый саундпак CalcuPiano."
+    },
+    "zh": {
+      "name": "我的声音包",
+      "description": "我的第一个 CalcuPiano 音色包。"
+    }
+  }
+}
+```
