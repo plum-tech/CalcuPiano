@@ -9,12 +9,15 @@ class K {
   static const isDarkMode = "Is-Dark-Mode";
 }
 
-/// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
-/// see [K], application-wide.
 class H {
   H._();
 
+  /// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
+  /// see [K], application-wide.
   static late final Box<dynamic> box;
+
+  /// [SoundpackStorage] contains all custom soundpacks, including copies.
+  static late final SoundpackStorage soundpacks;
 
   static String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
 
@@ -43,4 +46,8 @@ class ListenTo {
   /// It indicates this *Build Method* will listen to specific key/keys,
   /// any change will lead to a rebuild in this hierarchy.
   const ListenTo([this.keys]);
+}
+
+class SoundpackStorage {
+
 }

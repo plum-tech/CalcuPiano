@@ -1,4 +1,4 @@
-import 'package:calcupiano/design/multipltform.dart';
+import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -95,6 +95,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
                 // TODO: builtin soundpack can't be deleted.
                 CupertinoContextMenuAction(
                   trailingIcon: CupertinoIcons.delete,
+                  isDestructiveAction: true,
                   child: "Delete".text(),
                 ),
               ],

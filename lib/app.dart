@@ -1,5 +1,5 @@
 import 'package:animations/animations.dart';
-import 'package:calcupiano/design/multipltform.dart';
+import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
@@ -252,7 +252,7 @@ class CalcuPianoDrawer extends HookWidget {
       width: 200,
       child: Drawer(
         child: [
-          ListView(
+          Column(
             children: [
               DrawerHeader(child: SizedBox()),
               ListTile(
