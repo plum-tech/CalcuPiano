@@ -28,7 +28,7 @@ class BuiltinSoundpack implements Soundpack {
 
   /// The ID is fixed.
   @override
-  String get id => "calcupiano.$name";
+  String get id => R.genBuiltinSoundpackId(name);
 
   @override
   Future<SoundFile> resolve(Note note) async {
@@ -76,4 +76,18 @@ class LocalSoundpack implements Soundpack {
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$LocalSoundpackToJson(this);
+}
+
+extension SoundpackX on Soundpack {
+  static Future<Soundpack> resolve({
+    required String id,
+  }) async {
+    final builtin = R.id2BuiltinSoundpacks[id];
+    if(builtin != null){
+      return builtin;
+    }else{
+      // TODO: Read the soundpack info from Hive.
+      return R.defaultSoundpack;
+    }
+  }
 }

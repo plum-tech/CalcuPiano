@@ -1,6 +1,6 @@
+import 'package:calcupiano/design/multipltform.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -25,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
     return Scaffold(
       appBar: AppBar(
         title: "Settings".text(),
+        centerTitle: ctx.isCupertino,
       ),
       body: buildSettings(ctx),
     );

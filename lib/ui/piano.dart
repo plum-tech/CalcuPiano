@@ -99,12 +99,16 @@ class _PianoKeyState extends State<PianoKey> {
       note.number,
       style: TextStyle(fontSize: 24),
     ).center().inCard().gestureDetect(onTapDown: (_) async {
-      final player = AudioPlayer();
-      final sound = await _soundpack.resolve(note);
-      await sound.loadInto(player);
-      //await player.setSourceAsset("soundpack/default/${note.path}");
-      await player.setPlayerMode(PlayerMode.lowLatency);
-      await player.resume();
+      await playSound();
     });
+  }
+
+  Future<void> playSound() async{
+    final player = AudioPlayer();
+    final sound = await _soundpack.resolve(note);
+    await sound.loadInto(player);
+    //await player.setSourceAsset("soundpack/default/${note.path}");
+    await player.setPlayerMode(PlayerMode.lowLatency);
+    await player.resume();
   }
 }

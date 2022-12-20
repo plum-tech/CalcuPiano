@@ -1,3 +1,4 @@
+import 'package:calcupiano/design/multipltform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -21,6 +22,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     return Scaffold(
       appBar: AppBar(
         title: "Soundpack".text(),
+        centerTitle: context.isCupertino,
       ),
       body: buildBody(),
     );

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:calcupiano/design/multipltform.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
@@ -41,6 +42,8 @@ class CalcuPianoApp extends StatelessWidget {
       ),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
+      // TODO: Temporarily debug Visual effects on iOS.
+      platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -104,6 +107,7 @@ class HomePortrait extends HookWidget {
         duration: Duration(milliseconds: 1000),
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: context.isCupertino,
             leading: IconButton(
               icon: AnimatedIcon(
                 icon: AnimatedIcons.menu_close,
