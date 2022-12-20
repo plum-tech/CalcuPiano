@@ -1,9 +1,12 @@
 import 'package:calcupiano/foundation.dart';
+import 'package:version/version.dart';
 
 import 'impl/soundpack.dart';
 
 class R {
   R._();
+
+  static final version = Version(0, 0, 1);
 
   /// The soundpack directory under `assets` directory.
   static const assetsSoundpackDir = "soundpack";

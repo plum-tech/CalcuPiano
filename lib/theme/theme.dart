@@ -1,3 +1,4 @@
+import 'package:calcupiano/db.dart';
 import 'package:flutter/material.dart';
 
 class CalcuPianoThemeData {
@@ -8,6 +9,10 @@ class CalcuPianoThemeData {
     this.enableRipple = true,
     this.brightness = Brightness.light,
   });
+
+  const CalcuPianoThemeData.isDarkMode(
+    bool isDarkMode,
+  ) : this(brightness: isDarkMode ? Brightness.dark : Brightness.light);
 
   CalcuPianoThemeData copyWith({
     bool? enableRipple,
@@ -42,6 +47,7 @@ class CalcuPianoThemeModel with ChangeNotifier {
       _data = data.copyWith(
         brightness: brightness,
       );
+      H.isDarkMode = isDark;
       notifyListeners();
     }
   }

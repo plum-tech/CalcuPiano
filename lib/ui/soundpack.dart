@@ -28,6 +28,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     );
   }
 
+  @ListenTo([K.customSoundpackIdList])
   Widget buildBody() {
     return H.listenToCustomSoundpackIdList() <<
         (ctx, _, c) {
@@ -41,6 +42,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     final customList = H.customSoundpackIdList ?? const [];
     return ListView.builder(
       itemCount: builtinList.length + customList.length,
+      physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
         if (index < builtinList.length) {
           return BuiltinSoundpackItem(
@@ -74,6 +76,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
     return buildCardWithContextMenu(context);
   }
 
+  @ListenTo([K.currentSoundpackID])
   Widget buildCardWithContextMenu(BuildContext ctx) {
     return H.listenToCurrentSoundpackID() <<
         (ctx, _, __) {
@@ -84,16 +87,16 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
                   CupertinoContextMenuAction(
                     trailingIcon: CupertinoIcons.checkmark,
                     child: "Use".text(),
-                    onPressed: (){
+                    onPressed: () {
                       ctx.navigator.pop();
                       eventBus.fire(SoundpackChangeEvent(soundpack));
                     },
                   ),
                 // TODO: builtin soundpack can't be deleted.
                 CupertinoContextMenuAction(
-                    trailingIcon: CupertinoIcons.delete,
-                    child: "Delete".text(),
-                  ),
+                  trailingIcon: CupertinoIcons.delete,
+                  child: "Delete".text(),
+                ),
               ],
               builder: (ctx, anim) {
                 return buildCard(ctx, isSelected);
@@ -101,9 +104,10 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
         };
   }
 
+  @ListenTo([K.currentSoundpackID])
   Widget buildCard(BuildContext ctx, bool isSelected) {
     return ListTile(
-      leading: isSelected ? Icon(Icons.done,size: 36) : null,
+      leading: isSelected ? Icon(Icons.done, size: 36) : null,
       selected: isSelected,
       titleTextStyle: ctx.textTheme.headlineSmall,
       title: soundpack.name.text(),

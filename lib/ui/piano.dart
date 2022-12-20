@@ -3,8 +3,11 @@ import 'package:calcupiano/events.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import '../R.dart';
+import '../db.dart';
 import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
+
+import '../impl/soundpack.dart';
 
 class PianoKeyboard extends StatefulWidget {
   const PianoKeyboard({super.key});
@@ -84,6 +87,12 @@ class _PianoKeyState extends State<PianoKey> {
   @override
   void initState() {
     super.initState();
+    final restoredId = H.currentSoundpackID;
+    if (restoredId != null) {
+      SoundpackX.resolve(id: restoredId).then((value) {
+        _soundpack = value;
+      });
+    }
     eventBus.on<SoundpackChangeEvent>().listen((e) {
       _soundpack = e.newSoundpack;
     });
@@ -103,7 +112,7 @@ class _PianoKeyState extends State<PianoKey> {
     });
   }
 
-  Future<void> playSound() async{
+  Future<void> playSound() async {
     final player = AudioPlayer();
     final sound = await _soundpack.resolve(note);
     await sound.loadInto(player);

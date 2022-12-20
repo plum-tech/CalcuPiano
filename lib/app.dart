@@ -6,19 +6,38 @@ import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CalcuPianoApp extends StatelessWidget {
+import 'db.dart';
+
+class CalcuPianoApp extends StatefulWidget {
   const CalcuPianoApp({super.key});
+
+  @override
+  State<StatefulWidget> createState() => CalcuPianoAppState();
+}
+
+class CalcuPianoAppState extends State<CalcuPianoApp> {
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    final isSystemDarkMode = brightness == Brightness.dark;
+    isDarkMode = H.isDarkMode ?? isSystemDarkMode;
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<CalcuPianoThemeModel>(create: (_) => CalcuPianoThemeModel()),
+        ChangeNotifierProvider<CalcuPianoThemeModel>(
+            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkMode))),
       ],
       child: Consumer<CalcuPianoThemeModel>(
         builder: (_, model, __) {

@@ -6,9 +6,11 @@ class K {
 
   static const customSoundpackIdList = "Custom-Soundpack-ID-List";
   static const currentSoundpackID = "Current-Soundpack-ID";
+  static const isDarkMode = "Is-Dark-Mode";
 }
 
-/// To reduce complexity, CalcuPiano will only use one box application-wide.
+/// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
+/// see [K], application-wide.
 class H {
   H._();
 
@@ -22,6 +24,10 @@ class H {
 
   static set customSoundpackIdList(List<String>? list) => box.put(K.customSoundpackIdList, list);
 
+  static bool? get isDarkMode => box.get(K.isDarkMode) as bool?;
+
+  static set isDarkMode(bool? newVal) => box.put(K.isDarkMode, newVal);
+
   static ValueListenable<Box<dynamic>> listenToCurrentSoundpackID() {
     return box.listenable(keys: const [K.currentSoundpackID]);
   }
@@ -34,6 +40,7 @@ class H {
 class ListenTo {
   final List<String>? keys;
 
-  /// It indicates this *Build Method* will listen to specific key/keys, any change will lead to a rebuild.
+  /// It indicates this *Build Method* will listen to specific key/keys,
+  /// any change will lead to a rebuild in this hierarchy.
   const ListenTo([this.keys]);
 }

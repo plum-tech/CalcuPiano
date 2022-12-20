@@ -80,12 +80,12 @@ class LocalSoundpack implements Soundpack {
 
 extension SoundpackX on Soundpack {
   static Future<Soundpack> resolve({
-    required String id,
+    required String? id,
   }) async {
     final builtin = R.id2BuiltinSoundpacks[id];
-    if(builtin != null){
+    if (builtin != null) {
       return builtin;
-    }else{
+    } else {
       // TODO: Read the soundpack info from Hive.
       return R.defaultSoundpack;
     }
