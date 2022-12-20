@@ -11,5 +11,10 @@ void main() async {
   final settings = await Hive.openBox("Settings");
   H.box = settings;
   EventHandler.init();
+  _init();
   runApp(const CalcuPianoApp());
+}
+
+Future<void> _init() async {
+  H.currentSoundpackID = R.defaultSoundpack.id;
 }

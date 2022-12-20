@@ -21,14 +21,14 @@ class CalcuPianoApp extends StatefulWidget {
 }
 
 class CalcuPianoAppState extends State<CalcuPianoApp> {
-  bool isDarkMode = false;
+  bool? isDarkModeInitial;
 
   @override
   void initState() {
     super.initState();
     final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
     final isSystemDarkMode = brightness == Brightness.dark;
-    isDarkMode = H.isDarkMode ?? isSystemDarkMode;
+    isDarkModeInitial = H.isDarkMode ?? isSystemDarkMode;
   }
 
   // This widget is the root of your application.
@@ -37,7 +37,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<CalcuPianoThemeModel>(
-            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkMode))),
+            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
       ],
       child: Consumer<CalcuPianoThemeModel>(
         builder: (_, model, __) {

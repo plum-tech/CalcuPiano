@@ -6,10 +6,12 @@ import '../foundation.dart';
 
 part 'soundpack.g.dart';
 
-class BuiltinSoundFile implements SoundFile {
+@JsonSerializable()
+class BundledSoundFile implements SoundFile {
+  @JsonKey()
   final String path;
 
-  const BuiltinSoundFile({required this.path});
+  const BundledSoundFile({required this.path});
 
   @override
   Future<void> loadInto(AudioPlayer player) async {
@@ -32,11 +34,13 @@ class BuiltinSoundpack implements Soundpack {
 
   @override
   Future<SoundFile> resolve(Note note) async {
-    return BuiltinSoundFile(path: "${R.assetsSoundpackDir}/$name/${note.path}");
+    return BundledSoundFile(path: "${R.assetsSoundpackDir}/$name/${note.path}");
   }
 }
 
+@JsonSerializable()
 class LocalSoundFile implements SoundFile {
+  @JsonKey()
   final String path;
 
   const LocalSoundFile({required this.path});

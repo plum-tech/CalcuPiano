@@ -11,8 +11,8 @@ class CalcuPianoThemeData {
   });
 
   const CalcuPianoThemeData.isDarkMode(
-    bool isDarkMode,
-  ) : this(brightness: isDarkMode ? Brightness.dark : Brightness.light);
+    bool? isDarkMode,
+  ) : this(brightness: isDarkMode == true ? Brightness.dark : Brightness.light);
 
   CalcuPianoThemeData copyWith({
     bool? enableRipple,
