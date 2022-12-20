@@ -90,7 +90,7 @@ class _PianoKeyState extends State<PianoKey> {
     final restoredId = H.currentSoundpackID;
     if (restoredId != null) {
       SoundpackX.resolve(id: restoredId).then((value) {
-        _soundpack = value;
+        _soundpack = value ?? R.defaultSoundpack;
       });
     }
     eventBus.on<SoundpackChangeEvent>().listen((e) {

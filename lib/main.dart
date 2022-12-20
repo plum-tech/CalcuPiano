@@ -8,13 +8,15 @@ import 'db.dart';
 
 void main() async {
   await Hive.initFlutter(R.hiveStorage);
-  final settings = await Hive.openBox("Settings");
-  H.box = settings;
+  final settingsBox = await Hive.openBox("Settings");
+  final soundpackBox = await Hive.openBox<String>("Soundpacks");
+  H.box = settingsBox;
+  H.soundpacks = SoundpackStorage(soundpackBox);
   EventHandler.init();
-  _init();
+  _initEssential();
   runApp(const CalcuPianoApp());
 }
 
-Future<void> _init() async {
+Future<void> _initEssential() async {
   H.currentSoundpackID = R.defaultSoundpack.id;
 }

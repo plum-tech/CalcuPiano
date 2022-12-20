@@ -1,5 +1,8 @@
+import 'package:calcupiano/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
+
+import 'converter.dart';
 
 class K {
   K._();
@@ -49,5 +52,17 @@ class ListenTo {
 }
 
 class SoundpackStorage {
+  final Box<String> soundpacks;
 
+  const SoundpackStorage(this.soundpacks);
+
+  Soundpack? getSoundpackById(String id) {
+    final json = soundpacks.get(id);
+    if (json == null) {
+      return null;
+    }
+    return Converter.fromJson<Soundpack>(json);
+  }
+
+  ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);
 }

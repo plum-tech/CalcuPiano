@@ -92,11 +92,9 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
                       eventBus.fire(SoundpackChangeEvent(soundpack));
                     },
                   ),
-                // TODO: builtin soundpack can't be deleted.
                 CupertinoContextMenuAction(
-                  trailingIcon: CupertinoIcons.delete,
-                  isDestructiveAction: true,
-                  child: "Delete".text(),
+                  trailingIcon: CupertinoIcons.ear,
+                  child: "Preview".text(),
                 ),
               ],
               builder: (ctx, anim) {
@@ -131,8 +129,76 @@ class CustomSoundpackItem extends StatefulWidget {
 }
 
 class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
+  LocalSoundpack? _soundpack;
+
+  @override
+  void initState() {
+    super.initState();
+    final restored = H.soundpacks.getSoundpackById(widget.id) as LocalSoundpack?;
+    if (restored == null) {
+      _soundpack = restored;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    final soundpack = _soundpack;
+    if (soundpack != null) {
+      return buildCardWithContextMenu(context, soundpack);
+    } else {
+      return buildCorruptedSoundpack(context);
+    }
+  }
+
+  @ListenTo([K.currentSoundpackID])
+  Widget buildCardWithContextMenu(BuildContext ctx, LocalSoundpack soundpack) {
+    return H.listenToCurrentSoundpackID() <<
+        (ctx, _, __) {
+          final isSelected = H.currentSoundpackID == soundpack.id;
+          return CupertinoContextMenu.builder(
+              actions: [
+                if (!isSelected)
+                  CupertinoContextMenuAction(
+                    trailingIcon: CupertinoIcons.checkmark,
+                    child: "Use".text(),
+                    onPressed: () {
+                      ctx.navigator.pop();
+                      eventBus.fire(SoundpackChangeEvent(soundpack));
+                    },
+                  ),
+                CupertinoContextMenuAction(
+                  trailingIcon: CupertinoIcons.delete,
+                  isDestructiveAction: true,
+                  child: "Delete".text(),
+                ),
+                CupertinoContextMenuAction(
+                  trailingIcon: CupertinoIcons.pencil,
+                  isDestructiveAction: true,
+                  child: "Edit".text(),
+                ),
+              ],
+              builder: (ctx, anim) {
+                return buildCard(ctx, isSelected, soundpack);
+              });
+        };
+  }
+
+  @ListenTo([K.currentSoundpackID])
+  Widget buildCard(BuildContext ctx, bool isSelected, LocalSoundpack soundpack) {
+    return ListTile(
+      leading: isSelected ? Icon(Icons.done, size: 36) : null,
+      selected: isSelected,
+      titleTextStyle: ctx.textTheme.headlineSmall,
+      title: soundpack.name.text(),
+      subtitle: soundpack.description.text(),
+      trailing: Icon(Icons.navigate_next_rounded),
+    ).inCard();
+  }
+
+  Widget buildCorruptedSoundpack(BuildContext ctx) {
+    return ListTile(
+      leading: Icon(Icons.sentiment_very_dissatisfied_outlined),
+      title: "Corrupted Soundpack".text(),
+    );
   }
 }

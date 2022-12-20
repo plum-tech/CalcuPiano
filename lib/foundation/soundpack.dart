@@ -1,10 +1,10 @@
 part of '../foundation.dart';
 
-abstract class SoundFile {
+abstract class SoundFile implements Convertible{
   Future<void> loadInto(AudioPlayer player);
 }
 
-abstract class Soundpack {
+abstract class Soundpack implements Convertible{
   String get id;
 
   String get description;
