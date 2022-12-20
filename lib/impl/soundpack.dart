@@ -32,7 +32,7 @@ class BuiltinSoundpack implements Soundpack {
 
   @override
   Future<SoundFile> resolve(Note note) async {
-    return BuiltinSoundFile(path: "${R.assetsSoundpackDir}/$id/${note.path}");
+    return BuiltinSoundFile(path: "${R.assetsSoundpackDir}/$name/${note.path}");
   }
 }
 

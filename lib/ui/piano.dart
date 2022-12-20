@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:calcupiano/events.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import '../R.dart';
 import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
+
 class PianoKeyboard extends StatefulWidget {
   const PianoKeyboard({super.key});
 
@@ -76,6 +79,15 @@ class PianoKey extends StatefulWidget {
 
 class _PianoKeyState extends State<PianoKey> {
   Note get note => widget.note;
+  Soundpack _soundpack = R.defaultSoundpack;
+
+  @override
+  void initState() {
+    super.initState();
+    eventBus.on<SoundpackChangeEvent>().listen((e) {
+      _soundpack = e.newSoundpack;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +100,9 @@ class _PianoKeyState extends State<PianoKey> {
       style: TextStyle(fontSize: 24),
     ).center().inCard().gestureDetect(onTapDown: (_) async {
       final player = AudioPlayer();
-      await player.setSourceAsset("soundpack/default/${note.path}");
+      final sound = await _soundpack.resolve(note);
+      await sound.loadInto(player);
+      //await player.setSourceAsset("soundpack/default/${note.path}");
       await player.setPlayerMode(PlayerMode.lowLatency);
       await player.resume();
     });

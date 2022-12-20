@@ -1,3 +1,5 @@
+import 'package:calcupiano/foundation.dart';
+
 import 'impl/soundpack.dart';
 
 class R {
@@ -8,8 +10,9 @@ class R {
   static const hiveStorage = "net.liplum.calcupiano";
   static const customSoundpackDir = "custom_soundpack";
 
+  static const defaultSoundpack = BuiltinSoundpack("default");
   static const builtinSoundpacks = [
+    defaultSoundpack,
     BuiltinSoundpack("classic"),
-    BuiltinSoundpack("default"),
   ];
 }
