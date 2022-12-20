@@ -23,6 +23,14 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
       appBar: AppBar(
         title: "Soundpack".text(),
         centerTitle: context.isCupertino,
+        actions: [
+          CupertinoButton(
+            child: "Import".text(),
+            onPressed: () {
+
+            },
+          )
+        ],
       ),
       body: buildBody(),
     );
