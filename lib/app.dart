@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
@@ -106,7 +107,7 @@ class HomePortrait extends HookWidget {
       reverseDuration: const Duration(milliseconds: 500),
     );
     final isDrawerOpen = useState(false);
-
+    final fullSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       drawer: CalcuPianoDrawer(
@@ -120,42 +121,57 @@ class HomePortrait extends HookWidget {
         }
         isDrawerOpen.value = isOpened;
       },
-      body: AnimatedSlide(
-        offset: isDrawerOpen.value ? Offset(0.03, -0.003) : Offset.zero,
+      body: AnimatedScale(
+        scale: isDrawerOpen.value ? 0.96 : 1,
         curve: Curves.fastLinearToSlowEaseIn,
         duration: Duration(milliseconds: 1000),
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: context.isCupertino,
-            leading: IconButton(
-              icon: AnimatedIcon(
-                icon: AnimatedIcons.menu_close,
-                progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
-              ),
-              onPressed: () {
-                if (ctrl.isCompleted) {
-                  ctrl.reverse();
-                } else {
-                  ctrl.forward().then((value) {
-                    _openDrawer();
-                  });
-                }
-              },
+        child: [
+          buildMain(context, ctrl, isDrawerOpen.value),
+          AnimatedBlur(
+            blur: isDrawerOpen.value ? 3 : 0,
+            curve: Curves.fastLinearToSlowEaseIn,
+            duration: Duration(milliseconds: 1000),
+            child: SizedBox(
+              width: fullSize.width,
+              height: fullSize.height,
             ),
-            title: "Calcu Piano".text(),
           ),
-          body: [
-            const Screen().expanded(),
-            // Why doesn't the constraint apply on this?
-            const PianoKeyboard().expanded(),
-          ]
-              .column(
-                mas: MainAxisSize.min,
-                maa: MainAxisAlignment.center,
-              )
-              .safeArea(),
-        ),
+        ].stack(),
       ),
+    );
+  }
+
+  Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: ctx.isCupertino,
+        leading: IconButton(
+          icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_close,
+            progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+          ),
+          onPressed: () {
+            if (ctrl.isCompleted) {
+              ctrl.reverse();
+            } else {
+              ctrl.forward().then((value) {
+                _openDrawer();
+              });
+            }
+          },
+        ),
+        title: "Calcu Piano".text(),
+      ),
+      body: [
+        const Screen().expanded(),
+        // Why doesn't the constraint apply on this?
+        const PianoKeyboard().expanded(),
+      ]
+          .column(
+            mas: MainAxisSize.min,
+            maa: MainAxisAlignment.center,
+          )
+          .safeArea(),
     );
   }
 }

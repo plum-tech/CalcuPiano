@@ -17,6 +17,10 @@ class BundledSoundFile implements SoundFile {
   Future<void> loadInto(AudioPlayer player) async {
     await player.setSourceAsset(path);
   }
+
+  factory BundledSoundFile.fromJson(Map<String, dynamic> json) => _$BundledSoundFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BundledSoundFileToJson(this);
 }
 
 class BuiltinSoundpack implements Soundpack {
@@ -49,6 +53,10 @@ class LocalSoundFile implements SoundFile {
   Future<void> loadInto(AudioPlayer player) async {
     await player.setSourceDeviceFile(path);
   }
+
+  factory LocalSoundFile.fromJson(Map<String, dynamic> json) => _$LocalSoundFileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalSoundFileToJson(this);
 }
 
 @JsonSerializable()
@@ -78,7 +86,6 @@ class LocalSoundpack implements Soundpack {
 
   factory LocalSoundpack.fromJson(Map<String, dynamic> json) => _$LocalSoundpackFromJson(json);
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$LocalSoundpackToJson(this);
 }
 
