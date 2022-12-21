@@ -61,8 +61,8 @@ class Converter {
   }
 
   static void registerConverter<T extends Convertible>(
-      String typeName, ToJsonFunc<T> toJson, FromJsonFunc<T> fromJson) {
-    _typeName2ToJson[typeName] = toJson as ToJsonFunc;
+      String typeName, ToJsonFunc toJson, FromJsonFunc<T> fromJson) {
+    _typeName2ToJson[typeName] = toJson;
     _typeName2FromJson[typeName] = fromJson;
   }
 

@@ -13,6 +13,16 @@ void main() {
       workWithGeneratedAdapter();
     });
   });
+
+  group("Test", () {
+    test("toJson", () {
+      initConverter();
+      const local = LocalSoundFile(localPath: '/usr/liplum/soundpack/1.wav');
+      final res = Converter.toJson(local);
+      assert(res != null);
+      assert(res!.contains(LocalSoundFile.type));
+    });
+  });
 }
 
 void workWithGeneratedAdapter() {
