@@ -213,7 +213,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
     if (soundpack != null) {
       return buildCardWithContextMenu(context, soundpack);
     } else {
-      return buildCorruptedSoundpack(context);
+      return buildCorruptedSoundpackWithContextMenu(context);
     }
   }
 
@@ -305,19 +305,32 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
     ).inCard();
   }
 
+  Widget buildCorruptedSoundpackWithContextMenu(BuildContext ctx) {
+    return CupertinoContextMenu.builder(
+        actions: [
+          CupertinoContextMenuAction(
+            trailingIcon: CupertinoIcons.delete,
+            isDestructiveAction: true,
+            child: "Delete".text(),
+            onPressed: () async {
+              if (!mounted) return;
+              context.navigator.pop();
+              await Future.delayed(const Duration(milliseconds: 500));
+              await H.soundpacks.removeSoundpackById(widget.id);
+            },
+          ),
+        ],
+        builder: (ctx, anim) {
+          return buildCorruptedSoundpack(ctx);
+        });
+  }
+
   Widget buildCorruptedSoundpack(BuildContext ctx) {
-    return Dismissible(
-      key: ValueKey(widget.id),
-      direction: DismissDirection.horizontal,
-      onDismissed: (dir) async {
-        await H.soundpacks.removeSoundpackById(widget.id);
-      },
-      child: ListTile(
-        leading: Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
-        title: "A Corrupted Soundpack".text(),
-        subtitle: "Sorry, please swipe to delete this".text(),
-      ).inCard(),
-    );
+    return ListTile(
+      leading: Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
+      title: "A Corrupted Soundpack".text(),
+      subtitle: "Sorry, please long press to delete".text(),
+    ).inCard();
   }
 }
 
