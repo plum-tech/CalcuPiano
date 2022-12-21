@@ -63,7 +63,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
       // TODO: Temporarily debug Visual effects on iOS.
-      platform: TargetPlatform.iOS,
+      //  platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

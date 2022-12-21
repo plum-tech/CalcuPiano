@@ -1,3 +1,4 @@
+import 'package:calcupiano/design/dialog.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
@@ -27,8 +28,10 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         actions: [
           CupertinoButton(
             child: "Import".text(),
-            onPressed: () {
-              context.navigator.push(MaterialPageRoute(builder: (_) => const ImportSoundpackPage()));
+            onPressed: () async{
+              //await context.showTip(title: "AAA",desc: "AAA",ok: "AAA");
+              await context.showRequest(title: "AAA",desc: "AAA",yes: "AAA",no:"BBB");
+              //context.navigator.push(MaterialPageRoute(builder: (_) => const ImportSoundpackPage()));
             },
           )
         ],
