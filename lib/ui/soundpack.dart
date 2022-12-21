@@ -2,6 +2,7 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/ui/import.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -26,7 +27,9 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         actions: [
           CupertinoButton(
             child: "Import".text(),
-            onPressed: () {},
+            onPressed: () {
+              context.navigator.push(MaterialPageRoute(builder: (_) => const ImportSoundpackPage()));
+            },
           )
         ],
       ),
@@ -112,7 +115,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
   @ListenTo([K.currentSoundpackID])
   Widget buildCard(BuildContext ctx, bool isSelected) {
     return ListTile(
-      leading: isSelected ? Icon(Icons.done, size: 36) : null,
+      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
       selected: isSelected,
       titleTextStyle: ctx.textTheme.headlineSmall,
       title: soundpack.name.text(),
@@ -189,7 +192,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
   @ListenTo([K.currentSoundpackID])
   Widget buildCard(BuildContext ctx, bool isSelected, ExternalSoundpackProtocol soundpack) {
     return ListTile(
-      leading: isSelected ? Icon(Icons.done, size: 36) : null,
+      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
       selected: isSelected,
       titleTextStyle: ctx.textTheme.headlineSmall,
       //title: soundpack.name.text(),
@@ -204,4 +207,19 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       title: "Corrupted Soundpack".text(),
     );
   }
+}
+
+Widget _buildSoundpackSwitchIcon(bool isSelected, SoundpackProtocol soundpack) {
+  return AnimatedSwitcher(
+    duration: const Duration(milliseconds: 500),
+    switchInCurve: Curves.fastLinearToSlowEaseIn,
+    child: isSelected
+        ? const Icon(Icons.done, size: 36)
+        : const Icon(
+            Icons.radio_button_off_rounded,
+            size: 36,
+          ).onTap(() {
+            eventBus.fire(SoundpackChangeEvent(soundpack));
+          }),
+  );
 }

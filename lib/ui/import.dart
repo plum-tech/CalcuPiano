@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../foundation.dart';
 
-/// More info about the file format of Soundpack, please see [https://github.com/liplum/calcupiano/specifications.md/SoundpackFormat.md].
-class ImportPage extends StatefulWidget {
-  const ImportPage({super.key});
+/// More info about the file format of Soundpack, please see [https://github.com/liplum/calcupiano/specifications.md/Soundpack.md].
+class ImportSoundpackPage extends StatefulWidget {
+  const ImportSoundpackPage({super.key});
 
   @override
-  State<ImportPage> createState() => _ImportPageState();
+  State<ImportSoundpackPage> createState() => _ImportSoundpackPageState();
 }
 
-class _ImportPageState extends State<ImportPage> {
+class _ImportSoundpackPageState extends State<ImportSoundpackPage> {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
