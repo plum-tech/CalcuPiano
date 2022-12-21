@@ -59,8 +59,8 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
               leading: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: isDarkMode
-                    ? const Icon(key: ValueKey("Light"), Icons.light_mode)
-                    : const Icon(key: ValueKey("Dark"), Icons.dark_mode),
+                    ? const Icon(key: ValueKey("Light"), Icons.dark_mode)
+                    : const Icon(key: ValueKey("Dark"), Icons.light_mode),
               ),
               title: isDarkMode ? Text("Dark Mode") : Text("Light Mode"),
             ),

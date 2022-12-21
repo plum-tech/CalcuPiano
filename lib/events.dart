@@ -1,6 +1,14 @@
 import 'package:calcupiano/foundation.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter/widgets.dart';
 
+/// Communication among the whole hierarchy.
+/// Notably, event bus will not cause rebuild by itself.
+/// - It's useful to avoid rebuilding top-down.
+/// - Emit data without [BuildContext], instead, the subscribers should check [State.mounted] own their own.
+/// Use Cases:
+/// - Changing the Soundpack should be silent, for dynamically changes when reading a sheet music.
+/// - Changing settings somewhere.
 final eventBus = EventBus();
 
 /// Fire when the user pressed a Piano Key.

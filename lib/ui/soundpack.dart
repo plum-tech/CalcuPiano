@@ -191,11 +191,19 @@ class CustomSoundpackItem extends StatefulWidget {
 }
 
 class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
+  /// Cache the Soundpack object, because deserialization is expensive.
   ExternalSoundpackProtocol? _soundpack;
 
   @override
   void initState() {
     super.initState();
+    _soundpack = H.soundpacks.getSoundpackById(widget.id);
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomSoundpackItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update current Soundpack object, perhaps due to a deletion.
     _soundpack = H.soundpacks.getSoundpackById(widget.id);
   }
 
@@ -230,12 +238,18 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
                   child: "Edit".text(),
                 ),
                 CupertinoContextMenuAction(
+                  trailingIcon: CupertinoIcons.ear,
+                  child: "Preview".text(),
+                ),
+                CupertinoContextMenuAction(
                   trailingIcon: CupertinoIcons.delete,
                   isDestructiveAction: true,
                   child: "Delete".text(),
-                  onPressed: () {
+                  onPressed: () async {
+                    if (!mounted) return;
                     context.navigator.pop();
-                    H.soundpacks.removeSoundpackById(soundpack.id);
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    await H.soundpacks.removeSoundpackById(soundpack.id);
                   },
                 ),
               ],
@@ -295,8 +309,8 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
     return Dismissible(
       key: ValueKey(widget.id),
       direction: DismissDirection.horizontal,
-      onDismissed: (dir) {
-        H.soundpacks.removeSoundpackById(widget.id);
+      onDismissed: (dir) async {
+        await H.soundpacks.removeSoundpackById(widget.id);
       },
       child: ListTile(
         leading: Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),

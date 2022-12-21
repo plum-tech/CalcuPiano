@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
@@ -56,11 +58,14 @@ class SoundpackStorage {
 
   const SoundpackStorage(this.soundpacks);
 
+  /// High-level operation
   ExternalSoundpackProtocol? getSoundpackById(String id) {
     final json = soundpacks.get(id);
     return Converter.fromJson<ExternalSoundpackProtocol>(json);
   }
 
+  /// Low-level operation.
+  /// Set the soundpack directly will not clear the local file, or change [H.customSoundpackIdList].
   void setSoundpackById(ExternalSoundpackProtocol soundpack) {
     final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
     if (json != null) {
@@ -68,6 +73,7 @@ class SoundpackStorage {
     }
   }
 
+  /// High-level operation
   void addSoundpack(ExternalSoundpackProtocol soundpack) {
     setSoundpackById(soundpack);
     final idList = H.customSoundpackIdList ?? [];
@@ -75,10 +81,30 @@ class SoundpackStorage {
     H.customSoundpackIdList = idList;
   }
 
-  void removeSoundpackById(String id) {
+  /// High-level operation
+  Future<void> removeSoundpackById(String id) async {
     final idList = H.customSoundpackIdList ?? [];
+    String? nextOne;
+    final deletedIndex = idList.indexOf(id);
     idList.remove(id);
+    if (idList.isNotEmpty) {
+      // Don't worry, `deletedIndex + 1` must be larger-equal then 0.
+      nextOne = idList[(deletedIndex + 1) % idList.length];
+    }
     H.customSoundpackIdList = idList;
+    if (H.currentSoundpackID == id) {
+      // If currently-used soundpack was deleted, jump to next one.
+      if (nextOne != null) {
+        H.currentSoundpackID = nextOne;
+      } else {
+        // If id list is empty, use default soundpack.
+        H.currentSoundpackID = R.defaultSoundpack.id;
+      }
+    }
+    // Delete the local files.
+    // TODO: What if the [LocalSoundFile] is referenced in another soundpack? To prevent the deletion, or to only delete unreferenced files?
+    final file = File(joinPath(R.soundpacksRootDir, id));
+    await file.delete(recursive: true);
   }
 
   ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);
