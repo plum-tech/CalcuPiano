@@ -39,9 +39,24 @@ void main() {
       assert(res != null);
       assert(res!.contains("/usr/liplum/soundpack/1.wav"));
       final restored = Converter.fromJson<List>(res);
-      assert(restored!=null);
+      assert(restored != null);
       assert(restored![1] is LocalSoundFile);
       assert((restored![1] as LocalSoundFile).localPath == "/usr/liplum/soundpack/1.wav");
+    });
+    test("migration", () {
+      const json =
+          '[{"pathInAssets":"default/1.wav","@type":"calcupiano.BundledSoundFile","@version":1},{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}]';
+      initConverter();
+      Converter.registerMigration("calcupiano.BundledSoundFile", (origin, oldVersion) {
+        if (oldVersion == 1) {
+          origin["pathInAssets"] = "MIGRATED";
+        }
+        return origin;
+      });
+      final restored = Converter.fromJson<List>(json);
+      assert(restored != null);
+      assert(restored![0] is BundledSoundFile);
+      assert((restored![0] as BundledSoundFile).pathInAssets == "MIGRATED");
     });
   });
 }
