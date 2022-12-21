@@ -28,9 +28,7 @@ class Converter {
   static const JsonCodec _jsonCodec = JsonCodec(reviver: _reviver, toEncodable: _toEncodable);
 
   static Object? _reviver(Object? key, Object? value) {
-    if (value is! Map) {
-      return value;
-    } else {
+    if (value is Map) {
       final type = value[_K.type];
       final fromFunc = _typeName2FromJson[type];
       if (fromFunc == null) {
@@ -44,6 +42,8 @@ class Converter {
         }
       }
       return fromFunc(value as Map<String, dynamic>);
+    } else {
+      return value;
     }
   }
 
@@ -74,8 +74,14 @@ class Converter {
   static String? toJson<T>(T obj) {
     try {
       return _jsonCodec.encode(obj);
-    } catch (e) {
-      Log.e("Failed to convert $T to json", e);
+    } on JsonUnsupportedObjectError catch (e) {
+      Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
+      return null;
+    } on Error catch (e) {
+      Log.e("Failed to convert $T to json", e, e.stackTrace);
+      return null;
+    } catch (any, stacktrace) {
+      Log.e("Failed to convert $T to json", any, stacktrace);
       return null;
     }
   }
@@ -85,8 +91,48 @@ class Converter {
     if (json == null) return null;
     try {
       return _jsonCodec.decode(json) as T?;
-    } catch (e) {
-      Log.e("Failed to convert json to $T", e);
+    } on JsonUnsupportedObjectError catch (e) {
+      Log.e("Failed to convert json to $T", e.cause, e.stackTrace);
+      return null;
+    } on Error catch (e) {
+      Log.e("Failed to convert json to $T", e, e.stackTrace);
+      return null;
+    } catch (any, stacktrace) {
+      Log.e("Failed to convert json to $T", any, stacktrace);
+      return null;
+    }
+  }
+
+  static T? fromUntypedJson<T>(String? json, T Function(Map<String, dynamic> json) fromJson) {
+    if (json == null) return null;
+    try {
+      final jObj = jsonDecode(json);
+      return fromJson(jObj);
+    } on JsonUnsupportedObjectError catch (e) {
+      Log.e("Failed to convert json to $T", e.cause, e.stackTrace);
+      return null;
+    } on Error catch (e) {
+      Log.e("Failed to convert json to $T", e, e.stackTrace);
+      return null;
+    } catch (any, stacktrace) {
+      Log.e("Failed to convert json to $T", any, stacktrace);
+      return null;
+    }
+  }
+
+  static String? toUntypedJson<T>(T? obj, Map<String, dynamic> Function(T obj) toJson) {
+    if (obj == null) return null;
+    try {
+      final jObj = toJson(obj);
+      return jsonEncode(jObj);
+    } on JsonUnsupportedObjectError catch (e) {
+      Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
+      return null;
+    } on Error catch (e) {
+      Log.e("Failed to convert $T to json", e, e.stackTrace);
+      return null;
+    } catch (any, stacktrace) {
+      Log.e("Failed to convert $T to json", any, stacktrace);
       return null;
     }
   }

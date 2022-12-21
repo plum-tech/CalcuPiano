@@ -1,4 +1,6 @@
+import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/platform/platform.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -15,10 +17,10 @@ class H {
 
   /// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
   /// see [K], application-wide.
-  static late final Box<dynamic> box;
+  static late Box<dynamic> box;
 
   /// [SoundpackStorage] contains all external soundpacks.
-  static late final SoundpackStorage soundpacks;
+  static late SoundpackStorage soundpacks;
 
   static String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
 
@@ -64,6 +66,19 @@ class SoundpackStorage {
     if (json != null) {
       soundpacks.put(soundpack.id, json);
     }
+  }
+
+  void addSoundpack(ExternalSoundpackProtocol soundpack) {
+    setSoundpackById(soundpack);
+    final idList = H.customSoundpackIdList ?? [];
+    idList.add(soundpack.id);
+    H.customSoundpackIdList = idList;
+  }
+
+  void removeSoundpackById(String id) {
+    final idList = H.customSoundpackIdList ?? [];
+    idList.remove(id);
+    H.customSoundpackIdList = idList;
   }
 
   ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);

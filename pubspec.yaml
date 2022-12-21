@@ -56,6 +56,9 @@ dependencies:
   pull_down_button: ^0.4.1
   archive: ^3.3.5
   loading_animation_widget: ^1.2.0+4
+  collection: ^1.17.0
+  path: ^1.8.3
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:

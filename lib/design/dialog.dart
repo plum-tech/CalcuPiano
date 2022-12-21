@@ -105,7 +105,7 @@ extension DialogEx on BuildContext {
   }
 
   Future<void> showWaiting({
-    required Future<void> after,
+    required Future<void> until,
     required String title,
     bool serious = false,
   }) async {
@@ -126,7 +126,7 @@ extension DialogEx on BuildContext {
         ),
       ),
     );
-    await after;
+    await until;
     isWaiting = false;
     navigator.pop();
     return;

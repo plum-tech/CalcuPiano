@@ -103,7 +103,7 @@ class _PianoKeyState extends State<PianoKey> {
 
   Widget buildKey(BuildContext context) {
     return AutoSizeText(
-      note.name,
+      note.numberedText,
       style: TextStyle(fontSize: 24),
     ).center().inCard().gestureDetect(onTapDown: (_) async {
       await playSound();

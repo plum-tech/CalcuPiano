@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:calcupiano/design/dialog.dart';
+
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
-import 'package:calcupiano/ui/import.dart';
+import 'package:calcupiano/ui/actions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -83,10 +81,12 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['zip'],
+      withData: true,
     );
     final path = result?.files.single.path;
     if (path != null) {
-      await context.showWaiting(after: Future.delayed(Duration(seconds: 5)),title: "Waiting");
+      if (!mounted) return;
+      await context.showWaiting(until: importSoundpackFromFile(path), title: "Processing");
     }
   }
 
@@ -111,7 +111,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
             soundpack: builtinList[index],
           );
         } else {
-          return CustomSoundpackItem(id: customList[index - builtinList.length - 1]);
+          return CustomSoundpackItem(id: customList[index - builtinList.length]);
         }
       },
     );
@@ -226,14 +226,17 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
                     },
                   ),
                 CupertinoContextMenuAction(
+                  trailingIcon: CupertinoIcons.pencil,
+                  child: "Edit".text(),
+                ),
+                CupertinoContextMenuAction(
                   trailingIcon: CupertinoIcons.delete,
                   isDestructiveAction: true,
                   child: "Delete".text(),
-                ),
-                CupertinoContextMenuAction(
-                  trailingIcon: CupertinoIcons.pencil,
-                  isDestructiveAction: true,
-                  child: "Edit".text(),
+                  onPressed: () {
+                    context.navigator.pop();
+                    H.soundpacks.removeSoundpackById(soundpack.id);
+                  },
                 ),
               ],
               builder: (ctx, anim) {
@@ -244,20 +247,62 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
 
   @ListenTo([K.currentSoundpackID])
   Widget buildCard(BuildContext ctx, bool isSelected, ExternalSoundpackProtocol soundpack) {
+    if (soundpack is LocalSoundpack) {
+      return buildLocalSoundpackCard(ctx, isSelected, soundpack);
+    } else if (soundpack is UrlSoundpack) {
+      return buildUrlSoundpackCard(ctx, isSelected, soundpack);
+    } else {
+      return buildNeverSoundpackCard(ctx);
+    }
+  }
+
+  @ListenTo([K.currentSoundpackID])
+  Widget buildLocalSoundpackCard(BuildContext ctx, bool isSelected, LocalSoundpack soundpack) {
     return ListTile(
       leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
       selected: isSelected,
       titleTextStyle: ctx.textTheme.headlineSmall,
-      //title: soundpack.name.text(),
-      // subtitle: soundpack.description.text(),
+      title: (soundpack.meta.name ?? "No Name").text(),
+      subtitle: (soundpack.meta.description ?? "No Info").text(),
+      trailing: Icon(Icons.navigate_next_rounded),
+    ).inCard();
+  }
+
+  @ListenTo([K.currentSoundpackID])
+  Widget buildUrlSoundpackCard(BuildContext ctx, bool isSelected, UrlSoundpack soundpack) {
+    return ListTile(
+      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
+      selected: isSelected,
+      titleTextStyle: ctx.textTheme.headlineSmall,
+      title: (soundpack.meta.name ?? "No Name").text(),
+      subtitle: (soundpack.meta.description ?? "No Info").text(),
+      trailing: Icon(Icons.navigate_next_rounded),
+    ).inCard();
+  }
+
+  @ListenTo([K.currentSoundpackID])
+  Widget buildNeverSoundpackCard(BuildContext ctx) {
+    return ListTile(
+      leading: Icon(Icons.question_mark_rounded, size: _iconSize),
+      titleTextStyle: ctx.textTheme.headlineSmall,
+      title: "What is thi?".text(),
+      subtitle: "Why can you find this?".text(),
       trailing: Icon(Icons.navigate_next_rounded),
     ).inCard();
   }
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
-    return ListTile(
-      leading: Icon(Icons.sentiment_very_dissatisfied_outlined),
-      title: "Corrupted Soundpack".text(),
+    return Dismissible(
+      key: ValueKey(widget.id),
+      direction: DismissDirection.horizontal,
+      onDismissed: (dir) {
+        H.soundpacks.removeSoundpackById(widget.id);
+      },
+      child: ListTile(
+        leading: Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
+        title: "A Corrupted Soundpack".text(),
+        subtitle: "Sorry, please swipe to delete this".text(),
+      ).inCard(),
     );
   }
 }

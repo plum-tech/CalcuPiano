@@ -4,6 +4,8 @@ import 'package:calcupiano/r.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../platform/platform.dart';
+
 part 'soundpack.g.dart';
 
 abstract class SoundpackProtocol {
@@ -28,7 +30,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.path}");
+    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.id}.wav");
   }
 }
 
@@ -50,8 +52,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    final dir = await getApplicationSupportDirectory();
-    return LocalSoundFile(localPath: "${dir.path}/${R.customSoundpackDir}/$id/${note.path}");
+    return LocalSoundFile(localPath: joinPath(R.soundpacksRootDir, uuid, note.id + ".wav"));
   }
 
   factory LocalSoundpack.fromJson(Map<String, dynamic> json) => _$LocalSoundpackFromJson(json);
@@ -111,7 +112,8 @@ extension SoundpackX on SoundpackProtocol {
 }
 
 @JsonSerializable()
-class SoundpackMeta {
+class SoundpackMeta implements Convertible {
+  static const String type = "calcupiano.SoundpackMeta";
   @JsonKey()
   String? name;
   @JsonKey()
@@ -128,4 +130,10 @@ class SoundpackMeta {
   factory SoundpackMeta.fromJson(Map<String, dynamic> json) => _$SoundpackMetaFromJson(json);
 
   Map<String, dynamic> toJson() => _$SoundpackMetaToJson(this);
+
+  @override
+  String get typeName => type;
+
+  @override
+  int get version => 1;
 }

@@ -8,9 +8,8 @@ A soundpack is a normal zip.
 
 ### Structure
 
-#### Fully-functioning
-
-A fully-functioning soundpack must have a `sounds/` directory, including all notes.
+A soundpack should have a `sounds/` directory, including all notes. 
+If not, all notes should be exposed in the root.
 
 It could have a `sheets/` directory that consists of the built-in sheet music of this soundpack.
 
@@ -43,20 +42,7 @@ MySoundpack.zip/  # Any name you want
     preview.png # Optional
     soundpack.json # Essential
 ```
-
-- `sounds/` directory and the audio files are indispensable, and the names cannot be wrong.
-
-- `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
-  in the `Sheets` page. Users can also check which soundpack they come from in the `Soundpack` page.
-
-#### Simple
-
-A simple soundpack must have audios of each note.
-
-The `icon.png`, `preview.png` and `soundpack.json` are optional.
-
-It should be:
-
+OR
 ```
 MySoundpack.zip/  # Any name you want
     1.wav  # Fixed name
@@ -75,14 +61,19 @@ MySoundpack.zip/  # Any name you want
     plus.wav
     icon.png  # Optional
     preview.png # Optional
-    soundpack.json  # Optional
+    soundpack.json # Essential
 ```
+
+- `sounds/` directory and the audio files are indispensable, and the names cannot be wrong.
+
+- `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
+  in the `Sheets` page. Users can also check which soundpack they come from in the `Soundpack` page.
 
 ### MetaData
 
 `soundpack.json` contains the metadata of a soundpack.
 
-It's worth noting that it's optional in a [Simple Soundpack](#Simple), so the design should take
+It's worth noting that it's optional in a simple soundpack, so the design should take
 the *placeholders* into account. Also, the authors may not fully use the metadata, for example,
 omit some unnecessary properties, like `url`. Meanwhile, the internationalization support is
 considerate. Therefore, the properties should have a default value and should be checked each time
