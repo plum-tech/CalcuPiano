@@ -28,7 +28,7 @@ class R {
   static String genBuiltinSoundpackId(String name) => "$builtSoundpackIdNs.$name";
   static List<String> supportedAudioFormat = const [
     "wav",
-    "mp3",
+    "ogg",
   ];
 
   static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;

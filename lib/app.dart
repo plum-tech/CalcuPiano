@@ -1,7 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';

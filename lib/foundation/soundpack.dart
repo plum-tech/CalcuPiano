@@ -44,6 +44,8 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
 
+  Map<Note, LocalSoundFile> note2Files = {};
+
   LocalSoundpack(this.uuid, this.meta);
 
   /// The ID is generated
@@ -52,6 +54,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
+    // TODO: Read LocalSoundFile from storage.
     return LocalSoundFile(localPath: joinPath(R.soundpacksRootDir, uuid, note.id + ".wav"));
   }
 

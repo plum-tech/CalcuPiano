@@ -21,30 +21,6 @@ It should be:
 
 ```
 MySoundpack.zip/  # Any name you want
-    sounds/
-        1.wav  # Fixed name
-        2.wav
-        3.wav
-        4.wav
-        5.wav
-        6.wav
-        7.wav
-        8.wav
-        9.wav
-        div.wav
-        eq.wav
-        minus.wav
-        mul.wav
-        plus.wav
-    sheets/
-        MySheetMusic.txt  # Any name you want
-    icon.png  # Optional
-    preview.png # Optional
-    soundpack.json # Essential
-```
-OR
-```
-MySoundpack.zip/  # Any name you want
     1.wav  # Fixed name
     2.wav
     3.wav
@@ -59,12 +35,12 @@ MySoundpack.zip/  # Any name you want
     minus.wav
     mul.wav
     plus.wav
+    sheets/
+        MySheetMusic.txt  # Any name you want
     icon.png  # Optional
     preview.png # Optional
     soundpack.json # Essential
 ```
-
-- `sounds/` directory and the audio files are indispensable, and the names cannot be wrong.
 
 - `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
   in the `Sheets` page. Users can also check which soundpack they come from in the `Soundpack` page.
