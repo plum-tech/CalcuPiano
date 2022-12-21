@@ -1,5 +1,6 @@
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 class R {
@@ -7,6 +8,7 @@ class R {
 
   static final version = Version(0, 0, 1);
   static late final String appDir;
+  static PackageInfo? pkgInfo;
 
   /// The soundpack directory under `assets` directory.
   static const assetsSoundpackDir = "soundpack";
