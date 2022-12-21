@@ -71,23 +71,6 @@ class Converter {
     _migrations[typeName] = migration;
   }
 
-  static Map<String, dynamic>? toJsonObj<T extends Convertible>(T obj) {
-    final toJson = _typeName2ToJson[obj.typeName];
-    if (toJson == null) {
-      return null;
-    }
-    final dynamic jObj;
-    try {
-      jObj = toJson(obj);
-    } catch (e) {
-      Log.wtf("Failed to convert $T object to json???", e);
-      return null;
-    }
-    jObj[_K.type] = obj.typeName;
-    jObj[_K.version] = obj.version;
-    return jObj;
-  }
-
   static String? toJson<T>(T obj) {
     try {
       return _jsonCodec.encode(obj);

@@ -135,15 +135,12 @@ class CustomSoundpackItem extends StatefulWidget {
 }
 
 class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
-  LocalSoundpack? _soundpack;
+  ExternalSoundpackProtocol? _soundpack;
 
   @override
   void initState() {
     super.initState();
-    final restored = H.soundpacks.getSoundpackById(widget.id) as LocalSoundpack?;
-    if (restored == null) {
-      _soundpack = restored;
-    }
+    _soundpack = H.soundpacks.getSoundpackById(widget.id);
   }
 
   @override
@@ -157,7 +154,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
   }
 
   @ListenTo([K.currentSoundpackID])
-  Widget buildCardWithContextMenu(BuildContext ctx, LocalSoundpack soundpack) {
+  Widget buildCardWithContextMenu(BuildContext ctx, ExternalSoundpackProtocol soundpack) {
     return H.listenToCurrentSoundpackID() <<
         (ctx, _, __) {
           final isSelected = H.currentSoundpackID == soundpack.id;
@@ -190,7 +187,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
   }
 
   @ListenTo([K.currentSoundpackID])
-  Widget buildCard(BuildContext ctx, bool isSelected, LocalSoundpack soundpack) {
+  Widget buildCard(BuildContext ctx, bool isSelected, ExternalSoundpackProtocol soundpack) {
     return ListTile(
       leading: isSelected ? Icon(Icons.done, size: 36) : null,
       selected: isSelected,

@@ -17,7 +17,7 @@ class H {
   /// see [K], application-wide.
   static late final Box<dynamic> box;
 
-  /// [SoundpackStorage] contains all custom soundpacks, including copies.
+  /// [SoundpackStorage] contains all external soundpacks.
   static late final SoundpackStorage soundpacks;
 
   static String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
@@ -54,12 +54,16 @@ class SoundpackStorage {
 
   const SoundpackStorage(this.soundpacks);
 
-  SoundpackProtocol? getSoundpackById(String id) {
+  ExternalSoundpackProtocol? getSoundpackById(String id) {
     final json = soundpacks.get(id);
-    if (json == null) {
-      return null;
+    return Converter.fromJson<ExternalSoundpackProtocol>(json);
+  }
+
+  void setSoundpackById(ExternalSoundpackProtocol soundpack) {
+    final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
+    if (json != null) {
+      soundpacks.put(soundpack.id, json);
     }
-    return Converter.fromJson<SoundpackProtocol>(json);
   }
 
   ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);

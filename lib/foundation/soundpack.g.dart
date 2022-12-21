@@ -9,20 +9,24 @@ part of 'soundpack.dart';
 LocalSoundpack _$LocalSoundpackFromJson(Map<String, dynamic> json) =>
     LocalSoundpack(
       json['uuid'] as String,
+      SoundpackMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LocalSoundpackToJson(LocalSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
+      'meta': instance.meta,
     };
 
 UrlSoundpack _$UrlSoundpackFromJson(Map<String, dynamic> json) => UrlSoundpack(
       json['uuid'] as String,
+      SoundpackMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UrlSoundpackToJson(UrlSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
+      'meta': instance.meta,
     };
 
 SoundpackMeta _$SoundpackMetaFromJson(Map<String, dynamic> json) =>

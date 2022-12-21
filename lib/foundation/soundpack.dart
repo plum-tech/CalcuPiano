@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -33,13 +32,17 @@ class BuiltinSoundpack implements SoundpackProtocol {
   }
 }
 
+abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {}
+
 @JsonSerializable()
-class LocalSoundpack implements SoundpackProtocol, Convertible {
+class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
+  @JsonKey()
+  SoundpackMeta meta;
 
-  LocalSoundpack(this.uuid);
+  LocalSoundpack(this.uuid, this.meta);
 
   /// The ID is generated
   @override
@@ -63,12 +66,14 @@ class LocalSoundpack implements SoundpackProtocol, Convertible {
 }
 
 @JsonSerializable()
-class UrlSoundpack implements SoundpackProtocol, Convertible {
+class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
+  @JsonKey()
+  SoundpackMeta meta;
 
-  UrlSoundpack(this.uuid);
+  UrlSoundpack(this.uuid, this.meta);
 
   /// The ID is generated
   @override
