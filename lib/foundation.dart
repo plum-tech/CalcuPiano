@@ -1,19 +1,15 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/converter.dart';
-import 'package:calcupiano/impl/soundpack.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
-import 'package:rettulf/rettulf.dart';
-export 'package:audioplayers/audioplayers.dart';
-export 'package:flutter/cupertino.dart';
-export 'package:flutter/services.dart';
 
-part 'foundation/soundpack.dart';
-
-part 'foundation/music.dart';
-
-part 'foundation/page.dart';
+export 'package:calcupiano/converter.dart';
+import 'foundation/sound_file.dart';
+import 'foundation/soundpack.dart';
+import 'foundation/music.dart';
+import 'foundation/page.dart';
+export 'foundation/soundpack.dart';
+export 'foundation/music.dart';
+export 'foundation/page.dart';
+export 'foundation/sound_file.dart';
 
 // ignore: non_constant_identifier_names
 final Log = Logger();

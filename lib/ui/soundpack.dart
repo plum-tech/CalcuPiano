@@ -2,11 +2,11 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
 import '../db.dart';
-import '../impl/soundpack.dart';
 
 class SoundpackPage extends StatefulWidget {
   const SoundpackPage({super.key});
@@ -26,9 +26,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         actions: [
           CupertinoButton(
             child: "Import".text(),
-            onPressed: () {
-
-            },
+            onPressed: () {},
           )
         ],
       ),
@@ -197,8 +195,8 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       leading: isSelected ? Icon(Icons.done, size: 36) : null,
       selected: isSelected,
       titleTextStyle: ctx.textTheme.headlineSmall,
-      title: soundpack.name.text(),
-      subtitle: soundpack.description.text(),
+      //title: soundpack.name.text(),
+      // subtitle: soundpack.description.text(),
       trailing: Icon(Icons.navigate_next_rounded),
     ).inCard();
   }

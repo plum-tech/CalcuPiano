@@ -20,7 +20,7 @@ class KeyAutoWillPressEvent {
 }
 
 class SoundpackChangeEvent {
-  final Soundpack newSoundpack;
+  final SoundpackProtocol newSoundpack;
 
   const SoundpackChangeEvent(this.newSoundpack);
 }

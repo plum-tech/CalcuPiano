@@ -1,8 +1,6 @@
 import 'package:calcupiano/foundation.dart';
 import 'package:version/version.dart';
 
-import 'impl/soundpack.dart';
-
 class R {
   R._();
 

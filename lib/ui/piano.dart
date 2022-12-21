@@ -7,8 +7,6 @@ import '../db.dart';
 import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../impl/soundpack.dart';
-
 class PianoKeyboard extends StatefulWidget {
   const PianoKeyboard({super.key});
 
@@ -82,7 +80,7 @@ class PianoKey extends StatefulWidget {
 
 class _PianoKeyState extends State<PianoKey> {
   Note get note => widget.note;
-  Soundpack _soundpack = R.defaultSoundpack;
+  SoundpackProtocol _soundpack = R.defaultSoundpack;
 
   @override
   void initState() {
@@ -105,7 +103,7 @@ class _PianoKeyState extends State<PianoKey> {
 
   Widget buildKey(BuildContext context) {
     return AutoSizeText(
-      note.number,
+      note.name,
       style: TextStyle(fontSize: 24),
     ).center().inCard().gestureDetect(onTapDown: (_) async {
       await playSound();

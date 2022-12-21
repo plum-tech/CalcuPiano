@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'soundpack.dart';
+part of 'sound_file.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -8,33 +8,31 @@ part of 'soundpack.dart';
 
 BundledSoundFile _$BundledSoundFileFromJson(Map<String, dynamic> json) =>
     BundledSoundFile(
-      path: json['path'] as String,
+      pathInAssets: json['pathInAssets'] as String,
     );
 
 Map<String, dynamic> _$BundledSoundFileToJson(BundledSoundFile instance) =>
     <String, dynamic>{
-      'path': instance.path,
+      'pathInAssets': instance.pathInAssets,
     };
 
 LocalSoundFile _$LocalSoundFileFromJson(Map<String, dynamic> json) =>
     LocalSoundFile(
-      path: json['path'] as String,
+      localPath: json['localPath'] as String,
     );
 
 Map<String, dynamic> _$LocalSoundFileToJson(LocalSoundFile instance) =>
     <String, dynamic>{
-      'path': instance.path,
+      'localPath': instance.localPath,
     };
 
-LocalSoundpack _$LocalSoundpackFromJson(Map<String, dynamic> json) =>
-    LocalSoundpack(
-      json['uuid'] as String,
-      json['name'] as String,
-    )..description = json['description'] as String;
+UrlSoundFile _$UrlSoundFileFromJson(Map<String, dynamic> json) => UrlSoundFile(
+      url: json['url'] as String,
+      md5: json['md5'] as String,
+    );
 
-Map<String, dynamic> _$LocalSoundpackToJson(LocalSoundpack instance) =>
+Map<String, dynamic> _$UrlSoundFileToJson(UrlSoundFile instance) =>
     <String, dynamic>{
-      'uuid': instance.uuid,
-      'name': instance.name,
-      'description': instance.description,
+      'url': instance.url,
+      'md5': instance.md5,
     };
