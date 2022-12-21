@@ -136,4 +136,5 @@ class Converter {
       return null;
     }
   }
+  static dynamic directConvertFunc(dynamic any) => any;
 }

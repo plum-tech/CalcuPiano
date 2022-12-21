@@ -30,7 +30,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.id}.wav");
+    return BundledSoundFile(pathInAssets: joinPath(R.assetsSoundpackDir, name, "${note.id}.wav"));
   }
 }
 
@@ -41,7 +41,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
-  @JsonKey()
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
 
   LocalSoundpack(this.uuid, this.meta);
@@ -71,7 +71,7 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
-  @JsonKey()
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
 
   UrlSoundpack(this.uuid, this.meta);
@@ -97,16 +97,14 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
 }
 
 extension SoundpackX on SoundpackProtocol {
-  static Future<SoundpackProtocol?> resolve({
+  static Future<SoundpackProtocol> resolve({
     required String id,
   }) async {
     final builtin = R.id2BuiltinSoundpacks[id];
     if (builtin != null) {
       return builtin;
     } else {
-      return R.defaultSoundpack;
-      // TODO: Read from storage.
-      // return H.soundpacks.getSoundpackById(id);
+      return H.soundpacks.getSoundpackById(id) ?? R.defaultSoundpack;
     }
   }
 }

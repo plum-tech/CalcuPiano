@@ -18,11 +18,11 @@ void main() async {
   H.box = settingsBox;
   H.soundpacks = SoundpackStorage(soundpackBox);
   initFoundation();
+  initEssential();
   EventHandler.init();
-  _initEssential();
   runApp(const CalcuPianoApp());
 }
 
-Future<void> _initEssential() async {
-  H.currentSoundpackID = R.defaultSoundpack.id;
+Future<void> initEssential() async {
+  H.ensureCurrentSoundpackIdValid();
 }
