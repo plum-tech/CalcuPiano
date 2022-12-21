@@ -20,8 +20,6 @@ extension BuildContextDesignX on BuildContext {
   bool get isCupertino => !isMaterial;
 }
 
-const _kDialogAlpha = 0.89;
-
 extension $BuildContextEx$ on BuildContext {
   Future<T?> show$Dialog$<T>({
     required WidgetBuilder make,
@@ -79,7 +77,7 @@ class $Action$ {
 
 class $Dialog$ extends StatelessWidget {
   final String? title;
-  final $Action$ primary;
+  final $Action$? primary;
   final $Action$? secondary;
 
   /// Highlight the title
@@ -89,8 +87,8 @@ class $Dialog$ extends StatelessWidget {
   const $Dialog$({
     super.key,
     this.title,
-    required this.primary,
     required this.make,
+    this.primary,
     this.secondary,
     this.serious = false,
   });
@@ -99,6 +97,7 @@ class $Dialog$ extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget dialog;
     final second = secondary;
+    final first = primary;
     if (context.isCupertino) {
       dialog = CupertinoAlertDialog(
         title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? context.$red$ : null)),
@@ -113,68 +112,47 @@ class $Dialog$ extends StatelessWidget {
               },
               child: second.text.text(),
             ),
-          CupertinoDialogAction(
-            isDestructiveAction: primary.warning,
-            isDefaultAction: primary.isDefault,
-            onPressed: () {
-              primary.onPressed?.call();
-            },
-            child: primary.text.text(),
-          )
+          if (first != null)
+            CupertinoDialogAction(
+              isDestructiveAction: first.warning,
+              isDefaultAction: first.isDefault,
+              onPressed: () {
+                first.onPressed?.call();
+              },
+              child: primary.text.text(),
+            )
         ],
       );
     } else {
-      const radius = Radius.circular(24.0);
-      // For other platform
-      dialog = Dialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(radius)),
-        backgroundColor: context.theme.dialogBackgroundColor.withOpacity(_kDialogAlpha),
-        child: Builder(
-          builder: (ctx) {
-            final fullSize = ctx.mediaQuery.size;
-            final maxW = fullSize.width * 0.7;
-            final minH = fullSize.height * 0.3;
-            return [
-              if (title != null)
-                [
-                  title
-                      .text(style: context.textTheme.headlineSmall?.copyWith(color: serious ? context.$red$ : null))
-                      .center()
-                      .constrained(minW: maxW, minH: minH * 0.2),
-                  const Divider(thickness: 2),
-                ].column(),
-              make(context),
-              [
-                if (second != null)
-                  TextButton(
-                    onPressed: () {
-                      second.onPressed?.call();
-                    },
-                    child: second.text.text(
-                      style: TextStyle(
-                        color: second.warning ? context.$red$ : null,
-                        fontWeight: second.isDefault ? FontWeight.w600 : null,
-                      ),
-                    ),
+      dialog = AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
+        title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? context.$red$ : null)),
+        content: make(context),
+        actions: [
+          if (second != null)
+            TextButton(
+              onPressed: () {
+                second.onPressed?.call();
+              },
+              child: second.text.text(
+                style: TextStyle(
+                  color: second.warning ? context.$red$ : null,
+                  fontWeight: second.isDefault ? FontWeight.w600 : null,
+                ),
+              ),
+            ),
+          if (first != null)
+            TextButton(
+                onPressed: () {
+                  first.onPressed?.call();
+                },
+                child: primary.text.text(
+                  style: TextStyle(
+                    color: first.warning ? context.$red$ : null,
+                    fontWeight: first.isDefault ? FontWeight.w600 : null,
                   ),
-                TextButton(
-                    onPressed: () {
-                      primary.onPressed?.call();
-                    },
-                    child: primary.text.text(
-                      style: TextStyle(
-                        color: primary.warning ? context.$red$ : null,
-                        fontWeight: primary.isDefault ? FontWeight.w600 : null,
-                      ),
-                    )),
-              ].row(maa: MainAxisAlignment.spaceEvenly).container(
-                      decoration: BoxDecoration(
-                    color: ctx.theme.primaryColor,
-                    borderRadius: const BorderRadius.only(bottomLeft: radius, bottomRight: radius),
-                  )),
-            ].column(mas: MainAxisSize.min, maa: MainAxisAlignment.spaceBetween).constrained(maxW: maxW, minH: minH);
-          },
-        ),
+                ))
+        ],
       );
     }
     return dialog;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rettulf/rettulf.dart';
 
 import '../foundation.dart';
 
@@ -13,6 +14,14 @@ class ImportSoundpackPage extends StatefulWidget {
 class _ImportSoundpackPageState extends State<ImportSoundpackPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return buildMain(context);
+  }
+
+  Widget buildMain(BuildContext ctx) {
+    return Scaffold(
+      appBar: AppBar(
+        title: "AA".text(),
+      ),
+    );
   }
 }

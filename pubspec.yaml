@@ -53,6 +53,9 @@ dependencies:
   version: ^3.0.2
   logger: ^1.1.0
   file_picker: ^5.2.4
+  pull_down_button: ^0.4.1
+  archive: ^3.3.5
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_test:

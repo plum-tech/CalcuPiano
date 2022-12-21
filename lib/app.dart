@@ -43,8 +43,8 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       child: Consumer<CalcuPianoThemeModel>(
         builder: (_, model, __) {
           return MaterialApp(
-            theme: bakeTheme(ThemeData.light(), model.data),
-            darkTheme: bakeTheme(ThemeData.dark(), model.data),
+            theme: bakeTheme(context, ThemeData.light(), model.data),
+            darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
             themeMode: model.resolveThemeMode(),
             home: const CalcuPianoHomePage(),
           );
@@ -53,13 +53,14 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
     );
   }
 
-  ThemeData bakeTheme(ThemeData raw, CalcuPianoThemeData theme) {
+  ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent), //the outline color
             borderRadius: BorderRadius.all(Radius.circular(16))),
       ),
+      appBarTheme: const AppBarTheme(elevation: 0),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
       // TODO: Temporarily debug Visual effects on iOS.
@@ -143,9 +144,8 @@ class HomePortrait extends HookWidget {
 
   Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: ctx.isCupertino,
-        leading: IconButton(
+      body: [
+        IconButton(
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
             progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
@@ -159,19 +159,18 @@ class HomePortrait extends HookWidget {
               });
             }
           },
-        ),
-        title: "Calcu Piano".text(),
-      ),
-      body: [
-        const Screen().expanded(),
-        // Why doesn't the constraint apply on this?
-        const PianoKeyboard().expanded(),
-      ]
-          .column(
-            mas: MainAxisSize.min,
-            maa: MainAxisAlignment.center,
-          )
-          .safeArea(),
+        ).safeArea(),
+        [
+          const Screen().expanded(),
+          // Why doesn't the constraint apply on this?
+          const PianoKeyboard().expanded(),
+        ]
+            .column(
+              mas: MainAxisSize.min,
+              maa: MainAxisAlignment.center,
+            )
+            .safeArea()
+      ].stack(),
     );
   }
 }

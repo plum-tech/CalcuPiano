@@ -25,6 +25,10 @@ class CalcuPianoThemeData {
   }
 }
 
+extension CalcuPianoThemeDataX on CalcuPianoThemeData {
+  bool get isDarkMode => brightness == Brightness.dark;
+}
+
 class CalcuPianoThemeModel with ChangeNotifier {
   CalcuPianoThemeData _data;
 

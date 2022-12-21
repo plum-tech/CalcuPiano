@@ -43,9 +43,10 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
 
   Widget buildSettings(BuildContext ctx) {
     final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
-
+    final theme = SettingsThemeData(settingsListBackground: ctx.theme.canvasColor);
     return SettingsList(
-      //platform: DevicePlatform.iOS,
+      lightTheme: theme,
+      darkTheme: theme,
       sections: [
         SettingsSection(
           title: Text('Common'),

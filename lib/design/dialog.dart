@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:rettulf/rettulf.dart';
 
 import 'multiplatform.dart';
@@ -14,8 +15,10 @@ extension DialogEx on BuildContext {
     required String ok,
     bool highlight = false,
     bool serious = false,
+    bool dismissible = true,
   }) async {
     return showAnyTip(
+      dismissible: dismissible,
       title: title,
       make: (_) => desc.text(style: const TextStyle()),
       ok: ok,
@@ -30,8 +33,10 @@ extension DialogEx on BuildContext {
     required String ok,
     bool highlight = false,
     bool serious = false,
+    bool dismissible = true,
   }) async {
     final dynamic confirm = await show$Dialog$(
+      dismissible: dismissible,
       make: (ctx) => $Dialog$(
           title: title,
           serious: serious,
@@ -54,8 +59,10 @@ extension DialogEx on BuildContext {
     required String no,
     bool highlight = false,
     bool serious = false,
+    bool dismissible = true,
   }) async {
     return await showAnyRequest(
+      dismissible: dismissible,
       title: title,
       make: (_) => desc.text(style: const TextStyle()),
       yes: yes,
@@ -72,8 +79,10 @@ extension DialogEx on BuildContext {
     required String no,
     bool highlight = false,
     bool serious = false,
+    bool dismissible = true,
   }) async {
     return await show$Dialog$(
+      dismissible: dismissible,
       make: (ctx) => $Dialog$(
         title: title,
         serious: serious,
@@ -93,5 +102,33 @@ extension DialogEx on BuildContext {
         ),
       ),
     );
+  }
+
+  Future<void> showWaiting({
+    required Future<void> after,
+    required String title,
+    bool serious = false,
+  }) async {
+    bool isWaiting = true;
+    show$Dialog$(
+      dismissible: false,
+      make: (ctx) => WillPopScope(
+        onWillPop: () async {
+          return !isWaiting;
+        },
+        child: $Dialog$(
+          title: title,
+          serious: serious,
+          make: (_) => LoadingAnimationWidget.beat(
+            color: theme.primaryColor,
+            size: 64,
+          ).padAll(24),
+        ),
+      ),
+    );
+    await after;
+    isWaiting = false;
+    navigator.pop();
+    return;
   }
 }

@@ -1,14 +1,22 @@
+import 'dart:io';
+
 import 'package:calcupiano/design/dialog.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/ui/import.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
 
 import '../db.dart';
+
+const double _iconSize = 36;
 
 class SoundpackPage extends StatefulWidget {
   const SoundpackPage({super.key});
@@ -26,18 +34,60 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         title: "Soundpack".text(),
         centerTitle: context.isCupertino,
         actions: [
-          CupertinoButton(
-            child: "Import".text(),
-            onPressed: () async{
-              //await context.showTip(title: "AAA",desc: "AAA",ok: "AAA");
-              await context.showRequest(title: "AAA",desc: "AAA",yes: "AAA",no:"BBB");
-              //context.navigator.push(MaterialPageRoute(builder: (_) => const ImportSoundpackPage()));
-            },
+          PullDownButton(
+            itemBuilder: (context) => [
+              PullDownMenuItem(
+                icon: Icons.create,
+                title: 'Create Soundpack',
+                onTap: () {},
+              ),
+              const PullDownMenuDivider(),
+              PullDownMenuTitle(
+                title: "Import Soundpack".text(),
+              ),
+              PullDownMenuActionsRow.medium(
+                items: [
+                  PullDownMenuItem(
+                    enabled: false,
+                    onTap: () {},
+                    title: 'Link',
+                    icon: Icons.link,
+                  ),
+                  if (!kIsWeb)
+                    PullDownMenuItem(
+                      onTap: () async {
+                        await importSoundpackFromFilePicker();
+                      },
+                      title: 'Local File',
+                      icon: Icons.storage,
+                    )
+                ],
+              )
+            ],
+            position: PullDownMenuPosition.automatic,
+            buttonBuilder: (context, showMenu) => IconButton(
+              onPressed: showMenu,
+              icon: const Icon(
+                CupertinoIcons.ellipsis_circle,
+                size: 28,
+              ),
+            ),
           )
         ],
       ),
       body: buildBody(),
     );
+  }
+
+  Future<void> importSoundpackFromFilePicker() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+    );
+    final path = result?.files.single.path;
+    if (path != null) {
+      await context.showWaiting(after: Future.delayed(Duration(seconds: 5)),title: "Waiting");
+    }
   }
 
   @ListenTo([K.customSoundpackIdList])
@@ -217,10 +267,10 @@ Widget _buildSoundpackSwitchIcon(bool isSelected, SoundpackProtocol soundpack) {
     duration: const Duration(milliseconds: 500),
     switchInCurve: Curves.fastLinearToSlowEaseIn,
     child: isSelected
-        ? const Icon(Icons.done, size: 36)
+        ? const Icon(Icons.done, size: _iconSize)
         : const Icon(
             Icons.radio_button_off_rounded,
-            size: 36,
+            size: _iconSize,
           ).onTap(() {
             eventBus.fire(SoundpackChangeEvent(soundpack));
           }),
