@@ -1,8 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:calcupiano/events.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import '../R.dart';
+import '../db.dart';
 import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
+
 class PianoKeyboard extends StatefulWidget {
   const PianoKeyboard({super.key});
 
@@ -76,6 +80,21 @@ class PianoKey extends StatefulWidget {
 
 class _PianoKeyState extends State<PianoKey> {
   Note get note => widget.note;
+  SoundpackProtocol _soundpack = R.defaultSoundpack;
+
+  @override
+  void initState() {
+    super.initState();
+    final restoredId = H.currentSoundpackID;
+    if (restoredId != null) {
+      SoundpackX.resolve(id: restoredId).then((value) {
+        _soundpack = value ?? R.defaultSoundpack;
+      });
+    }
+    eventBus.on<SoundpackChangeEvent>().listen((e) {
+      _soundpack = e.newSoundpack;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +103,19 @@ class _PianoKeyState extends State<PianoKey> {
 
   Widget buildKey(BuildContext context) {
     return AutoSizeText(
-      note.number,
+      note.numberedText,
       style: TextStyle(fontSize: 24),
-    ).center().inCard().onTap(()async {
-      final player = AudioPlayer();
-      await player.setSourceAsset("soundpack/default/${note.path}.wav");
-      await player.setPlayerMode(PlayerMode.lowLatency);
-      await player.setPlaybackRate(1);
-      await player.resume();
+    ).center().inCard().gestureDetect(onTapDown: (_) async {
+      await playSound();
     });
+  }
+
+  Future<void> playSound() async {
+    final player = AudioPlayer();
+    final sound = await _soundpack.resolve(note);
+    await sound.loadInto(player);
+    //await player.setSourceAsset("soundpack/default/${note.path}");
+    await player.setPlayerMode(PlayerMode.lowLatency);
+    await player.resume();
   }
 }

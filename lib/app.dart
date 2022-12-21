@@ -1,22 +1,77 @@
+import 'package:animations/animations.dart';
+import 'package:calcupiano/design/animated.dart';
+import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
+import 'package:calcupiano/ui/settings.dart';
+import 'package:calcupiano/ui/soundpack.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class CalcuPianoApp extends StatelessWidget {
+import 'db.dart';
+import 'r.dart';
+
+class CalcuPianoApp extends StatefulWidget {
   const CalcuPianoApp({super.key});
+
+  @override
+  State<StatefulWidget> createState() => CalcuPianoAppState();
+}
+
+class CalcuPianoAppState extends State<CalcuPianoApp> {
+  bool? isDarkModeInitial;
+
+  @override
+  void initState() {
+    super.initState();
+    final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    final isSystemDarkMode = brightness == Brightness.dark;
+    isDarkModeInitial = H.isDarkMode ?? isSystemDarkMode;
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CalcuPianoThemeModel>(
+            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+      ],
+      child: Consumer<CalcuPianoThemeModel>(
+        builder: (_, model, __) {
+          return MaterialApp(
+            theme: bakeTheme(context, ThemeData.light(), model.data),
+            darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
+            themeMode: model.resolveThemeMode(),
+            home: const CalcuPianoHomePage(),
+          );
+        },
       ),
-      home: const CalcuPianoHomePage(),
+    );
+  }
+
+  ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
+    return raw.copyWith(
+      cardTheme: raw.cardTheme.copyWith(
+        shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent), //the outline color
+            borderRadius: BorderRadius.all(Radius.circular(16))),
+      ),
+      appBarTheme: const AppBarTheme(elevation: 0),
+      splashColor: theme.enableRipple ? null : Colors.transparent,
+      highlightColor: theme.enableRipple ? null : Colors.transparent,
+      // TODO: Temporarily debug Visual effects on iOS.
+      //  platform: TargetPlatform.iOS,
+      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+      }),
     );
   }
 }
@@ -31,19 +86,68 @@ class CalcuPianoHomePage extends StatefulWidget {
 class _CalcuPianoHomePageState extends State<CalcuPianoHomePage> {
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? const HomePortrait() : const HomeLandscape();
+    return context.isPortrait ? HomePortrait() : const HomeLandscape();
   }
 }
 
 class HomePortrait extends HookWidget {
-  const HomePortrait({super.key});
+  HomePortrait({super.key});
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openDrawer();
+  }
+
+  void _closeDrawer(BuildContext ctx) {
+    ctx.navigator.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = useAnimationController(duration: const Duration(milliseconds: 500));
+    final ctrl = useAnimationController(
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 500),
+    );
+    final isDrawerOpen = useState(false);
+    final fullSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+      key: _scaffoldKey,
+      drawer: CalcuPianoDrawer(
+        onCloseDrawer: () {
+          _closeDrawer(context);
+        },
+      ),
+      onDrawerChanged: (isOpened) {
+        if (!isOpened) {
+          ctrl.reverse();
+        }
+        isDrawerOpen.value = isOpened;
+      },
+      body: AnimatedScale(
+        scale: isDrawerOpen.value ? 0.96 : 1,
+        curve: Curves.fastLinearToSlowEaseIn,
+        duration: Duration(milliseconds: 1000),
+        child: [
+          buildMain(context, ctrl, isDrawerOpen.value),
+          AnimatedBlur(
+            blur: isDrawerOpen.value ? 3 : 0,
+            curve: Curves.fastLinearToSlowEaseIn,
+            duration: Duration(milliseconds: 1000),
+            child: SizedBox(
+              width: fullSize.width,
+              height: fullSize.height,
+            ),
+          ),
+        ].stack(),
+      ),
+    );
+  }
+
+  Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
+    return Scaffold(
+      body: [
+        IconButton(
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
             progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
@@ -52,22 +156,23 @@ class HomePortrait extends HookWidget {
             if (ctrl.isCompleted) {
               ctrl.reverse();
             } else {
-              ctrl.forward();
+              ctrl.forward().then((value) {
+                _openDrawer();
+              });
             }
           },
-        ),
-        title: "Calcu Piano".text(),
-      ),
-      body: [
-        const Screen().expanded(),
-        // Why doesn't the constraint apply on this?
-        const PianoKeyboard().expanded(),
-      ]
-          .column(
-            mas: MainAxisSize.min,
-            maa: MainAxisAlignment.center,
-          )
-          .safeArea(),
+        ).safeArea(),
+        [
+          const Screen().expanded(),
+          // Why doesn't the constraint apply on this?
+          const PianoKeyboard().expanded(),
+        ]
+            .column(
+              mas: MainAxisSize.min,
+              maa: MainAxisAlignment.center,
+            )
+            .safeArea()
+      ].stack(),
     );
   }
 }
@@ -108,7 +213,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
             NavigationRailDestination(
               icon: const Icon(Icons.piano_outlined),
               selectedIcon: const Icon(Icons.piano),
-              label: "Piano".text(),
+              label: "Music".text(),
             ),
             NavigationRailDestination(
               icon: const Icon(Icons.settings_outlined),
@@ -118,7 +223,10 @@ class _HomeLandscapeState extends State<HomeLandscape> {
           ],
         ),
         const VerticalDivider(thickness: 1, width: 1),
-        buildBody().safeArea().expanded(),
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          child: routePage(),
+        ).expanded(),
       ].row(),
     );
   }
@@ -128,9 +236,64 @@ class _HomeLandscapeState extends State<HomeLandscape> {
       const Screen().expanded(),
       // Why doesn't the constraint apply on this?
       const PianoKeyboard().expanded(),
-    ].row(
-      mas: MainAxisSize.min,
-      maa: MainAxisAlignment.center,
+    ]
+        .row(
+          mas: MainAxisSize.min,
+          maa: MainAxisAlignment.center,
+        )
+        .safeArea();
+  }
+
+  Widget routePage() {
+    switch (_curPage) {
+      case _Page.piano:
+        return buildBody();
+      default:
+        return const SettingsPage();
+    }
+  }
+}
+
+class CalcuPianoDrawer extends HookWidget {
+  final VoidCallback? onCloseDrawer;
+
+  const CalcuPianoDrawer({super.key, this.onCloseDrawer});
+
+  void closeDrawer() {
+    onCloseDrawer?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Drawer(
+        child: [
+          Column(
+            children: [
+              DrawerHeader(child: SizedBox()),
+              ListTile(
+                leading: Icon(Icons.music_note),
+                title: Text('Soundpack'),
+                trailing: Icon(Icons.navigate_next),
+                onTap: () {
+                  closeDrawer();
+                  context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
+                },
+              )
+            ],
+          ).expanded(),
+          Spacer(),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              closeDrawer();
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
+            },
+          ),
+        ].column(),
+      ),
     );
   }
 }
