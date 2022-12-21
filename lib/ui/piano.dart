@@ -8,7 +8,11 @@ import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PianoKeyboard extends StatefulWidget {
-  const PianoKeyboard({super.key});
+  /// For preview.
+  /// If [fixedSoundpack] is set, the PianoKey will not change the soundpack wtih global.
+  final SoundpackProtocol? fixedSoundpack;
+
+  const PianoKeyboard({super.key, this.fixedSoundpack});
 
   @override
   State<PianoKeyboard> createState() => _PianoKeyboardState();
@@ -31,48 +35,53 @@ class _PianoKeyboardState extends State<PianoKeyboard> {
 
   Widget buildColumn0(Size size) {
     return [
-      PianoKey(Note.$7).sizedIn(size),
-      PianoKey(Note.$4).sizedIn(size),
-      PianoKey(Note.$1).sizedIn(size),
+      k(Note.$7, size),
+      k(Note.$4, size),
+      k(Note.$1, size),
     ].column();
   }
 
   Widget buildColumn1(Size size) {
     return [
-      PianoKey(Note.$8).sizedIn(size),
-      PianoKey(Note.$5).sizedIn(size),
-      PianoKey(Note.$2).sizedIn(size),
+      k(Note.$8, size),
+      k(Note.$5, size),
+      k(Note.$2, size),
     ].column();
   }
 
   Widget buildColumn2(Size size) {
     return [
-      PianoKey(Note.$9).sizedIn(size),
-      PianoKey(Note.$6).sizedIn(size),
-      PianoKey(Note.$3).sizedIn(size),
+      k(Note.$9, size),
+      k(Note.$6, size),
+      k(Note.$3, size),
     ].column();
   }
 
   Widget buildColumn3(Size size) {
     return [
-      PianoKey(Note.$mul).sizedIn(size),
-      PianoKey(Note.$plus).sized(w: size.width, h: size.height * 2),
+      k(Note.$mul, size),
+      k(Note.$plus, Size(size.width, size.height * 2)),
     ].column();
   }
 
   Widget buildColumn4(Size size) {
     return [
-      PianoKey(Note.$div).sizedIn(size),
-      PianoKey(Note.$minus).sizedIn(size),
-      PianoKey(Note.$eq).sizedIn(size),
+      k(Note.$div, size),
+      k(Note.$minus, size),
+      k(Note.$eq, size),
     ].column();
+  }
+
+  Widget k(Note note, Size size) {
+    return PianoKey(note, fixedSoundpack: widget.fixedSoundpack).sizedIn(size);
   }
 }
 
 class PianoKey extends StatefulWidget {
   final Note note;
+  final SoundpackProtocol? fixedSoundpack;
 
-  const PianoKey(this.note, {super.key});
+  const PianoKey(this.note, {super.key, this.fixedSoundpack});
 
   @override
   State<PianoKey> createState() => _PianoKeyState();
@@ -82,17 +91,26 @@ class _PianoKeyState extends State<PianoKey> {
   Note get note => widget.note;
   SoundpackProtocol _soundpack = R.defaultSoundpack;
 
+  SoundpackProtocol? get _fixedSoundpack => widget.fixedSoundpack;
+
   @override
   void initState() {
     super.initState();
-    final restoredId = H.currentSoundpackID;
-    if (restoredId != null) {
-      SoundpackX.resolve(id: restoredId).then((value) {
-        _soundpack = value ?? R.defaultSoundpack;
-      });
+    final fixedSoundpack = _fixedSoundpack;
+    if (fixedSoundpack != null) {
+      _soundpack = fixedSoundpack;
+    } else {
+      final restoredId = H.currentSoundpackID;
+      if (restoredId != null) {
+        SoundpackX.resolve(id: restoredId).then((value) {
+          _soundpack = value ?? R.defaultSoundpack;
+        });
+      }
     }
     eventBus.on<SoundpackChangeEvent>().listen((e) {
-      _soundpack = e.newSoundpack;
+      if (_fixedSoundpack == null) {
+        _soundpack = e.newSoundpack;
+      }
     });
   }
 
