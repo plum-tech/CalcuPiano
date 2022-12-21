@@ -29,6 +29,20 @@ void main() {
       assert(res != null);
       assert(res!.localPath == "/usr/liplum/soundpack/1.wav");
     });
+    test("polymorphism", () {
+      initConverter();
+      const list = [
+        BundledSoundFile(pathInAssets: "default/1.wav"),
+        LocalSoundFile(localPath: '/usr/liplum/soundpack/1.wav'),
+      ];
+      final res = Converter.toJson(list);
+      assert(res != null);
+      assert(res!.contains("/usr/liplum/soundpack/1.wav"));
+      final restored = Converter.fromJson<List>(res);
+      assert(restored!=null);
+      assert(restored![1] is LocalSoundFile);
+      assert((restored![1] as LocalSoundFile).localPath == "/usr/liplum/soundpack/1.wav");
+    });
   });
 }
 

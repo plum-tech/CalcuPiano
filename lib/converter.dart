@@ -20,6 +20,8 @@ class _K {
 }
 
 class Converter {
+  Converter._();
+
   static final Map<String, ToJsonFunc> _typeName2ToJson = {};
   static final Map<String, FromJsonFunc> _typeName2FromJson = {};
   static final Map<String, Migration> _migrations = {};
@@ -60,8 +62,7 @@ class Converter {
     return object;
   }
 
-  static void registerConverter<T extends Convertible>(
-      String typeName, ToJsonFunc toJson, FromJsonFunc<T> fromJson) {
+  static void registerConverter<T extends Convertible>(String typeName, ToJsonFunc toJson, FromJsonFunc<T> fromJson) {
     _typeName2ToJson[typeName] = toJson;
     _typeName2FromJson[typeName] = fromJson;
   }
@@ -96,6 +97,7 @@ class Converter {
     }
   }
 
+  /// If [T] is a collection, please use [List.cast], [Map.cast] or [Set.cast] to make a runtime-casting view.
   static T? fromJson<T>(String? json) {
     if (json == null) return null;
     try {
