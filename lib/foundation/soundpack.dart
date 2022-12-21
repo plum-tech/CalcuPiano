@@ -104,9 +104,7 @@ extension SoundpackX on SoundpackProtocol {
     if (builtin != null) {
       return builtin;
     } else {
-      return R.defaultSoundpack;
-      // TODO: Read from storage.
-      // return H.soundpacks.getSoundpackById(id);
+      return H.soundpacks.getSoundpackById(id);
     }
   }
 }

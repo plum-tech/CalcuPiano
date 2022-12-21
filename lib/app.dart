@@ -8,6 +8,7 @@ import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
@@ -37,7 +38,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return wrapWithScreenUtil(MultiProvider(
       providers: [
         ChangeNotifierProvider<CalcuPianoThemeModel>(
             create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
@@ -52,7 +53,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
           );
         },
       ),
-    );
+    ));
   }
 
   ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
@@ -73,6 +74,16 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
     );
+  }
+
+  Widget wrapWithScreenUtil(Widget mainBody) {
+    return ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return mainBody;
+        });
   }
 }
 
