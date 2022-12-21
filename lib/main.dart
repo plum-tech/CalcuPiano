@@ -13,7 +13,7 @@ void main() async {
   final appDocDire = await getApplicationDocumentsDirectory();
   R.appDir = appDocDire.path;
   try {
-    R.pkgInfo = await PackageInfo.fromPlatform();
+    R.packageInfo = await PackageInfo.fromPlatform();
   } catch (_) {}
   await Hive.initFlutter(R.hiveDir);
   final settingsBox = await Hive.openBox("Settings");

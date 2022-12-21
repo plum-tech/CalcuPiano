@@ -6,9 +6,9 @@ import 'package:version/version.dart';
 class R {
   R._();
 
-  static final version = Version(0, 0, 1);
+  static final version = Version(1, 0, 0);
   static late final String appDir;
-  static PackageInfo? pkgInfo;
+  static PackageInfo? packageInfo;
 
   /// The soundpack directory under `assets` directory.
   static const assetsSoundpackDir = "soundpack";

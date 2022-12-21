@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/platform/platform.dart';
+import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
@@ -292,6 +294,8 @@ class CalcuPianoDrawer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final packageInfo = R.packageInfo;
+    final version = packageInfo != null ? "v ${packageInfo.version}" : "v ${R.version}";
     return SizedBox(
       width: 200,
       child: Drawer(
@@ -310,7 +314,7 @@ class CalcuPianoDrawer extends HookWidget {
               )
             ],
           ).expanded(),
-          Spacer(),
+          const Spacer(),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
@@ -318,6 +322,10 @@ class CalcuPianoDrawer extends HookWidget {
               closeDrawer();
               context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
             },
+          ),
+          ListTile(
+            leading: Icon(Icons.build),
+            title: version.text(),
           ),
         ].column(),
       ),
