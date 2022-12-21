@@ -15,6 +15,10 @@ export 'foundation/sound_file.dart';
 final Log = Logger();
 
 void initFoundation() {
+  initConverter();
+}
+
+void initConverter() {
   Converter.registerConverter(LocalSoundFile.type, (obj) => obj.toJson(), LocalSoundFile.fromJson);
   Converter.registerConverter(LocalSoundpack.type, (obj) => obj.toJson(), LocalSoundpack.fromJson);
   Converter.registerConverter(BundledSoundFile.type, (obj) => obj.toJson(), BundledSoundFile.fromJson);

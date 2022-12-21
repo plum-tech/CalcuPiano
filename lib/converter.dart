@@ -10,7 +10,7 @@ abstract class Convertible {
 
 typedef ToJsonFunc<T> = Map<String, dynamic> Function(T obj);
 typedef FromJsonFunc<T> = T Function(Map<String, dynamic> json);
-typedef Migration = Map<String, dynamic> Function(Map<String, dynamic> origin, int oldVersion);
+typedef Migration = Map<dynamic, dynamic> Function(Map<dynamic, dynamic> origin, int oldVersion);
 
 class _K {
   _K._();
@@ -20,13 +20,50 @@ class _K {
 }
 
 class Converter {
+  Converter._();
+
   static final Map<String, ToJsonFunc> _typeName2ToJson = {};
   static final Map<String, FromJsonFunc> _typeName2FromJson = {};
   static final Map<String, Migration> _migrations = {};
+  static const JsonCodec _jsonCodec = JsonCodec(reviver: _reviver, toEncodable: _toEncodable);
 
-  static void registerConverter<T extends Convertible>(
-      String typeName, ToJsonFunc<T> toJson, FromJsonFunc<T> fromJson) {
-    _typeName2ToJson[typeName] = toJson as ToJsonFunc;
+  static Object? _reviver(Object? key, Object? value) {
+    if (value is! Map) {
+      return value;
+    } else {
+      final type = value[_K.type];
+      final fromFunc = _typeName2FromJson[type];
+      if (fromFunc == null) {
+        throw Exception("No FromJson for ${value.runtimeType} was found.");
+      }
+      final version = value[_K.version];
+      if (version is int) {
+        final migration = _migrations[type];
+        if (migration != null) {
+          value = migration(value, version);
+        }
+      }
+      return fromFunc(value as Map<String, dynamic>);
+    }
+  }
+
+  static Object? _toEncodable(dynamic object) {
+    if (object is Convertible) {
+      final type = object.typeName;
+      final toFunc = _typeName2ToJson[type];
+      if (toFunc == null) {
+        throw Exception("No ToJson for ${object.typeName} was found.");
+      }
+      final json = toFunc(object);
+      json[_K.type] = type;
+      json[_K.version] = object.version;
+      return json;
+    }
+    return object;
+  }
+
+  static void registerConverter<T extends Convertible>(String typeName, ToJsonFunc toJson, FromJsonFunc<T> fromJson) {
+    _typeName2ToJson[typeName] = toJson;
     _typeName2FromJson[typeName] = fromJson;
   }
 
@@ -51,80 +88,22 @@ class Converter {
     return jObj;
   }
 
-  static String? toJson<T extends Convertible>(T obj) {
-    final jObj = toJsonObj<T>(obj);
-    if (jObj == null) {
-      return null;
-    }
-    return jsonEncode(jObj);
-  }
-
-  static List<dynamic> toJsonList<T extends Convertible>(List<T?> list) {
-    final List<dynamic> res = [];
-    for (final obj in list) {
-      res.add(obj == null ? null : toJsonObj<T>(obj));
-    }
-    return res;
-  }
-
-  static T? fromJsonObj<T>(Map<String, dynamic> jObj) {
+  static String? toJson<T>(T obj) {
     try {
-      final typeName = jObj[_K.type];
-      if (typeName is! String) {
-        return null;
-      }
-      final fromJson = _typeName2FromJson[typeName];
-      if (fromJson == null) {
-        return null;
-      }
-      final version = jObj[_K.version];
-      if (version != null) {
-        final migration = _migrations[typeName];
-        if (migration != null) {
-          jObj = migration(jObj, version);
-        }
-      }
-      final res = fromJson(jObj);
-      return res;
+      return _jsonCodec.encode(obj);
     } catch (e) {
-      Log.e("Failed to convert json object to $T object", e);
+      Log.e("Failed to convert $T to json", e);
       return null;
     }
   }
 
-  static T? fromJson<T>(String json) {
-    final dynamic jObj;
+  /// If [T] is a collection, please use [List.cast], [Map.cast] or [Set.cast] to make a runtime-casting view.
+  static T? fromJson<T>(String? json) {
+    if (json == null) return null;
     try {
-      jObj = jsonDecode(json);
+      return _jsonCodec.decode(json) as T?;
     } catch (e) {
-      Log.e("Failed to decode json object", e);
-      return null;
-    }
-    return fromJsonObj<T>(jObj);
-  }
-
-  static List<T>? fromJsonList<T>(List<dynamic> list) {
-    try {
-      final List<T> res = [];
-      for (final obj in list) {
-        res.add(fromJsonObj<T>(obj) as T);
-      }
-      return res;
-    } catch (e) {
-      Log.e("Failed to convert json list to $T list", e);
-      return null;
-    }
-  }
-
-  static List<T?>? fromJsonNullableList<T>(List<dynamic> list) {
-    try {
-      final List<T?> res = [];
-      for (final obj in list) {
-        res.add(fromJsonObj<T>(obj));
-      }
-      return res;
-    } catch (e) {
-      Log.e("Failed to convert json list to $T? list", e);
+      Log.e("Failed to convert json to $T", e);
       return null;
     }
   }
