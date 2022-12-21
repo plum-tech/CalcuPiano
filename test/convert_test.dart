@@ -22,6 +22,13 @@ void main() {
       assert(res != null);
       assert(res!.contains(LocalSoundFile.type));
     });
+    test("fromJson", () {
+      initConverter();
+      const json = '{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}';
+      final res = Converter.fromJson<LocalSoundFile>(json);
+      assert(res != null);
+      assert(res!.localPath == "/usr/liplum/soundpack/1.wav");
+    });
   });
 }
 
