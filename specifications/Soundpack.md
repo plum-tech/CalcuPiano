@@ -1,5 +1,7 @@
 # Soundpack
 
+Physically, a `Soundpack` consists of audio files, music sheet and metadata.
+
 ## Format
 
 A soundpack is a normal zip.
@@ -113,11 +115,16 @@ cascading objects.
 ```
 
 ## Implementation
+
+### Hierarchy
+
 `SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack.zip file.
 
 `SoundpackProtocol` has several implementations, such as `BuiltinSoundpack`, `LocalSoundpack`, `UrlSoundpack`.
 
-### BuiltinSoundpack
+Related concepts: [`SoundFile`](/specifications/SoundFile.md).
+
+#### BuiltinSoundpack
 
 - It must have an ID to be unambiguous from other soundpacks.
 - It can resolve the `SoundFile` of a `Note` to `BundledSoundFile`.
@@ -125,30 +132,56 @@ cascading objects.
 - Unmodifiable.
 - Permanent.
 
-#### Proposal
 Users cannot modify a built-in soundpack, but they can duplicate it to a `LocalSoundpack`.
 `BuiltinSoundpack` cannot be deleted.
 
-### LocalSoundpack
+#### LocalSoundpack
+
+**[Unavailable on CalcuPiano Web]**
 
 - It must have an ID to be unambiguous from other soundpacks.
-- It represents a real soundpack.zip file. After being unpacked, it's a folder in CalcuPiano's local storage. 
-- It can resolve the `SoundFile` of a `Note` to `BundledSoundFile` or `LocalSoundFile`.
+- It represents a real soundpack.zip file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
+- It can resolve the `SoundFile` of a `Note` to either `BundledSoundFile` or `LocalSoundFile`.
 - Modifiable.
 - Deletable.
 
-#### Proposal
 Users can import a `LocalSoundpack` from file or export it to a soundpack.zip file.
-Users can edit the metadata, which allows them to create their own soundpacks.
 
-### UrlSoundpack
+Users can create an empty `LocalSoundpack` or duplicate one, then edit the metadata for their own one.
+
+#### UrlSoundpack
 
 - It must have an ID to be unambiguous from other soundpacks.
 - It represents a soundpack downloaded from a URL.
 - It has a MD5 hash code to validate the file and version.
-- It can resolve the `SoundFile` of a `Note` to `LocalSoundFile`.
+- It can resolve the `SoundFile` of a `Note` to `LocalSoundFile` (or `URLSoundFile` on CalcuPiano Web).
 - Unmodifiable.
 - Deletable.
 
-#### Proposal
 Users can duplicate a `UrlSoundpack` to modify it. In this way, the source soundpack will be kept.
+
+### Storage
+
+#### BuiltinSoundpack
+
+There is no need to store, even though they can resolve a `BundledSoundFile`.
+
+#### LocalSoundpack
+
+**[Unavailable on CalcuPiano Web]**
+
+It can resolve a `Note` to either `BundledSoundFile` or `LocalSoundFile`, so the serialization is necessary.
+
+A `LocalSoundpack` object is serialized to json, stored in Hive with its `id`.
+
+The `SoundFile`s, either `BundledSoundFile` or `LocalSoundFile`, it contains will also be serialized together.
+Thus, the deserialization will find the right one, then it can resolve a correct audio file, in assets or file system.
+
+Notably, to import a soundpack from URL or local file will unpack those audio files and sheets into file system.
+And all files will be `LocalSoundFile`, even the files are originated from CalcuPiano's assets.
+
+#### UrlSoundpack
+
+It can resolve a `Note` to `LocalSoundFile` (or `UrlSoundFile` on CalcuPiano Web).
+
+Users can import a `UrlSoundpack` from a URL.
