@@ -48,7 +48,7 @@ TopEntry showTop(
 
   final oldTopEntry = top.getEntry(key: overlayKey);
 
-  oldTopEntry?.dismiss();
+  oldTopEntry?.closeWindow();
 
   final entry = OverlayEntry(builder: (context) {
     return KeyedTop(key: overlayKey, child: builder(context));
@@ -59,7 +59,7 @@ TopEntry showTop(
   return topEntry;
 }
 
-abstract class TopEntry {
+abstract class TopEntry extends CloseableProtocol {
   factory TopEntry._internal(
     OverlayEntry entry,
     Key key,
@@ -79,11 +79,6 @@ abstract class TopEntry {
   static TopEntry? of(BuildContext context) {
     return TopEntry.empty();
   }
-
-  /// Dismiss the Overlay which associated with this entry.
-  void dismiss();
-
-  Future get dismissed;
 }
 
 /// [TopEntry] represent a overlay popup by [showTop].
@@ -105,13 +100,13 @@ class _TopEntryImpl implements TopEntry {
   final Completer _dismissedCompleter = Completer();
 
   @override
-  Future get dismissed => _dismissedCompleter.future;
+  Future get isClosed => _dismissedCompleter.future;
 
   // OverlayEntry has been removed from Overlay
   bool _dismissed = false;
 
   @override
-  void dismiss() {
+  void closeWindow() {
     if (_dismissed) return;
     // Remove this entry from TopState.
     _top.removeEntry(key: _overlayKey);
@@ -123,10 +118,10 @@ class _TopEntryImpl implements TopEntry {
 
 class _EmptyTopEntry implements TopEntry {
   @override
-  void dismiss() {}
+  void closeWindow() {}
 
   @override
-  Future get dismissed => Future.value(null);
+  Future get isClosed => Future.value(null);
 }
 
 /// A widget that builds its child.
@@ -308,4 +303,24 @@ abstract class TopState<T extends StatefulWidget> extends State<T> {
   void removeEntry({required Key key}) {
     _entries.remove(key);
   }
+}
+
+abstract class CloseableProtocol {
+  void closeWindow();
+
+  Future get isClosed;
+}
+
+class CloseableDelegate implements CloseableProtocol {
+  final TopEntry self;
+
+  CloseableDelegate({required this.self});
+
+  @override
+  void closeWindow() {
+    self.closeWindow();
+  }
+
+  @override
+  Future get isClosed => self.isClosed;
 }

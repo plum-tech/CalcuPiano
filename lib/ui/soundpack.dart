@@ -8,6 +8,7 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/ui/actions.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
+import 'package:calcupiano/ui/soundpack_preview.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -282,12 +283,9 @@ Widget _moreMenu(
           title: "Preview".text(),
           onTap: () async {
             ctx.navigator.pop();
-            final entry = showTop((context) => [
-                  AbsorbPointer(child: Container()),
-                  PianoKeyboard(fixedSoundpack: soundpack),
-                ].stack().padSymmetric(h: 20, v: 250));
-            await Future.delayed(Duration(milliseconds: 10000));
-            entry.dismiss();
+            late final CloseableProtocol closeable;
+            final entry = showTop((context) => SoundpackPreviewTop(soundpack, closeable: closeable));
+            closeable = CloseableDelegate(self: entry);
           },
         ),
       ),

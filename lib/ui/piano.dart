@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/extension/soundpack.dart';
+import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import '../R.dart';
 import '../db.dart';
@@ -121,10 +123,16 @@ class _PianoKeyState extends State<PianoKey> {
   }
 
   Widget buildKey(BuildContext context) {
+    final theme = Provider.of<KeyboardThemeModel?>(context);
     return AutoSizeText(
       note.numberedText,
       style: TextStyle(fontSize: 24),
-    ).center().inCard().gestureDetect(onTapDown: (_) async {
+    )
+        .center()
+        .inCard(
+          elevation: theme?.data.elevation,
+        )
+        .gestureDetect(onTapDown: (_) async {
       await playSound();
     });
   }

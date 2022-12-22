@@ -1,6 +1,7 @@
 import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../platform/platform.dart';
@@ -13,9 +14,14 @@ abstract class SoundpackProtocol {
   String get id;
 
   Future<SoundFileProtocol> resolve(Note note);
+
+  String get displayName;
 }
 
 class BuiltinSoundpack implements SoundpackProtocol {
+  @override
+  String get displayName => name;
+
   /// The internal name.
   final String name;
 
@@ -40,6 +46,8 @@ abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertib
 @JsonSerializable()
 class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
+  @override
+  String get displayName => meta.name ?? "No Name";
   @JsonKey()
   final String uuid;
   @override
@@ -94,6 +102,8 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 @JsonSerializable()
 class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
+  @override
+  String get displayName => meta.name ?? "No Name";
   @JsonKey()
   final String uuid;
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)

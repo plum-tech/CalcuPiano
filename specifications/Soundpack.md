@@ -39,7 +39,7 @@ MySoundpack.zip/  # Any name you want
         MySheetMusic.txt  # Any name you want
     icon.png  # Optional
     preview.png # Optional
-    soundpack.json # Essential
+    soundpack.json # Optinal
 ```
 
 - `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
