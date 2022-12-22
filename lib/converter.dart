@@ -30,6 +30,10 @@ class Converter {
   static Object? _reviver(Object? key, Object? value) {
     if (value is Map) {
       final type = value[_K.type];
+      if(type == null){
+        // It's a normal map, so return itself.
+        return value;
+      }
       final fromFunc = _typeName2FromJson[type];
       if (fromFunc == null) {
         throw Exception("No FromJson for ${value.runtimeType} was found.");

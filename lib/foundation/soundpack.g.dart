@@ -10,12 +10,15 @@ LocalSoundpack _$LocalSoundpackFromJson(Map<String, dynamic> json) =>
     LocalSoundpack(
       json['uuid'] as String,
       Converter.directConvertFunc(json['meta']),
-    );
+    )..note2SoundFile = LocalSoundpack._note2FilesFromJson(
+        json['note2SoundFile'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$LocalSoundpackToJson(LocalSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
       'meta': Converter.directConvertFunc(instance.meta),
+      'note2SoundFile':
+          LocalSoundpack._note2FilesToJson(instance.note2SoundFile),
     };
 
 UrlSoundpack _$UrlSoundpackFromJson(Map<String, dynamic> json) => UrlSoundpack(

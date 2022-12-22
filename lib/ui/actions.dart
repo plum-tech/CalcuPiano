@@ -35,7 +35,7 @@ Future<void> importSoundpackFromFile(String path) async {
     }
   }
   // TODO: Save this into LocalSoundpack
-  final Map<Note, SoundFileProtocol> note2SoundFile = {};
+  final Map<Note, LocalSoundFile> note2SoundFile = {};
   // TODO: I18n exception.
   // TODO: Handle exception.
   // ignore: use_function_type_syntax_for_parameters
@@ -65,5 +65,6 @@ Future<void> importSoundpackFromFile(String path) async {
     meta = Converter.fromUntypedJson(metaContent, SoundpackMeta.fromJson);
   }
   final soundpack = LocalSoundpack(uuid, meta ?? SoundpackMeta());
+  soundpack.note2SoundFile = note2SoundFile;
   H.soundpacks.addSoundpack(soundpack);
 }

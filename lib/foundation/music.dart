@@ -3,6 +3,7 @@ class Note {
 
   const Note.named(this.id);
 
+  static const $none = Note.named("none");
   static const $1 = Note.named("1");
   static const $2 = Note.named("2");
   static const $3 = Note.named("3");
@@ -55,6 +56,26 @@ class Note {
     $mul: "La+",
     $eq: "Ti+"
   };
+  static const id2Note = {
+    "1": $1,
+    "2": $2,
+    "3": $3,
+    "4": $4,
+    "5": $5,
+    "6": $6,
+    "7": $7,
+    "8": $8,
+    "9": $9,
+    "plus": $plus,
+    "minus": $minus,
+    "div": $div,
+    "mul": $mul,
+    "eq": $eq
+  };
+
+  static Note of(String id, {Note fallback = $none}) {
+    return id2Note[id] ?? fallback;
+  }
 }
 
 extension NoteX on Note {
