@@ -26,6 +26,10 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   @override
   void initState() {
     super.initState();
+    $name.addListener(() {
+      // To Change the AppBar title.
+      setState(() {});
+    });
   }
 
   @override
@@ -36,7 +40,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   Widget buildMain(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
-        title: (soundpack.meta.name ?? "No name").text(),
+        title: $name.text.text(overflow: TextOverflow.clip),
         centerTitle: ctx.isCupertino,
         actions: [
           IconButton(icon: Icon(Icons.save_rounded), onPressed: () => onSave(ctx)),

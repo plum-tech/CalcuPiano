@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
@@ -40,22 +39,24 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return wrapWithScreenUtil(MultiProvider(
-      providers: [
-        ChangeNotifierProvider<CalcuPianoThemeModel>(
-            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
-      ],
-      child: Consumer<CalcuPianoThemeModel>(
-        builder: (_, model, __) {
-          return MaterialApp(
-            theme: bakeTheme(context, ThemeData.light(), model.data),
-            darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
-            themeMode: model.resolveThemeMode(),
-            home: const CalcuPianoHomePage(),
-          );
-        },
-      ),
-    ));
+    return wrapWithTop(
+      wrapWithScreenUtil(MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CalcuPianoThemeModel>(
+              create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+        ],
+        child: Consumer<CalcuPianoThemeModel>(
+          builder: (_, model, __) {
+            return MaterialApp(
+              theme: bakeTheme(context, ThemeData.light(), model.data),
+              darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
+              themeMode: model.resolveThemeMode(),
+              home: const CalcuPianoHomePage(),
+            );
+          },
+        ),
+      )),
+    );
   }
 
   ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
@@ -69,13 +70,17 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       highlightColor: theme.enableRipple ? null : Colors.transparent,
       useMaterial3: true,
       // TODO: Temporarily debug Visual effects on iOS.
-      //  platform: TargetPlatform.iOS,
+      //   platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
     );
+  }
+
+  Widget wrapWithTop(Widget mainBody) {
+    return Top.global(child: mainBody);
   }
 
   Widget wrapWithScreenUtil(Widget mainBody) {

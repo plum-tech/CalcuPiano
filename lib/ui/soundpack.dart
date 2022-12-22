@@ -1,12 +1,12 @@
-import 'package:auto_animated/auto_animated.dart';
-import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/dialog.dart';
 
 import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/ui/actions.dart';
+import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -224,7 +224,11 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       },
       selected: isSelected,
       title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
-      subtitle: (soundpack.meta.description ?? "No Info").text(),
+      subtitle: [
+        // TODO: Better author text
+        (soundpack.meta.author ?? "No Author").text(),
+        (soundpack.meta.description ?? "No Info").text(),
+      ].column(caa: CrossAxisAlignment.start),
       trailing: _moreMenu(ctx, soundpack),
     );
   }
@@ -271,7 +275,23 @@ Widget _moreMenu(
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
     position: PopupMenuPosition.under,
     padding: EdgeInsets.zero,
-    itemBuilder: (BuildContext context) => [
+    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+      PopupMenuItem(
+        child: ListTile(
+          leading: Icon(Icons.hearing_rounded),
+          title: "Preview".text(),
+          onTap: () async {
+            ctx.navigator.pop();
+            final entry = showTop((context) => [
+                  AbsorbPointer(child: Container()),
+                  PianoKeyboard(fixedSoundpack: soundpack),
+                ].stack().padSymmetric(h: 20, v: 250));
+            await Future.delayed(Duration(milliseconds: 10000));
+            entry.dismiss();
+          },
+        ),
+      ),
+      PopupMenuDivider(),
       if (soundpack is! BuiltinSoundpack)
         PopupMenuItem(
           child: ListTile(
