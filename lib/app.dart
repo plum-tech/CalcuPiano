@@ -231,6 +231,7 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
       ].stack(),
     );
   }
+
   @override
   void dispose() {
     super.dispose();

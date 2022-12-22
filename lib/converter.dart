@@ -18,6 +18,7 @@ class _K {
   static const type = "@type";
   static const version = "@version";
 }
+
 ///
 /// Generate the json converter with this template:
 /// ```
@@ -36,7 +37,7 @@ class Converter {
   static Object? _reviver(Object? key, Object? value) {
     if (value is Map) {
       final type = value[_K.type];
-      if(type == null){
+      if (type == null) {
         // It's a normal map, so return itself.
         return value;
       }
@@ -146,5 +147,6 @@ class Converter {
       return null;
     }
   }
+
   static dynamic directConvertFunc(dynamic any) => any;
 }

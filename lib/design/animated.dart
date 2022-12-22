@@ -53,27 +53,29 @@ class _AnimatedBlurState extends AnimatedWidgetBaseState<AnimatedBlur> {
     description.add(DiagnosticsProperty<Tween<double>>('blur', _blurTween, defaultValue: null));
   }
 }
+
 extension LiveListAnimationX on Widget {
   Widget aliveWith(
-      Animation<double> animation,
-      ) =>
+    Animation<double> animation,
+  ) =>
       // For example wrap with fade transition
-  FadeTransition(
-    opacity: CurveTween(
-      curve: Curves.fastLinearToSlowEaseIn,
-    ).animate(animation),
-    // And slide transition
-    child: SlideTransition(
-      position: CurveOffset(
-        begin: const Offset(0, 0.5),
-        end: Offset.zero,
-        curve: Curves.fastLinearToSlowEaseIn,
-      ).animate(animation),
-      // Paste you Widget
-      child: this,
-    ),
-  );
+      FadeTransition(
+        opacity: CurveTween(
+          curve: Curves.fastLinearToSlowEaseIn,
+        ).animate(animation),
+        // And slide transition
+        child: SlideTransition(
+          position: CurveOffset(
+            begin: const Offset(0, 0.5),
+            end: Offset.zero,
+            curve: Curves.fastLinearToSlowEaseIn,
+          ).animate(animation),
+          // Paste you Widget
+          child: this,
+        ),
+      );
 }
+
 class CurveOffset extends Animatable<Offset> {
   final Offset begin;
   final Offset end;

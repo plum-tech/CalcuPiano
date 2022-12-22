@@ -42,19 +42,19 @@ String get osName {
   }
 }
 
-String joinPath(String part1,
-    [String? part2,
-    String? part3,
-    String? part4,
-    String? part5,
-    String? part6,
-    String? part7,
-    String? part8,
+String joinPath(
+  String part1, [
+  String? part2,
+  String? part3,
+  String? part4,
+  String? part5,
+  String? part6,
+  String? part7,
+  String? part8,
 ]) {
   return join(part1, part2, part3, part4, part5, part6, part7, part8);
 }
 
 String basenameOfPath(String path) => basename(path);
 
-String extensionOfPath(String path, [int level = 1]) =>
-    extension(path, level);
+String extensionOfPath(String path, [int level = 1]) => extension(path, level);

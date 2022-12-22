@@ -208,7 +208,7 @@ class $TextField$ extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
             style: CupertinoTheme.of(context).textTheme.textStyle),
-      ].column(mas: MainAxisSize.min,caa: CrossAxisAlignment.start);
+      ].column(mas: MainAxisSize.min, caa: CrossAxisAlignment.start);
     } else {
       return TextFormField(
         controller: controller,
@@ -244,4 +244,3 @@ const Border _kDefaultRoundedBorder = Border(
 extension ColorEx on BuildContext {
   Color get $red$ => isCupertino ? CupertinoDynamicColor.resolve(CupertinoColors.systemRed, this) : Colors.redAccent;
 }
-

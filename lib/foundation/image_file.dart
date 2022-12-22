@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:calcupiano/foundation/file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'image_file.g.dart';
 
 abstract class ImageFileProtocol implements FileProtocol {
@@ -16,7 +17,7 @@ class BundledImageFile with BundledFileMixin implements ImageFileProtocol {
   @JsonKey()
   final String path;
 
-  const BundledImageFile(this.path);
+  const BundledImageFile({required this.path});
 
   @override
   String get typeName => type;
@@ -28,17 +29,17 @@ class BundledImageFile with BundledFileMixin implements ImageFileProtocol {
   Widget build(BuildContext context) {
     return Image.asset(path);
   }
+
   factory BundledImageFile.fromJson(Map<String, dynamic> json) => _$BundledImageFileFromJson(json);
 
   Map<String, dynamic> toJson() => _$BundledImageFileToJson(this);
-
 }
 
 @JsonSerializable()
 class LocalImageFile with LocalFileMixin implements ImageFileProtocol {
   static const String type = "calcupiano.LocalImageFile";
 
-  const LocalImageFile(this.localPath);
+  const LocalImageFile({required this.localPath});
 
   @override
   @JsonKey()
@@ -58,7 +59,6 @@ class LocalImageFile with LocalFileMixin implements ImageFileProtocol {
   factory LocalImageFile.fromJson(Map<String, dynamic> json) => _$LocalImageFileFromJson(json);
 
   Map<String, dynamic> toJson() => _$LocalImageFileToJson(this);
-
 }
 
 @JsonSerializable()
@@ -69,7 +69,7 @@ class UrlImageFile with UrlFileMixin implements ImageFileProtocol {
   @JsonKey()
   final String url;
 
-  const UrlImageFile(this.url);
+  const UrlImageFile({required this.url});
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,8 @@
 import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/foundation/image_file.dart';
 import 'package:calcupiano/r.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../platform/platform.dart';
 
 part 'soundpack.g.dart';
 
@@ -16,6 +14,8 @@ abstract class SoundpackProtocol {
   Future<SoundFileProtocol> resolve(Note note);
 
   String get displayName;
+
+  ImageFileProtocol? get preview;
 }
 
 class BuiltinSoundpack implements SoundpackProtocol {
@@ -39,6 +39,9 @@ class BuiltinSoundpack implements SoundpackProtocol {
     // On Windows, [joinPath] will add backslashes.
     return BundledSoundFile(path: "assets/${R.assetsSoundpackDir}/$name/${note.id}.wav");
   }
+
+  @override
+  ImageFileProtocol get preview => BundledImageFile(path: "assets/${R.assetsSoundpackDir}/$name/preview.png");
 }
 
 abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {
@@ -60,8 +63,11 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   /// A LocalSoundpack can only hold [LocalSoundFile].
   @JsonKey(fromJson: _note2FilesFromJson, toJson: _note2FilesToJson)
   Map<Note, LocalSoundFile> note2SoundFile = {};
+  @override
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  ImageFileProtocol? preview;
 
-  LocalSoundpack(this.uuid, this.meta);
+  LocalSoundpack({required this.uuid, required this.meta, this.preview});
 
   /// The ID is generated
   @override
@@ -98,8 +104,13 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
     String? uuid,
     SoundpackMeta? meta,
     Map<Note, LocalSoundFile>? note2SoundFile,
+    ImageFileProtocol? preview,
   }) =>
-      LocalSoundpack(uuid ?? this.uuid, meta ?? this.meta)..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
+      LocalSoundpack(
+        uuid: uuid ?? this.uuid,
+        meta: meta ?? this.meta,
+        preview: preview ?? this.preview,
+      )..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
 }
 
 @JsonSerializable()
@@ -110,15 +121,20 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   String get displayName => meta.name ?? "No Name";
   @JsonKey()
   final String uuid;
+  @JsonKey()
+  final String url;
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   @override
   SoundpackMeta meta;
+  @override
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  ImageFileProtocol? preview;
 
   /// A LocalSoundpack can only hold [LocalSoundFile].
   @JsonKey(fromJson: _note2FilesFromJson, toJson: _note2FilesToJson)
   Map<Note, SoundFileProtocol> note2SoundFile = {};
 
-  UrlSoundpack(this.uuid, this.meta);
+  UrlSoundpack({required this.uuid, required this.meta, required this.url, this.preview});
 
   /// The ID is generated
   @override
@@ -150,6 +166,20 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   static Map<Note, SoundFileProtocol> _note2FilesFromJson(Map<String, dynamic> note2Files) {
     return note2Files.map((key, value) => MapEntry(Note.of(key), value));
   }
+
+  UrlSoundpack copyWith({
+    String? uuid,
+    String? url,
+    SoundpackMeta? meta,
+    Map<Note, LocalSoundFile>? note2SoundFile,
+    ImageFileProtocol? preview,
+  }) =>
+      UrlSoundpack(
+        uuid: uuid ?? this.uuid,
+        meta: meta ?? this.meta,
+        url: url ?? this.url,
+        preview: preview ?? this.preview,
+      )..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
 }
 
 @JsonSerializable()

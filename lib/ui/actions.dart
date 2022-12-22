@@ -71,11 +71,11 @@ Future<void> importSoundpackFromFile(String path) async {
   }
   // ----------------------------------------------------------------
   // Find the `preview.png`
-  final previewPngLocalPath =findCaseInsensitiveLocalFileByName("soundpack.json");
+  final previewPngLocalPath = findCaseInsensitiveLocalFileByName("soundpack.json");
 
   // ----------------------------------------------------------------
   // Make the final LocalSoundpack object.
-  final soundpack = LocalSoundpack(uuid, meta ?? SoundpackMeta());
+  final soundpack = LocalSoundpack(uuid: uuid, meta: meta ?? SoundpackMeta());
   soundpack.note2SoundFile = note2SoundFile;
   soundpack.addToStorage();
 }
@@ -100,6 +100,6 @@ Future<void> duplicateSoundpack(SoundpackProtocol source) async {
     final localFilePath = await file.copyToFolder(rootDir);
     note2SoundFiles[note] = LocalSoundFile(localPath: localFilePath);
   }
-  final soundpack = LocalSoundpack(uuid, meta)..note2SoundFile = note2SoundFiles;
+  final soundpack = LocalSoundpack(uuid: uuid, meta: meta)..note2SoundFile = note2SoundFiles;
   soundpack.addToStorage();
 }
