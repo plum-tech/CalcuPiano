@@ -24,12 +24,14 @@ Map<String, dynamic> _$LocalSoundpackToJson(LocalSoundpack instance) =>
 UrlSoundpack _$UrlSoundpackFromJson(Map<String, dynamic> json) => UrlSoundpack(
       json['uuid'] as String,
       Converter.directConvertFunc(json['meta']),
-    );
+    )..note2SoundFile = UrlSoundpack._note2FilesFromJson(
+        json['note2SoundFile'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$UrlSoundpackToJson(UrlSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
       'meta': Converter.directConvertFunc(instance.meta),
+      'note2SoundFile': UrlSoundpack._note2FilesToJson(instance.note2SoundFile),
     };
 
 SoundpackMeta _$SoundpackMetaFromJson(Map<String, dynamic> json) =>
@@ -37,10 +39,7 @@ SoundpackMeta _$SoundpackMetaFromJson(Map<String, dynamic> json) =>
       ..name = json['name'] as String?
       ..description = json['description'] as String?
       ..author = json['author'] as String?
-      ..url = json['url'] as String?
-      ..l10n = (json['l10n'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, Map<String, String>.from(e as Map)),
-      );
+      ..url = json['url'] as String?;
 
 Map<String, dynamic> _$SoundpackMetaToJson(SoundpackMeta instance) =>
     <String, dynamic>{
@@ -48,5 +47,4 @@ Map<String, dynamic> _$SoundpackMetaToJson(SoundpackMeta instance) =>
       'description': instance.description,
       'author': instance.author,
       'url': instance.url,
-      'l10n': instance.l10n,
     };

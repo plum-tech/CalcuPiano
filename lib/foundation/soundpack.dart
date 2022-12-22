@@ -163,8 +163,6 @@ class SoundpackMeta implements Convertible {
   String? author;
   @JsonKey()
   String? url;
-  @JsonKey()
-  Map<String, Map<String, String>>? l10n;
 
   SoundpackMeta();
 
@@ -183,14 +181,12 @@ class SoundpackMeta implements Convertible {
     String? description,
     String? author,
     String? url,
-    Map<String, Map<String, String>>? l10n,
   }) =>
       SoundpackMeta()
         ..name = name ?? this.name
         ..description = description ?? this.description
         ..author = author ?? this.author
-        ..url = url ?? this.url
-        ..l10n = l10n ?? this.l10n;
+        ..url = url ?? this.url;
 }
 
 class NoSoundFileOfNoteException implements Exception {

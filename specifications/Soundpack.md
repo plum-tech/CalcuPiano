@@ -63,21 +63,7 @@ cascading objects.
   "name": "My Soundpack",
   "description": "My first soundpack of CalcuPiano.",
   "author": "Liplum",
-  "url": "https://github.com/liplum/calcupiano",
-  "l10n": {
-    "en": {
-      "name": "My Soundpack",
-      "description": "My first soundpack of CalcuPiano."
-    },
-    "ru": {
-      "name": "Мой саундпак",
-      "description": "Мой первый саундпак CalcuPiano."
-    },
-    "zh": {
-      "name": "我的声音包",
-      "description": "我的第一个 CalcuPiano 音色包。"
-    }
-  }
+  "url": "https://github.com/liplum/calcupiano"
 }
 ```
 
