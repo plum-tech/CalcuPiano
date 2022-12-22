@@ -16,13 +16,17 @@ class R {
   static const customSoundpackDir = "custom_soundpack";
   static const builtSoundpackIdNs = "calcupiano";
   static const defaultSoundpack = BuiltinSoundpack("default");
+  static const defaultLongToneSoundpack = BuiltinSoundpack("default_long_tone");
+  static const classicSoundpack = BuiltinSoundpack("classic");
   static const builtinSoundpacks = [
     defaultSoundpack,
-    BuiltinSoundpack("classic"),
+    defaultLongToneSoundpack,
+    classicSoundpack,
   ];
   static const id2BuiltinSoundpacks = {
     "$builtSoundpackIdNs.default": defaultSoundpack,
-    "$builtSoundpackIdNs.classic": BuiltinSoundpack("classic"),
+    "$builtSoundpackIdNs.default_long_tone": defaultLongToneSoundpack,
+    "$builtSoundpackIdNs.classic": classicSoundpack,
   };
 
   static String genBuiltinSoundpackId(String name) => "$builtSoundpackIdNs.$name";
