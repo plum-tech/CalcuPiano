@@ -18,7 +18,13 @@ class _K {
   static const type = "@type";
   static const version = "@version";
 }
-
+///
+/// Generate the json converter with this template:
+/// ```
+/// factory .fromJson(Map<String, dynamic> json) => _$FromJson(json);
+/// Map<String, dynamic> toJson() => _$ToJson(this);
+/// ```
+///
 class Converter {
   Converter._();
 
