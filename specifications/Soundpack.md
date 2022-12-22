@@ -13,9 +13,9 @@ If not, all notes should be exposed in the root.
 
 It could have a `sheets/` directory that consists of the built-in sheet music of this soundpack.
 
-The `icon.png`, `preview.png` are optional.
+The `preview.png` are optional.
 
-The essential file, `soundpack.json`, is the meta data.
+The optional `soundpack.json` is the metadata of soundpack.
 
 It should be:
 
@@ -35,9 +35,8 @@ MySoundpack.zip/  # Any name you want
     minus.wav
     mul.wav
     plus.wav
-    sheets/
+    sheet/
         MySheetMusic.txt  # Any name you want
-    icon.png  # Optional
     preview.png # Optional
     soundpack.json # Optinal
 ```

@@ -29,6 +29,12 @@ class R {
   static List<String> supportedAudioFormat = const [
     "wav",
     "ogg",
+    "mp3",
+  ];
+  static List<String> supportedAudioExtension = const [
+    ".wav",
+    ".ogg",
+    ".mp3",
   ];
 
   static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;

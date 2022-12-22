@@ -1,34 +1,28 @@
-import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
-import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
-import 'package:flutter/services.dart';
+import 'package:calcupiano/foundation/file.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'sound_file.g.dart';
 
 /// SoundFile is an abstract file of a sound.
 /// It could be the ref of a bundled file, or a real local file.
-abstract class SoundFileProtocol implements Convertible {
+abstract class SoundFileProtocol implements FileProtocol {
   Future<void> loadInto(AudioPlayer player);
-
-  /// Return the target path.
-  Future<String> copyToFolder(String pathOfFolder);
 }
 
 /// A bundled sound file in assets.
 @JsonSerializable()
-class BundledSoundFile implements SoundFileProtocol {
+class BundledSoundFile with BundledFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.BundledSoundFile";
+  @override
   @JsonKey()
-  final String pathInAssets;
+  final String path;
 
-  const BundledSoundFile({required this.pathInAssets});
+  const BundledSoundFile({required this.path});
 
   @override
   Future<void> loadInto(AudioPlayer player) async {
-    await player.setSourceAsset(pathInAssets);
+    await player.setSourceAsset(path);
   }
 
   factory BundledSoundFile.fromJson(Map<String, dynamic> json) => _$BundledSoundFileFromJson(json);
@@ -40,21 +34,12 @@ class BundledSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
-
-  @override
-  Future<String> copyToFolder(String pathOfFolder) async {
-    ByteData data = await rootBundle.load("assets/$pathInAssets");
-    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(pathInAssets));
-    await File(targetFile).writeAsBytes(bytes);
-    return targetFile;
-  }
 }
 
 @JsonSerializable()
-class LocalSoundFile implements SoundFileProtocol {
+class LocalSoundFile with LocalFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.LocalSoundFile";
+  @override
   @JsonKey()
   final String localPath;
 
@@ -74,23 +59,16 @@ class LocalSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
-
-  @override
-  Future<String> copyToFolder(String pathOfFolder) async {
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(localPath));
-    await File(localPath).copy(targetFile);
-    return targetFile;
-  }
 }
 
 @JsonSerializable()
-class UrlSoundFile implements SoundFileProtocol {
+class UrlSoundFile with UrlFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.UrlSoundFile";
+  @override
   @JsonKey()
   final String url;
-  final String md5;
 
-  const UrlSoundFile({required this.url, required this.md5});
+  const UrlSoundFile({required this.url});
 
   @override
   Future<void> loadInto(AudioPlayer player) async {
@@ -106,12 +84,4 @@ class UrlSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
-
-  @override
-  Future<String> copyToFolder(String pathOfFolder) async {
-    // TODO: How can I know the note name and extension?
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(url));
-    await Web.download(url, targetFile);
-    return targetFile;
-  }
 }

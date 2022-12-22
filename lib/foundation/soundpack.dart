@@ -37,7 +37,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
   Future<SoundFileProtocol> resolve(Note note) async {
     // Note: Don't use [joinPath] here, assets only slash-separator.
     // On Windows, [joinPath] will add backslashes.
-    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.id}.wav");
+    return BundledSoundFile(path: "assets/${R.assetsSoundpackDir}/$name/${note.id}.wav");
   }
 }
 

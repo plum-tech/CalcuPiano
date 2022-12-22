@@ -1,7 +1,7 @@
 import 'web.dart' if (dart.library.io) 'others.dart';
 
 export 'web.dart' if (dart.library.io) 'others.dart';
-import 'package:path/path.dart' if (dart.library.html) 'src/stub/path.dart' show basename, join;
+import 'package:path/path.dart' if (dart.library.html) 'src/stub/path.dart' show basename, extension, join;
 
 enum PlatformType { web, windows, linux, macOS, android, fuchsia, iOS }
 
@@ -55,3 +55,6 @@ String joinPath(String part1,
 }
 
 String basenameOfPath(String path) => basename(path);
+
+String extensionOfPath(String path, [int level = 1]) =>
+    extension(path, level);

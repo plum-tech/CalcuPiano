@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/app.dart';
 import 'package:calcupiano/db.dart';
 import 'package:calcupiano/event_handler.dart';
@@ -20,6 +21,8 @@ void main() async {
   final soundpackBox = await Hive.openBox<String>("Soundpacks");
   H.box = settingsBox;
   H.soundpacks = SoundpackStorage(soundpackBox);
+  // Remove prefix to unify the path
+  AudioCache.instance = AudioCache(prefix: "");
   initFoundation();
   initEssential();
   EventHandler.init();

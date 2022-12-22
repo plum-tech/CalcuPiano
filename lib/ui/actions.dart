@@ -19,14 +19,18 @@ Future<void> importSoundpackFromFile(String path) async {
 
   final uuid = UUID.v4();
   final rootDir = joinPath(R.soundpacksRootDir, uuid);
-  final files = <String>[];
+  // ----------------------------------------------------------------
+  // Mapping(Copying) the archive files to local files.
+  /// Only including file. No Folder.
+  /// Note: If an archive file in a archive folder, its name is `myFolder/myFile.ext`
+  final archiveFileName2LocalPath = <String, String>{};
   // For all of the entries in the archive
   for (final file in archiveFiles) {
     // If it's a file and not a directory
     if (file.isFile) {
-      final path = joinPath(rootDir, file.name);
-      files.add(path);
-      final outputStream = OutputFileStream(path);
+      final targetPath = joinPath(rootDir, file.name);
+      archiveFileName2LocalPath[file.name] = targetPath;
+      final outputStream = OutputFileStream(targetPath);
       // The writeContent method will decompress the file content directly to disk without
       // storing the decompressed data in memory.
       file.writeContent(outputStream);
@@ -34,36 +38,43 @@ Future<void> importSoundpackFromFile(String path) async {
       outputStream.close();
     }
   }
-  // TODO: Save this into LocalSoundpack
+  // ----------------------------------------------------------------
+  // Find sound files of all notes.
   final Map<Note, LocalSoundFile> note2SoundFile = {};
   // TODO: I18n exception.
   // TODO: Handle exception.
-  // ignore: use_function_type_syntax_for_parameters
-  void findAndAddSoundFile(Note note, List<MapEntry<String, ArchiveFile>> name2ArchiveFile) {
-    final candidates = name2ArchiveFile.where((it) => it.key.startsWith(note.id)).toList(growable: false);
+  final fileName2ArchiveFile = archiveFiles.map((it) => MapEntry<String, ArchiveFile>(it.name, it)).toList();
+  for (final note in Note.all) {
+    final candidates = fileName2ArchiveFile.where((it) => it.key.startsWith(note.id)).toList(growable: false);
     if (candidates.isEmpty) throw Exception("Sound file of Note<$note> not found.");
-    if (candidates.length > 1) throw Exception("Ambiguous sound files, $candidates, of Note<$note>.");
+    if (candidates.length > 1) throw Exception("Ambiguous sound audio file detected, $candidates, of Note<$note>.");
     final noteFile = candidates[0].value;
-    for (final format in R.supportedAudioFormat) {
-      if (noteFile.name == "${note.id}.$format") {
-        note2SoundFile[note] = LocalSoundFile(localPath: joinPath(rootDir, noteFile.name));
-        return;
-      }
+    if (R.supportedAudioExtension.contains(extensionOfPath(noteFile.name).toLowerCase())) {
+      note2SoundFile[note] = LocalSoundFile(localPath: joinPath(rootDir, noteFile.name));
+      continue;
     }
     throw Exception("Unsupported audio format, ${noteFile.name}.");
   }
-
-  final fileName2ArchiveFile = archiveFiles.map((it) => MapEntry<String, ArchiveFile>(it.name, it)).toList();
-  for (final note in Note.all) {
-    findAndAddSoundFile(note, fileName2ArchiveFile);
+  // ----------------------------------------------------------------
+  // Finding helper function.
+  String? findCaseInsensitiveLocalFileByName(String targetName) {
+    return archiveFileName2LocalPath.entries.firstWhereOrNull((it) => it.key.toLowerCase() == targetName)?.value;
   }
 
-  final soundpackJson = files.firstWhereOrNull((it) => it.endsWith("soundpack.json"));
+  // ----------------------------------------------------------------
+  // Find `soundpack.json`
+  final soundpackJsonLocalPath = findCaseInsensitiveLocalFileByName("soundpack.json");
   SoundpackMeta? meta;
-  if (soundpackJson != null) {
-    final metaContent = await File(soundpackJson).readAsString();
+  if (soundpackJsonLocalPath != null) {
+    final metaContent = await File(soundpackJsonLocalPath).readAsString();
     meta = Converter.fromUntypedJson(metaContent, SoundpackMeta.fromJson);
   }
+  // ----------------------------------------------------------------
+  // Find the `preview.png`
+  final previewPngLocalPath =findCaseInsensitiveLocalFileByName("soundpack.json");
+
+  // ----------------------------------------------------------------
+  // Make the final LocalSoundpack object.
   final soundpack = LocalSoundpack(uuid, meta ?? SoundpackMeta());
   soundpack.note2SoundFile = note2SoundFile;
   soundpack.addToStorage();
