@@ -35,7 +35,9 @@ class BuiltinSoundpack implements SoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    return BundledSoundFile(pathInAssets: joinPath(R.assetsSoundpackDir, name, "${note.id}.wav"));
+    // Note: Don't use [joinPath] here, assets only slash-separator.
+    // On Windows, [joinPath] will add backslashes.
+    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.id}.wav");
   }
 }
 
@@ -46,6 +48,7 @@ abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertib
 @JsonSerializable()
 class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
+
   @override
   String get displayName => meta.name ?? "No Name";
   @JsonKey()
@@ -102,6 +105,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 @JsonSerializable()
 class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
+
   @override
   String get displayName => meta.name ?? "No Name";
   @JsonKey()
