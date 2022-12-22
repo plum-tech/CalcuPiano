@@ -1,4 +1,6 @@
+import 'package:calcupiano/db.dart';
 import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,16 @@ class LocalSoundpackEditor extends StatefulWidget {
 
 class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   LocalSoundpack get soundpack => widget.soundpack;
-  final $name = TextEditingController();
+  late final $name = TextEditingController(text: widget.soundpack.meta.name);
+  late final $description = TextEditingController(text: widget.soundpack.meta.description);
+  late final $author = TextEditingController(text: widget.soundpack.meta.author);
+  late final $url = TextEditingController(text: widget.soundpack.meta.url);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildMain(context);
@@ -28,15 +39,50 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
         title: (soundpack.meta.name ?? "No name").text(),
         centerTitle: ctx.isCupertino,
         actions: [
-          CupertinoButton(child: "Done".text(), onPressed: () {}),
+          IconButton(icon: Icon(Icons.save_rounded), onPressed: () => onSave(ctx)),
         ],
       ),
       body: buildBody(ctx),
     );
   }
-  Widget buildBody(BuildContext ctx){
-    return Placeholder();
+
+  void onSave(BuildContext ctx) {
+    final meta = widget.soundpack.meta;
+    meta.name = $name.text;
+    meta.description = $description.text;
+    meta.author = $author.text;
+    meta.url = $url.text;
+    soundpack.save();
+    if (!mounted) return;
+    ctx.navigator.pop();
   }
+
+  Widget buildBody(BuildContext ctx) {
+    return Form(
+      child: [
+        $TextField$(
+          controller: $name,
+          labelText: "Soundpack Name",
+        ).padSymmetric(h: 20, v: 5),
+        [
+          $TextField$(
+            controller: $author,
+            labelText: "Author",
+          ).padFromLTRB(20, 5, 5, 5).flexible(flex: 1),
+          $TextField$(
+            controller: $url,
+            labelText: "Url",
+          ).padFromLTRB(5, 5, 20, 5).flexible(flex: 2),
+        ].row(),
+        $TextField$(
+          controller: $description,
+          labelText: "Description",
+          maxLines: 6,
+        ).padSymmetric(h: 20, v: 5),
+      ].column(),
+    );
+  }
+
   @override
   void dispose() {
     super.dispose();

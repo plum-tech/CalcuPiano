@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calcupiano/events.dart';
+import 'package:calcupiano/extension/soundpack.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import '../R.dart';
@@ -103,7 +104,7 @@ class _PianoKeyState extends State<PianoKey> {
       final restoredId = H.currentSoundpackID;
       if (restoredId != null) {
         SoundpackX.resolve(id: restoredId).then((value) {
-          _soundpack = value ?? R.defaultSoundpack;
+          _soundpack = value;
         });
       }
     }

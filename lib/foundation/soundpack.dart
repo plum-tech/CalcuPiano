@@ -127,19 +127,6 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   }
 }
 
-extension SoundpackX on SoundpackProtocol {
-  static Future<SoundpackProtocol> resolve({
-    required String id,
-  }) async {
-    final builtin = R.id2BuiltinSoundpacks[id];
-    if (builtin != null) {
-      return builtin;
-    } else {
-      return H.soundpacks.getSoundpackById(id) ?? R.defaultSoundpack;
-    }
-  }
-}
-
 @JsonSerializable()
 class SoundpackMeta implements Convertible {
   static const String type = "calcupiano.SoundpackMeta";

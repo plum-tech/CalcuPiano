@@ -65,9 +65,9 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
             side: BorderSide(color: Colors.transparent), //the outline color
             borderRadius: BorderRadius.all(Radius.circular(16))),
       ),
-      appBarTheme: const AppBarTheme(elevation: 0),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
+      useMaterial3: true,
       // TODO: Temporarily debug Visual effects on iOS.
       //  platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {

@@ -1,3 +1,5 @@
+import 'package:auto_animated/auto_animated.dart';
+import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/dialog.dart';
 
 import 'package:calcupiano/design/multiplatform.dart';
@@ -103,17 +105,22 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   Widget buildSoundpackList(BuildContext ctx) {
     const builtinList = R.builtinSoundpacks;
     final customList = H.customSoundpackIdList ?? const [];
-    return ListView.builder(
+    return ListView.separated(
       itemCount: builtinList.length + customList.length,
       physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
+        final Widget res;
         if (index < builtinList.length) {
-          return BuiltinSoundpackItem(
+          res = BuiltinSoundpackItem(
             soundpack: builtinList[index],
           );
         } else {
-          return CustomSoundpackItem(id: customList[index - builtinList.length]);
+          res = CustomSoundpackItem(id: customList[index - builtinList.length]);
         }
+        return res;
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const Divider(thickness: 1);
       },
     );
   }
@@ -150,11 +157,10 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
       onTap: () {
         eventBus.fire(SoundpackChangeEvent(soundpack));
       },
-      titleTextStyle: ctx.textTheme.headlineSmall,
-      title: soundpack.name.text(),
+      title: soundpack.name.text(style: ctx.textTheme.headlineSmall),
       subtitle: soundpack.description.text(),
       trailing: _moreMenu(ctx, soundpack),
-    ).inCard();
+    );
   }
 }
 
@@ -217,11 +223,10 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
         eventBus.fire(SoundpackChangeEvent(soundpack));
       },
       selected: isSelected,
-      titleTextStyle: ctx.textTheme.headlineSmall,
-      title: (soundpack.meta.name ?? "No Name").text(),
+      title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
       subtitle: (soundpack.meta.description ?? "No Info").text(),
       trailing: _moreMenu(ctx, soundpack),
-    ).inCard();
+    );
   }
 
   @ListenTo([K.currentSoundpackID])
@@ -232,11 +237,10 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       onTap: () {
         eventBus.fire(SoundpackChangeEvent(soundpack));
       },
-      titleTextStyle: ctx.textTheme.headlineSmall,
-      title: (soundpack.meta.name ?? "No Name").text(),
+      title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
       subtitle: (soundpack.meta.description ?? "No Info").text(),
       trailing: _moreMenu(ctx, soundpack),
-    ).inCard();
+    );
   }
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
@@ -247,7 +251,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       trailing: Icon(Icons.delete_outline, color: ctx.$red$, size: _iconSize).onTap(() async {
         await H.soundpacks.removeSoundpackById(widget.id);
       }),
-    ).inCard();
+    );
   }
 }
 
@@ -268,30 +272,33 @@ Widget _moreMenu(
     position: PopupMenuPosition.under,
     padding: EdgeInsets.zero,
     itemBuilder: (BuildContext context) => [
-      PopupMenuItem(
-        child: ListTile(
-          leading: Icon(Icons.edit),
-          title: "Edit".text(),
-          onTap: () {
-            if (soundpack is LocalSoundpack) {
-              ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
-            } else if (soundpack is UrlSoundpack) {
-              ctx.navigator.push(MaterialPageRoute(builder: (_) => UrlSoundpackEditor(soundpack)));
-            }
-          },
+      if (soundpack is! BuiltinSoundpack)
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: "Edit".text(),
+            onTap: () {
+              ctx.navigator.pop();
+              if (soundpack is LocalSoundpack) {
+                ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
+              } else if (soundpack is UrlSoundpack) {
+                ctx.navigator.push(MaterialPageRoute(builder: (_) => UrlSoundpackEditor(soundpack)));
+              }
+            },
+          ),
         ),
-      ),
-      PopupMenuItem(
-        child: ListTile(
-          leading: Icon(Icons.delete_outline, color: ctx.$red$),
-          title: "Delete".text(style: TextStyle(color: ctx.$red$)),
-          onTap: () async {
-            ctx.navigator.pop();
-            await Future.delayed(const Duration(milliseconds: 500));
-            await H.soundpacks.removeSoundpackById(soundpack.id);
-          },
+      if (soundpack is! BuiltinSoundpack)
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.delete_outline, color: ctx.$red$),
+            title: "Delete".text(style: TextStyle(color: ctx.$red$)),
+            onTap: () async {
+              ctx.navigator.pop();
+              await Future.delayed(const Duration(milliseconds: 500));
+              await H.soundpacks.removeSoundpackById(soundpack.id);
+            },
+          ),
         ),
-      ),
     ],
     child: const Icon(Icons.more_horiz_rounded, size: _iconSize),
   );
