@@ -2,7 +2,6 @@ import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../platform/platform.dart';
 
