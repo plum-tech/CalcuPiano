@@ -34,9 +34,8 @@ Future<void> importSoundpackFromFile(String path) async {
       outputStream.close();
     }
   }
-
-  final soundsDir = archiveFiles.firstWhereOrNull((it) => !it.isFile && it.name == "sounds");
-  final Map<Note, SoundFileProtocol> note2SoundFile = {};
+  // TODO: Save this into LocalSoundpack
+  final Map<Note, LocalSoundFile> note2SoundFile = {};
   // TODO: I18n exception.
   // TODO: Handle exception.
   // ignore: use_function_type_syntax_for_parameters
@@ -54,14 +53,11 @@ Future<void> importSoundpackFromFile(String path) async {
     throw Exception("Unsupported audio format, ${noteFile.name}.");
   }
 
-  if (soundsDir == null) {
-    for (final note in Note.all) {
-      findAndAddSoundFile(note, archiveFiles.map((it) => MapEntry<String, ArchiveFile>(it.name, it)).toList());
-    }
-  } else {
-    // TODO: Implement full structure
-    throw UnimplementedError();
+  final fileName2ArchiveFile = archiveFiles.map((it) => MapEntry<String, ArchiveFile>(it.name, it)).toList();
+  for (final note in Note.all) {
+    findAndAddSoundFile(note, fileName2ArchiveFile);
   }
+
   final soundpackJson = files.firstWhereOrNull((it) => it.endsWith("soundpack.json"));
   SoundpackMeta? meta;
   if (soundpackJson != null) {
@@ -69,5 +65,6 @@ Future<void> importSoundpackFromFile(String path) async {
     meta = Converter.fromUntypedJson(metaContent, SoundpackMeta.fromJson);
   }
   final soundpack = LocalSoundpack(uuid, meta ?? SoundpackMeta());
+  soundpack.note2SoundFile = note2SoundFile;
   H.soundpacks.addSoundpack(soundpack);
 }

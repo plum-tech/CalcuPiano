@@ -1,12 +1,14 @@
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 class R {
   R._();
 
-  static final version = Version(0, 0, 1);
+  static final version = Version(1, 0, 0);
   static late final String appDir;
+  static PackageInfo? packageInfo;
 
   /// The soundpack directory under `assets` directory.
   static const assetsSoundpackDir = "soundpack";
@@ -26,7 +28,7 @@ class R {
   static String genBuiltinSoundpackId(String name) => "$builtSoundpackIdNs.$name";
   static List<String> supportedAudioFormat = const [
     "wav",
-    "mp3",
+    "ogg",
   ];
 
   static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;

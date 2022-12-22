@@ -14,34 +14,48 @@ class K {
   static const isDarkMode = "Is-Dark-Mode";
 }
 
-class H {
-  H._();
+final H = HImpl._();
+
+class HImpl {
+  HImpl._();
 
   /// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
   /// see [K], application-wide.
-  static late Box<dynamic> box;
+  late Box<dynamic> box;
 
   /// [SoundpackStorage] contains all external soundpacks.
-  static late SoundpackStorage soundpacks;
+  late SoundpackStorage soundpacks;
 
-  static String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
+  String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
 
-  static set currentSoundpackID(String? id) => box.put(K.currentSoundpackID, id);
+  set currentSoundpackID(String? id) => box.put(K.currentSoundpackID, id);
 
-  static List<String>? get customSoundpackIdList => box.get(K.customSoundpackIdList) as List<String>?;
+  List<String>? get customSoundpackIdList => box.get(K.customSoundpackIdList) as List<String>?;
 
-  static set customSoundpackIdList(List<String>? list) => box.put(K.customSoundpackIdList, list);
+  set customSoundpackIdList(List<String>? list) => box.put(K.customSoundpackIdList, list);
 
-  static bool? get isDarkMode => box.get(K.isDarkMode) as bool?;
+  bool? get isDarkMode => box.get(K.isDarkMode) as bool?;
 
-  static set isDarkMode(bool? newVal) => box.put(K.isDarkMode, newVal);
+  set isDarkMode(bool? newVal) => box.put(K.isDarkMode, newVal);
 
-  static ValueListenable<Box<dynamic>> listenToCurrentSoundpackID() {
+  ValueListenable<Box<dynamic>> listenToCurrentSoundpackID() {
     return box.listenable(keys: const [K.currentSoundpackID]);
   }
 
-  static ValueListenable<Box<dynamic>> listenToCustomSoundpackIdList() {
+  ValueListenable<Box<dynamic>> listenToCustomSoundpackIdList() {
     return box.listenable(keys: const [K.customSoundpackIdList]);
+  }
+}
+
+extension HImplX on HImpl {
+  void ensureCurrentSoundpackIdValid() {
+    final idList = H.customSoundpackIdList ?? [];
+    final current = currentSoundpackID;
+    if (current == null) {
+      currentSoundpackID = R.defaultSoundpack.id;
+    } else if (!idList.contains(current)) {
+      currentSoundpackID = idList.isNotEmpty ? idList.first : R.defaultSoundpack.id;
+    }
   }
 }
 

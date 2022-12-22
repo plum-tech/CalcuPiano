@@ -21,30 +21,6 @@ It should be:
 
 ```
 MySoundpack.zip/  # Any name you want
-    sounds/
-        1.wav  # Fixed name
-        2.wav
-        3.wav
-        4.wav
-        5.wav
-        6.wav
-        7.wav
-        8.wav
-        9.wav
-        div.wav
-        eq.wav
-        minus.wav
-        mul.wav
-        plus.wav
-    sheets/
-        MySheetMusic.txt  # Any name you want
-    icon.png  # Optional
-    preview.png # Optional
-    soundpack.json # Essential
-```
-OR
-```
-MySoundpack.zip/  # Any name you want
     1.wav  # Fixed name
     2.wav
     3.wav
@@ -59,12 +35,12 @@ MySoundpack.zip/  # Any name you want
     minus.wav
     mul.wav
     plus.wav
+    sheets/
+        MySheetMusic.txt  # Any name you want
     icon.png  # Optional
     preview.png # Optional
     soundpack.json # Essential
 ```
-
-- `sounds/` directory and the audio files are indispensable, and the names cannot be wrong.
 
 - `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
   in the `Sheets` page. Users can also check which soundpack they come from in the `Soundpack` page.
@@ -132,7 +108,7 @@ Users cannot modify a built-in soundpack, but they can duplicate it to a `LocalS
 
 - It must have an ID to be unambiguous from other soundpacks.
 - It represents a real soundpack.zip file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
-- It can resolve the `SoundFile` of a `Note` to either `BundledSoundFile` or `LocalSoundFile`.
+- It can resolve the `SoundFile` of a `Note` to `LocalSoundFile`.
 - Modifiable.
 - Deletable.
 
@@ -161,11 +137,9 @@ There is no need to store, even though they can resolve a `BundledSoundFile`.
 
 **[Unavailable on CalcuPiano Web]**
 
-It can resolve a `Note` to either `BundledSoundFile` or `LocalSoundFile`, so the serialization is necessary.
-
 A `LocalSoundpack` object is serialized to json, stored in Hive with its `id`.
 
-The `SoundFile`s, either `BundledSoundFile` or `LocalSoundFile`, it contains will also be serialized together.
+The `LocalSoundFile` it contains will also be serialized together.
 Thus, the deserialization will find the right one, then it can resolve a correct audio file, in assets or file system.
 
 Notably, to import a soundpack from URL or local file will unpack those audio files and sheets into file system.

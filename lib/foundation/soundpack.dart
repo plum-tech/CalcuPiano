@@ -30,7 +30,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    return BundledSoundFile(pathInAssets: "${R.assetsSoundpackDir}/$name/${note.id}.wav");
+    return BundledSoundFile(pathInAssets: joinPath(R.assetsSoundpackDir, name, "${note.id}.wav"));
   }
 }
 
@@ -41,8 +41,12 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
-  @JsonKey()
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
+
+  /// A LocalSoundpack can only hold [LocalSoundFile].
+  @JsonKey(fromJson: _note2FilesFromJson, toJson: _note2FilesToJson)
+  Map<Note, LocalSoundFile> note2SoundFile = {};
 
   LocalSoundpack(this.uuid, this.meta);
 
@@ -52,7 +56,11 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    return LocalSoundFile(localPath: joinPath(R.soundpacksRootDir, uuid, note.id + ".wav"));
+    final file = note2SoundFile[note];
+    if (file == null) {
+      throw NoSoundFileOfNoteException(note);
+    }
+    return file;
   }
 
   factory LocalSoundpack.fromJson(Map<String, dynamic> json) => _$LocalSoundpackFromJson(json);
@@ -64,6 +72,14 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 
   @override
   int get version => 1;
+
+  static Map<String, dynamic> _note2FilesToJson(Map<Note, LocalSoundFile> note2Files) {
+    return note2Files.map((key, value) => MapEntry(key.id, value));
+  }
+
+  static Map<Note, LocalSoundFile> _note2FilesFromJson(Map<String, dynamic> note2Files) {
+    return note2Files.map((key, value) => MapEntry(Note.of(key), value));
+  }
 }
 
 @JsonSerializable()
@@ -71,8 +87,12 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
-  @JsonKey()
+  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
+
+  /// A LocalSoundpack can only hold [LocalSoundFile].
+  @JsonKey(fromJson: _note2FilesFromJson, toJson: _note2FilesToJson)
+  Map<Note, SoundFileProtocol> note2SoundFile = {};
 
   UrlSoundpack(this.uuid, this.meta);
 
@@ -82,7 +102,11 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
 
   @override
   Future<SoundFileProtocol> resolve(Note note) async {
-    throw UnimplementedError();
+    final file = note2SoundFile[note];
+    if (file == null) {
+      throw NoSoundFileOfNoteException(note);
+    }
+    return file;
   }
 
   factory UrlSoundpack.fromJson(Map<String, dynamic> json) => _$UrlSoundpackFromJson(json);
@@ -94,17 +118,25 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
 
   @override
   int get version => 1;
+
+  static Map<String, dynamic> _note2FilesToJson(Map<Note, SoundFileProtocol> note2Files) {
+    return note2Files.map((key, value) => MapEntry(key.id, value));
+  }
+
+  static Map<Note, SoundFileProtocol> _note2FilesFromJson(Map<String, dynamic> note2Files) {
+    return note2Files.map((key, value) => MapEntry(Note.of(key), value));
+  }
 }
 
 extension SoundpackX on SoundpackProtocol {
-  static Future<SoundpackProtocol?> resolve({
+  static Future<SoundpackProtocol> resolve({
     required String id,
   }) async {
     final builtin = R.id2BuiltinSoundpacks[id];
     if (builtin != null) {
       return builtin;
     } else {
-      return H.soundpacks.getSoundpackById(id);
+      return H.soundpacks.getSoundpackById(id) ?? R.defaultSoundpack;
     }
   }
 }
@@ -134,4 +166,10 @@ class SoundpackMeta implements Convertible {
 
   @override
   int get version => 1;
+}
+
+class NoSoundFileOfNoteException implements Exception {
+  final Note note;
+
+  NoSoundFileOfNoteException(this.note);
 }
