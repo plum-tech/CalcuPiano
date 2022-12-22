@@ -124,17 +124,20 @@ class _PianoKeyState extends State<PianoKey> {
 
   Widget buildKey(BuildContext context) {
     final theme = Provider.of<KeyboardThemeModel?>(context);
-    return AutoSizeText(
+    Widget txt = AutoSizeText(
       note.numberedText,
       style: TextStyle(fontSize: 24),
-    )
-        .center()
-        .inCard(
-          elevation: theme?.data.elevation,
-        )
-        .gestureDetect(onTapDown: (_) async {
-      await playSound();
-    });
+    ).center();
+    txt = InkWell(
+      borderRadius: (context.theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius?,
+      child: txt,
+      onTapDown: (_) async {
+        await playSound();
+      },
+    );
+    return txt.inCard(
+      elevation: theme?.data.elevation,
+    );
   }
 
   Future<void> playSound() async {

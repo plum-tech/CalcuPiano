@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:collection';
+
 // Thanks to [Overlay Support](https://github.com/boyan01/overlay_support)
+final GlobalKey<TopState> _keyFinder = GlobalKey(debugLabel: 'overlay_support');
 
 typedef TopBuilder = Widget Function(BuildContext context);
 
@@ -57,6 +59,14 @@ TopEntry showTop(
   top.addEntry(topEntry, key: overlayKey);
   overlay.insert(entry);
   return topEntry;
+}
+
+TopEntry? getTopEntry({
+  required Key key,
+  BuildContext? context,
+}) {
+  final top = findTopState(context);
+  return top?.getEntry(key: key);
 }
 
 abstract class TopEntry extends CloseableProtocol {
@@ -136,8 +146,6 @@ class KeyedTop extends StatelessWidget {
     return child;
   }
 }
-
-final GlobalKey<TopState> _keyFinder = GlobalKey(debugLabel: 'overlay_support');
 
 TopState? findTopState([BuildContext? context]) {
   if (context == null) {

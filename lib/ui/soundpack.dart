@@ -1,14 +1,12 @@
 import 'package:calcupiano/design/dialog.dart';
 
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/actions.dart';
-import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
-import 'package:calcupiano/ui/soundpack_preview.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -31,53 +29,59 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: "Soundpack".text(),
-        centerTitle: context.isCupertino,
-        actions: [
-          PullDownButton(
-            itemBuilder: (context) => [
-              PullDownMenuItem(
-                icon: Icons.create,
-                title: 'Create a soundpack',
-                onTap: () {},
-              ),
-              const PullDownMenuDivider(),
-              PullDownMenuTitle(
-                title: "Import Soundpack".text(),
-              ),
-              PullDownMenuActionsRow.medium(
-                items: [
-                  PullDownMenuItem(
-                    enabled: false,
-                    onTap: () {},
-                    title: 'Link',
-                    icon: Icons.link,
-                  ),
-                  if (!kIsWeb)
+    return WillPopScope(
+      onWillPop: () async {
+        StageManager.closeSoundpackPreview(ctx: context);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: "Soundpack".text(),
+          centerTitle: context.isCupertino,
+          actions: [
+            PullDownButton(
+              itemBuilder: (context) => [
+                PullDownMenuItem(
+                  icon: Icons.create,
+                  title: 'Create a soundpack',
+                  onTap: () {},
+                ),
+                const PullDownMenuDivider(),
+                PullDownMenuTitle(
+                  title: "Import Soundpack".text(),
+                ),
+                PullDownMenuActionsRow.medium(
+                  items: [
                     PullDownMenuItem(
-                      onTap: () async {
-                        await importSoundpackFromFilePicker();
-                      },
-                      title: 'Local File',
-                      icon: Icons.storage,
-                    )
-                ],
-              )
-            ],
-            position: PullDownMenuPosition.automatic,
-            buttonBuilder: (context, showMenu) => IconButton(
-              onPressed: showMenu,
-              icon: const Icon(
-                CupertinoIcons.ellipsis_circle,
-                size: 28,
+                      enabled: false,
+                      onTap: () {},
+                      title: 'Link',
+                      icon: Icons.link,
+                    ),
+                    if (!kIsWeb)
+                      PullDownMenuItem(
+                        onTap: () async {
+                          await importSoundpackFromFilePicker();
+                        },
+                        title: 'Local File',
+                        icon: Icons.storage,
+                      )
+                  ],
+                )
+              ],
+              position: PullDownMenuPosition.automatic,
+              buttonBuilder: (context, showMenu) => IconButton(
+                onPressed: showMenu,
+                icon: const Icon(
+                  CupertinoIcons.ellipsis_circle,
+                  size: 28,
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
+        body: buildBody(),
       ),
-      body: buildBody(),
     );
   }
 
@@ -283,9 +287,7 @@ Widget _moreMenu(
           title: "Preview".text(),
           onTap: () async {
             ctx.navigator.pop();
-            late final CloseableProtocol closeable;
-            final entry = showTop(key:const ValueKey("Preview"),(context) => SoundpackPreviewTop(soundpack, closeable: closeable));
-            closeable = CloseableDelegate(self: entry);
+            StageManager.showSoundpackPreviewOf(soundpack, ctx: context);
           },
         ),
       ),
@@ -328,7 +330,11 @@ Widget _moreMenu(
           ),
         ),
     ],
-    child: const Icon(Icons.more_horiz_rounded, size: _iconSize),
+    child: IgnorePointer(
+        child: IconButton(
+      icon: const Icon(Icons.more_horiz_rounded, size: _iconSize),
+      onPressed: () {},
+    )),
   );
   return btn;
 }

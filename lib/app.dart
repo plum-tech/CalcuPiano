@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/overlay.dart';
+import 'package:calcupiano/events.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
@@ -39,23 +40,27 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return wrapWithTop(
-      wrapWithScreenUtil(MultiProvider(
-        providers: [
-          ChangeNotifierProvider<CalcuPianoThemeModel>(
-              create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
-        ],
-        child: Consumer<CalcuPianoThemeModel>(
-          builder: (_, model, __) {
-            return MaterialApp(
-              theme: bakeTheme(context, ThemeData.light(), model.data),
-              darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
-              themeMode: model.resolveThemeMode(),
-              home: const CalcuPianoHomePage(),
-            );
-          },
+    return wrapWithScreenUtil(
+      wrapWithTop(
+        wrapWithOrientationWatcher(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider<CalcuPianoThemeModel>(
+                  create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+            ],
+            child: Consumer<CalcuPianoThemeModel>(
+              builder: (_, model, __) {
+                return MaterialApp(
+                  theme: bakeTheme(context, ThemeData.light(), model.data),
+                  darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
+                  themeMode: model.resolveThemeMode(),
+                  home: const CalcuPianoHomePage(),
+                );
+              },
+            ),
+          ),
         ),
-      )),
+      ),
     );
   }
 
@@ -77,6 +82,10 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
     );
+  }
+
+  Widget wrapWithOrientationWatcher(Widget mainBody) {
+    return OrientationWatcher(child: mainBody);
   }
 
   Widget wrapWithTop(Widget mainBody) {
@@ -222,6 +231,11 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
       ].stack(),
     );
   }
+  @override
+  void dispose() {
+    super.dispose();
+    ctrl.dispose();
+  }
 }
 
 class HomeLandscape extends StatefulWidget {
@@ -348,5 +362,30 @@ class CalcuPianoDrawer extends HookWidget {
         ].column(),
       ),
     );
+  }
+}
+
+class OrientationWatcher extends StatefulWidget {
+  final Widget child;
+
+  const OrientationWatcher({super.key, required this.child});
+
+  @override
+  State<OrientationWatcher> createState() => _OrientationWatcherState();
+}
+
+class _OrientationWatcherState extends State<OrientationWatcher> {
+  Size? lastSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = context.mediaQuery.size;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (size != lastSize) {
+        eventBus.fire(OrientationChangeEvent(Orientation.portrait));
+        lastSize = size;
+      }
+    });
+    return widget.child;
   }
 }

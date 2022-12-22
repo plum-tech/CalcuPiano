@@ -34,5 +34,13 @@ class R {
   static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;
 
   static String get hiveDir => joinPath(localStorageDir, "hive");
-  static String get soundpacksRootDir => joinPath(localStorageDir,"soundpack");
+
+  static String get soundpacksRootDir => joinPath(localStorageDir, "soundpack");
+
+  /// If you know width:
+  ///   height = width * [soundpackWindowAspectRatio]
+  ///
+  /// If you know height:
+  ///   width = height / [soundpackWindowAspectRatio]
+  static const soundpackWindowAspectRatio = 4 / 3;
 }
