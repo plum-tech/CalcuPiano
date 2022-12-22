@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
 import 'package:calcupiano/converter.dart';
+import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,7 +17,7 @@ export 'foundation/sound_file.dart';
 
 final Log = Logger();
 const UUID = Uuid();
-
+final Web = Dio();
 void initFoundation() {
   initConverter();
 }

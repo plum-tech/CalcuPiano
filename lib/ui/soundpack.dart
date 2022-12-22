@@ -287,6 +287,16 @@ Widget _moreMenu(
             },
           ),
         ),
+      PopupMenuItem(
+        child: ListTile(
+          leading: Icon(Icons.copy_outlined),
+          title: "Duplicate".text(),
+          onTap: () {
+            ctx.navigator.pop();
+            duplicateSoundpack(soundpack);
+          },
+        ),
+      ),
       if (soundpack is! BuiltinSoundpack)
         PopupMenuItem(
           child: ListTile(

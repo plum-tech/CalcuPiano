@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
-import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/r.dart';
+import 'package:calcupiano/platform/platform.dart';
+import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'sound_file.g.dart';
 
@@ -11,6 +12,9 @@ part 'sound_file.g.dart';
 /// It could be the ref of a bundled file, or a real local file.
 abstract class SoundFileProtocol implements Convertible {
   Future<void> loadInto(AudioPlayer player);
+
+  /// Return the target path.
+  Future<String> copyToFolder(String pathOfFolder);
 }
 
 /// A bundled sound file in assets.
@@ -36,6 +40,16 @@ class BundledSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  Future<String> copyToFolder(String pathOfFolder) async {
+    ByteData data = await rootBundle.load("assets/$pathInAssets");
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+
+    String targetFile = joinPath(pathOfFolder, basenameOfPath(pathInAssets));
+    await File(targetFile).writeAsBytes(bytes);
+    return targetFile;
+  }
 }
 
 @JsonSerializable()
@@ -60,6 +74,13 @@ class LocalSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  Future<String> copyToFolder(String pathOfFolder) async {
+    String targetFile = joinPath(pathOfFolder, basenameOfPath(localPath));
+    await File(localPath).copy(targetFile);
+    return targetFile;
+  }
 }
 
 @JsonSerializable()
@@ -85,4 +106,12 @@ class UrlSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  Future<String> copyToFolder(String pathOfFolder) async {
+    // TODO: How can I know the note name and extension?
+    String targetFile = joinPath(pathOfFolder, basenameOfPath(url));
+    await Web.download(url, targetFile);
+    return targetFile;
+  }
 }

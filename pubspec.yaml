@@ -62,6 +62,7 @@ dependencies:
   flutter_screenutil: ^5.6.0
   package_info_plus: ^3.0.2
   auto_animated: ^3.1.0
+  dio: ^4.0.6
 
 dev_dependencies:
   flutter_test:

@@ -16,7 +16,11 @@ extension SoundpackX on SoundpackProtocol {
 }
 
 extension ExternalSoundpackX on ExternalSoundpackProtocol {
-  save() {
+  void save() {
     H.soundpacks.setSoundpackById(this);
+  }
+
+  void addToStorage() {
+    H.soundpacks.addSoundpack(this);
   }
 }

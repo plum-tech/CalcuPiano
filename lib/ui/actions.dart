@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:calcupiano/db.dart';
+import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
@@ -66,5 +66,29 @@ Future<void> importSoundpackFromFile(String path) async {
   }
   final soundpack = LocalSoundpack(uuid, meta ?? SoundpackMeta());
   soundpack.note2SoundFile = note2SoundFile;
-  H.soundpacks.addSoundpack(soundpack);
+  soundpack.addToStorage();
+}
+
+Future<void> duplicateSoundpack(SoundpackProtocol source) async {
+  final uuid = UUID.v4();
+  final SoundpackMeta meta;
+  if (source is ExternalSoundpackProtocol) {
+    final sourceName = source.meta.name;
+    // TODO: L10n
+    meta = source.meta.copyWith(
+      name: sourceName == null ? null : "$sourceName~Copy",
+    );
+  } else {
+    meta = SoundpackMeta();
+  }
+  final Map<Note, LocalSoundFile> note2SoundFiles = {};
+  final rootDir = joinPath(R.soundpacksRootDir, uuid);
+  await Directory(rootDir).create(recursive: true);
+  for (final note in Note.all) {
+    final file = await source.resolve(note);
+    final localFilePath = await file.copyToFolder(rootDir);
+    note2SoundFiles[note] = LocalSoundFile(localPath: localFilePath);
+  }
+  final soundpack = LocalSoundpack(uuid, meta)..note2SoundFile = note2SoundFiles;
+  soundpack.addToStorage();
 }

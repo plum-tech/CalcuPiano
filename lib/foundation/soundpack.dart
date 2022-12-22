@@ -33,13 +33,16 @@ class BuiltinSoundpack implements SoundpackProtocol {
   }
 }
 
-abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {}
+abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {
+  SoundpackMeta get meta;
+}
 
 @JsonSerializable()
 class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
   @JsonKey()
   final String uuid;
+  @override
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
   SoundpackMeta meta;
 
@@ -79,6 +82,13 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   static Map<Note, LocalSoundFile> _note2FilesFromJson(Map<String, dynamic> note2Files) {
     return note2Files.map((key, value) => MapEntry(Note.of(key), value));
   }
+
+  LocalSoundpack copyWith({
+    String? uuid,
+    SoundpackMeta? meta,
+    Map<Note, LocalSoundFile>? note2SoundFile,
+  }) =>
+      LocalSoundpack(uuid ?? this.uuid, meta ?? this.meta)..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
 }
 
 @JsonSerializable()
@@ -87,6 +97,7 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   @JsonKey()
   final String uuid;
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  @override
   SoundpackMeta meta;
 
   /// A LocalSoundpack can only hold [LocalSoundFile].
@@ -152,6 +163,20 @@ class SoundpackMeta implements Convertible {
 
   @override
   int get version => 1;
+
+  SoundpackMeta copyWith({
+    String? name,
+    String? description,
+    String? author,
+    String? url,
+    Map<String, Map<String, String>>? l10n,
+  }) =>
+      SoundpackMeta()
+        ..name = name ?? this.name
+        ..description = description ?? this.description
+        ..author = author ?? this.author
+        ..url = url ?? this.url
+        ..l10n = l10n ?? this.l10n;
 }
 
 class NoSoundFileOfNoteException implements Exception {
