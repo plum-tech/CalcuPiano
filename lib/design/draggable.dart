@@ -16,13 +16,16 @@ class OmniDraggable extends StatefulWidget {
 class _OmniDraggableState extends State<OmniDraggable> with SingleTickerProviderStateMixin {
   var _x = 0.0;
   var _y = 0.0;
-  final childKey = GlobalKey();
+  final _mainBodyKey = GlobalKey();
+
+  // Hide the first frame to avoid position flash
+  double opacity = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final ctx = childKey.currentContext;
+      final ctx = _mainBodyKey.currentContext;
       if (ctx != null) {
         final box = ctx.findRenderObject();
         if (box is RenderBox) {
@@ -39,21 +42,23 @@ class _OmniDraggableState extends State<OmniDraggable> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return [
-      Positioned(
-          left: _x,
-          top: _y,
-          child: Listener(
-            key: childKey,
-            child: widget.child,
-            onPointerMove: (d) {
-              setState(() {
-                _x += d.delta.dx;
-                _y += d.delta.dy;
-              });
-            },
-          ))
-    ].stack();
+    return Opacity(
+        opacity: opacity,
+        child: [
+          Positioned(
+              key: _mainBodyKey,
+              left: _x,
+              top: _y,
+              child: Listener(
+                child: widget.child,
+                onPointerMove: (d) {
+                  setState(() {
+                    _x += d.delta.dx;
+                    _y += d.delta.dy;
+                  });
+                },
+              ))
+        ].stack());
   }
 }
 

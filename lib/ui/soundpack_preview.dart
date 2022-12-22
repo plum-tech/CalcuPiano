@@ -21,7 +21,8 @@ class _SoundpackPreviewTopState extends State<SoundpackPreviewTop> {
   var _x = 0.0;
   var _y = 0.0;
   final _mainBodyKey = GlobalKey();
-
+  // Hide the first frame to avoid position flash
+  double opacity = 0;
   @override
   void initState() {
     super.initState();
@@ -35,6 +36,7 @@ class _SoundpackPreviewTopState extends State<SoundpackPreviewTop> {
           setState(() {
             _x = (selfSize.width - childSize.width) / 2;
             _y = (selfSize.height - childSize.height) / 2;
+            opacity= 1.0;
           });
         }
       }
@@ -43,24 +45,27 @@ class _SoundpackPreviewTopState extends State<SoundpackPreviewTop> {
 
   @override
   Widget build(BuildContext context) {
-    return [
-      Positioned(
-          key: _mainBodyKey,
-          left: _x,
-          top: _y,
-          child: [
-            Listener(
-              child: buildWindowHead(context),
-              onPointerMove: (d) {
-                setState(() {
-                  _x += d.delta.dx;
-                  _y += d.delta.dy;
-                });
-              },
-            ).sized(w: 350),
-            buildKeyboard(),
-          ].column().inCard()),
-    ].stack();
+    return Opacity(
+      opacity: opacity,
+      child: [
+        Positioned(
+            key: _mainBodyKey,
+            left: _x,
+            top: _y,
+            child: [
+              Listener(
+                child: buildWindowHead(context),
+                onPointerMove: (d) {
+                  setState(() {
+                    _x += d.delta.dx;
+                    _y += d.delta.dy;
+                  });
+                },
+              ).sized(w: 350),
+              buildKeyboard(),
+            ].column().inCard()),
+      ].stack().safeArea(),
+    );
   }
 
   Widget buildWindowHead(BuildContext ctx) {

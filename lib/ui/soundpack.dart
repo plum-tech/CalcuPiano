@@ -284,7 +284,7 @@ Widget _moreMenu(
           onTap: () async {
             ctx.navigator.pop();
             late final CloseableProtocol closeable;
-            final entry = showTop((context) => SoundpackPreviewTop(soundpack, closeable: closeable));
+            final entry = showTop(key:const ValueKey("Preview"),(context) => SoundpackPreviewTop(soundpack, closeable: closeable));
             closeable = CloseableDelegate(self: entry);
           },
         ),
