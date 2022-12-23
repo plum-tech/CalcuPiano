@@ -186,7 +186,9 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
         title: soundpack.displayName.text(style: ctx.textTheme.titleLarge),
         subtitle: [
           "Liplum".text(style: ctx.textTheme.bodyLarge),
-          "This is description".text(style: ctx.textTheme.bodySmall),
+          "This is a description.".text(
+            style: ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          ),
         ].column(caa: CrossAxisAlignment.start),
       ),
       ButtonBar(

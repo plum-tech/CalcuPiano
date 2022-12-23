@@ -28,12 +28,7 @@ class BundledImageFile with BundledFileMixin implements ImageFileProtocol {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network( 'https://source.unsplash.com/random/800x600?house');
     return Image.asset(path);
-    var cardImage = NetworkImage(
-        'https://source.unsplash.com/random/800x600?house');
-    return Ink.image(image: cardImage);
-    return Ink.image(image:  AssetImage(path));
   }
 
   factory BundledImageFile.fromJson(Map<String, dynamic> json) => _$BundledImageFileFromJson(json);
