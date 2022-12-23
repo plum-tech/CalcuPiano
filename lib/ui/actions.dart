@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/foundation/image_file.dart';
 import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
 import 'package:collection/collection.dart';
 import 'package:archive/archive_io.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// For the file format of a Soundpack, please check the [Soundpack Specification](https://github.com/liplum/calcupiano/specifications/Soundpack.md).
 Future<void> importSoundpackFromFile(String path) async {
@@ -72,8 +72,8 @@ Future<void> importSoundpackFromFile(String path) async {
   // ----------------------------------------------------------------
   // Find the `preview.png`
   final previewPngLocalPath = findCaseInsensitiveLocalFileByName("preview.png");
-  LocalImageFile? previewImg ;
-  if(previewPngLocalPath != null){
+  LocalImageFile? previewImg;
+  if (previewPngLocalPath != null) {
     previewImg = LocalImageFile(localPath: previewPngLocalPath);
   }
   // ----------------------------------------------------------------
@@ -82,6 +82,31 @@ Future<void> importSoundpackFromFile(String path) async {
   soundpack.preview = previewImg;
   soundpack.note2SoundFile = note2SoundFile;
   soundpack.addSnapshotToStorage();
+}
+
+/// For the file format of a Soundpack, please check the [Soundpack Specification](https://github.com/liplum/calcupiano/specifications/Soundpack.md).
+/// Preconditions:
+/// - Ensure audio files of all essential notes are mounted in [LocalSoundpack.note2SoundFile].
+/// Postconditions:
+/// - The packed soundpack will be saved in temporary folder, see [getTemporaryDirectory].
+///
+/// return the path of `soundpack.zip` archive.
+Future<String> packageLocalSoundpack(LocalSoundpack soundpack) async {
+  final archiveTargetPath = joinPath(R.tmpDir, "${soundpack.uuid}.zip");
+  final rootDir = joinPath(R.soundpacksRootDir,soundpack.uuid);
+  // ----------------------------------------------------------------
+  // Save `soundpack.json`
+  //soundpack.
+  final soundpackJson = Converter.toUntypedJson(soundpack.meta, indent: 2);
+  if (soundpackJson != null) {
+    await File(joinPath(rootDir,"soundpack.json")).writeAsString(soundpackJson);
+  }
+  // ----------------------------------------------------------------
+  // Zipping
+  final archive = ZipFileEncoder();
+  archive.zipDirectory(Directory(rootDir), filename: archiveTargetPath);
+  // ----------------------------------------------------------------
+  return archiveTargetPath;
 }
 
 Future<void> duplicateSoundpack(SoundpackProtocol source) async {

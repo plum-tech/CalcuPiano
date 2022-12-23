@@ -59,7 +59,14 @@ void main() {
       assert((restored![0] as BundledSoundFile).path == "MIGRATED");
     });
   });
+  group("Stuff", () {
+    test("Test generic inheritance checking", () {
+      assert(isSubtype<String, Convertible>() == false);
+      assert(isSubtype<BundledSoundFile, Convertible>() == true);
+    });
+  });
 }
+
 
 void workWithGeneratedAdapter() {
   final from = {

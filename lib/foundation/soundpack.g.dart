@@ -47,10 +47,18 @@ SoundpackMeta _$SoundpackMetaFromJson(Map<String, dynamic> json) =>
       ..author = json['author'] as String?
       ..url = json['url'] as String?;
 
-Map<String, dynamic> _$SoundpackMetaToJson(SoundpackMeta instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-      'author': instance.author,
-      'url': instance.url,
-    };
+Map<String, dynamic> _$SoundpackMetaToJson(SoundpackMeta instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('name', instance.name);
+  writeNotNull('description', instance.description);
+  writeNotNull('author', instance.author);
+  writeNotNull('url', instance.url);
+  return val;
+}

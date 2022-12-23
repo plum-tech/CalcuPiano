@@ -8,6 +8,7 @@ class R {
 
   static final version = Version(1, 0, 0);
   static late final String appDir;
+  static late final String tmpDir;
   static PackageInfo? packageInfo;
 
   /// The soundpack directory under `assets` directory.

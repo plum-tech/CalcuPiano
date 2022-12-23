@@ -373,6 +373,17 @@ Widget _moreMenu(
           },
         ),
       ),
+      if (soundpack is LocalSoundpack)
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.upload_rounded),
+            title: "Export".text(),
+            onTap: () async {
+              ctx.navigator.pop();
+              await packageLocalSoundpack(soundpack);
+            },
+          ),
+        ),
       if (soundpack is! BuiltinSoundpack)
         PopupMenuItem(
           child: ListTile(

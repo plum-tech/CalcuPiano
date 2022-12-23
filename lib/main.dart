@@ -11,8 +11,10 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocDire = await getApplicationDocumentsDirectory();
-  R.appDir = appDocDire.path;
+  final appDocDir = await getApplicationDocumentsDirectory();
+  R.appDir = appDocDir.path;
+  final tmpDir = await getTemporaryDirectory();
+  R.tmpDir = tmpDir.path;
   try {
     R.packageInfo = await PackageInfo.fromPlatform();
   } catch (_) {}

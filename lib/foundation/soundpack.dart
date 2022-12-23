@@ -115,7 +115,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
 
 @JsonSerializable()
 class UrlSoundpack implements ExternalSoundpackProtocol {
-  static const String type = "calcupiano.LocalSoundpack";
+  static const String type = "calcupiano.UrlSoundpack";
 
   @override
   String get displayName => meta.name ?? "No Name";
@@ -185,13 +185,13 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
 @JsonSerializable()
 class SoundpackMeta implements Convertible {
   static const String type = "calcupiano.SoundpackMeta";
-  @JsonKey()
+  @JsonKey(includeIfNull: false)
   String? name;
-  @JsonKey()
+  @JsonKey(includeIfNull: false)
   String? description;
-  @JsonKey()
+  @JsonKey(includeIfNull: false)
   String? author;
-  @JsonKey()
+  @JsonKey(includeIfNull: false)
   String? url;
 
   SoundpackMeta();

@@ -2,8 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/platform/platform.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/widget/text_span.dart';
 
@@ -40,18 +40,26 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
   }
 
   Widget buildBody(BuildContext ctx) {
-    final note2LocalFileList = note2LocalFile.entries.toList();
     return ListView.separated(
       physics: const RangeMaintainingScrollPhysics(),
-      itemCount: note2LocalFileList.length,
+      itemCount: Note.all.length,
       itemBuilder: (ctx, index) {
-        final p = note2LocalFileList[index];
-        return _SoundFileRow(note: p.key, file: p.value, edited: soundpack);
+        final note = Note.all[index];
+        return _SoundFileRow(
+          note: note,
+          edited: soundpack,
+          getFile: () => note2LocalFile[note],
+          setFile: (f) {
+            if (f == null) {
+              note2LocalFile.remove(note);
+            } else {
+              note2LocalFile[note] = f;
+            }
+          },
+        );
       },
       separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          thickness: 1,
-        );
+        return const Divider(thickness: 1);
       },
     );
   }
@@ -59,14 +67,16 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
 
 class _SoundFileRow extends StatefulWidget {
   final Note note;
-  final LocalSoundFile file;
+  final LocalSoundFile? Function() getFile;
+  final void Function(LocalSoundFile? newFile) setFile;
   final SoundpackProtocol edited;
 
   const _SoundFileRow({
     super.key,
     required this.edited,
     required this.note,
-    required this.file,
+    required this.getFile,
+    required this.setFile,
   });
 
   @override
@@ -76,7 +86,9 @@ class _SoundFileRow extends StatefulWidget {
 class _SoundFileRowState extends State<_SoundFileRow> {
   Note get note => widget.note;
 
-  LocalSoundFile get file => widget.file;
+  LocalSoundFile? get file => widget.getFile();
+
+  set file(LocalSoundFile? newFile) => widget.setFile(newFile);
 
   SoundpackProtocol get edited => widget.edited;
 
@@ -86,31 +98,12 @@ class _SoundFileRowState extends State<_SoundFileRow> {
   }
 
   Widget buildBody(BuildContext ctx) {
+    final sound = file;
     return IntrinsicHeight(
       child: [
         [
-          Text.rich([
-            TextSpan(text: note.numberedText),
-            const WidgetSpan(child: Icon(Icons.music_note)),
-          ].textSpan(style: ctx.textTheme.headlineLarge))
-              .padAll(5)
-              .center(),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () async {
-                  final player = AudioPlayer();
-                  await file.loadInto(player);
-                  await player.setPlayerMode(PlayerMode.lowLatency);
-                  await player.resume();
-                },
-                icon: Icon(Icons.play_arrow),
-              ),
-              IconButton(onPressed: () {}, icon: Icon(Icons.search_rounded)),
-            ],
-          ).container(
-              decoration: BoxDecoration(color: ctx.theme.backgroundColor, borderRadius: ctx.cardBorderRadiusBottom)),
+          buildTitle(ctx, sound),
+          buildBottomBar(ctx, sound),
         ]
             .column()
             .inCard(
@@ -118,21 +111,64 @@ class _SoundFileRowState extends State<_SoundFileRow> {
               color: Theme.of(context).colorScheme.surfaceVariant,
             )
             .expanded(),
-        Icon(
-          Icons.upload_file_outlined,
-          size: 36,
-        )
-            .inCard(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-                borderRadius: ctx.cardBorderRadius ?? BorderRadius.zero,
-              ),
-            )
-            .expanded(),
+        buildUploadArea(ctx, sound).expanded(),
       ].row(caa: CrossAxisAlignment.stretch),
+    );
+  }
+
+  Widget buildTitle(BuildContext ctx, LocalSoundFile? sound) {
+    return Text.rich([
+      TextSpan(text: note.numberedText),
+      WidgetSpan(child: sound != null ? const Icon(Icons.music_note) : const Icon(Icons.music_off)),
+    ].textSpan(style: ctx.textTheme.headlineLarge))
+        .padAll(5)
+        .center();
+  }
+
+  Widget buildBottomBar(BuildContext ctx, LocalSoundFile? sound) {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        if (sound != null) buildPlaySoundBtn(sound),
+        buildSearchBtn(ctx),
+      ],
+    ).container(decoration: BoxDecoration(color: ctx.theme.backgroundColor, borderRadius: ctx.cardBorderRadiusBottom));
+  }
+
+  Widget buildSearchBtn(BuildContext ctx) {
+    final widget = IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded));
+    return widget;
+  }
+
+  Widget buildUploadArea(BuildContext ctx, LocalSoundFile? sound) {
+    const icon = Icon(Icons.upload_file_outlined, size: 36);
+    final Widget center;
+    if (sound != null) {
+      center = [icon, basenameOfPath(sound.localPath).text()].column(maa: MainAxisAlignment.center);
+    } else {
+      center = icon;
+    }
+    final widget = center.inCard(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outline,
+        ),
+        borderRadius: ctx.cardBorderRadius ?? BorderRadius.zero,
+      ),
+    );
+    return widget;
+  }
+
+  Widget buildPlaySoundBtn(LocalSoundFile file) {
+    return IconButton(
+      onPressed: () async {
+        final player = AudioPlayer();
+        await file.loadInto(player);
+        await player.setPlayerMode(PlayerMode.lowLatency);
+        await player.resume();
+      },
+      icon: const Icon(Icons.play_arrow),
     );
   }
 }

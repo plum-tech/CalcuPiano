@@ -19,6 +19,8 @@ class _K {
   static const version = "@version";
 }
 
+bool isSubtype<Child, Parent>() => <Child>[] is List<Parent>;
+
 ///
 /// Generate the json converter with this template:
 /// ```
@@ -82,9 +84,14 @@ class Converter {
     _migrations[typeName] = migration;
   }
 
-  static String? toJson<T>(T obj) {
+  static String? toJson<T>(T obj, {int? indent}) {
     try {
-      return _jsonCodec.encode(obj);
+      if (indent != null) {
+        final encoder = JsonEncoder.withIndent(' ' * indent, _toEncodable);
+        return encoder.convert(obj);
+      } else {
+        return _jsonCodec.encode(obj);
+      }
     } on JsonUnsupportedObjectError catch (e) {
       Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
@@ -131,11 +138,16 @@ class Converter {
     }
   }
 
-  static String? toUntypedJson<T>(T? obj, Map<String, dynamic> Function(T obj) toJson) {
+  static String? toUntypedJson<T>(T? obj, {Map<String, dynamic> Function(T obj)? toJson, int? indent}) {
     if (obj == null) return null;
     try {
-      final jObj = toJson(obj);
-      return jsonEncode(jObj);
+      final jObj = toJson != null ? toJson(obj) : obj;
+      if (indent != null) {
+        final encoder = JsonEncoder.withIndent(' ' * indent);
+        return encoder.convert(obj);
+      } else {
+        return jsonEncode(jObj);
+      }
     } on JsonUnsupportedObjectError catch (e) {
       Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
