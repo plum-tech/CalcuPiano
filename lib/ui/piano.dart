@@ -145,7 +145,6 @@ class _PianoKeyState extends State<PianoKey> {
     final player = AudioPlayer();
     final sound = await _soundpack.resolve(note);
     await sound.loadInto(player);
-    //await player.setSourceAsset("soundpack/default/${note.path}");
     await player.setPlayerMode(PlayerMode.lowLatency);
     await player.resume();
   }
