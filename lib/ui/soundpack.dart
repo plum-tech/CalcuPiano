@@ -6,7 +6,6 @@ import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
-import 'package:calcupiano/ui/actions.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
 import 'package:file_picker/file_picker.dart';
@@ -97,7 +96,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     final path = result?.files.single.path;
     if (path != null) {
       if (!mounted) return;
-      await context.showWaiting(until: importSoundpackFromFile(path), title: "Processing");
+      await context.showWaiting(until: Packager.importSoundpackFromFile(path), title: "Processing");
     }
   }
 
@@ -237,14 +236,14 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
   @override
   void initState() {
     super.initState();
-    _soundpack = H.soundpacks.getSoundpackById(widget.id);
+    _soundpack = DB.getSoundpackById(widget.id);
   }
 
   @override
   void didUpdateWidget(covariant CustomSoundpackItem oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update current Soundpack object, perhaps due to a deletion.
-    _soundpack = H.soundpacks.getSoundpackById(widget.id);
+    _soundpack = DB.getSoundpackById(widget.id);
   }
 
   @override
@@ -307,7 +306,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       title: "A Corrupted Soundpack".text(),
       subtitle: "Sorry, please delete this".text(),
       trailing: Icon(Icons.delete_outline, color: ctx.$red$, size: _iconSize).onTap(() async {
-        await H.soundpacks.removeSoundpackById(widget.id);
+        await DB.removeSoundpackById(widget.id);
       }),
     );
   }
@@ -369,7 +368,7 @@ Widget _moreMenu(
           title: "Duplicate".text(),
           onTap: () {
             ctx.navigator.pop();
-            duplicateSoundpack(soundpack);
+            Packager.duplicateSoundpack(soundpack);
           },
         ),
       ),
@@ -380,7 +379,7 @@ Widget _moreMenu(
             title: "Export".text(),
             onTap: () async {
               ctx.navigator.pop();
-              await packageLocalSoundpack(soundpack);
+              await Packager.packageLocalSoundpack(soundpack);
             },
           ),
         ),
@@ -392,7 +391,7 @@ Widget _moreMenu(
             onTap: () async {
               ctx.navigator.pop();
               await Future.delayed(const Duration(milliseconds: 500));
-              await H.soundpacks.removeSoundpackById(soundpack.id);
+              await DB.removeSoundpackById(soundpack.id);
             },
           ),
         ),

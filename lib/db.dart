@@ -4,7 +4,6 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/utils.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -17,6 +16,8 @@ class K {
 }
 
 final H = HImpl._();
+// ignore: non_constant_identifier_names
+final DB = SoundpackStorageImpl();
 
 class HImpl {
   HImpl._();
@@ -24,9 +25,6 @@ class HImpl {
   /// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
   /// see [K], application-wide.
   late Box<dynamic> box;
-
-  /// [SoundpackStorage] contains all external soundpacks.
-  late SoundpackStorage soundpacks;
 
   String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
 
@@ -69,14 +67,13 @@ class ListenTo {
   const ListenTo([this.keys]);
 }
 
-class SoundpackStorage {
-  final Box<String> soundpacks;
-
-  const SoundpackStorage(this.soundpacks);
+/// [SoundpackStorage] contains all external soundpacks.
+class SoundpackStorageImpl {
+  late final Box<String> box;
 
   /// High-level operation
   ExternalSoundpackProtocol? getSoundpackById(String id) {
-    final json = soundpacks.get(id);
+    final json = box.get(id);
     return Converter.fromJson<ExternalSoundpackProtocol>(json);
   }
 
@@ -86,7 +83,7 @@ class SoundpackStorage {
   void setSoundpackSnapshotById(ExternalSoundpackProtocol soundpack) {
     final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
     if (json != null) {
-      soundpacks.put(soundpack.id, json);
+      box.put(soundpack.id, json);
     }
   }
 
@@ -127,5 +124,5 @@ class SoundpackStorage {
     await file.delete(recursive: true);
   }
 
-  ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);
+  ValueListenable<Box<String>> listenable({List<String>? keys}) => box.listenable(keys: keys);
 }

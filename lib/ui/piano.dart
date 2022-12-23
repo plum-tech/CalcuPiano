@@ -106,7 +106,7 @@ class _PianoKeyState extends State<PianoKey> {
     } else {
       final restoredId = H.currentSoundpackID;
       if (restoredId != null) {
-        SoundpackX.resolve(id: restoredId).then((value) {
+        _resolve(id: restoredId).then((value) {
           _soundpack = value;
         });
       }
@@ -147,5 +147,16 @@ class _PianoKeyState extends State<PianoKey> {
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
     await player.resume();
+  }
+}
+
+Future<SoundpackProtocol> _resolve({
+  required String id,
+}) async {
+  final builtin = R.id2BuiltinSoundpacks[id];
+  if (builtin != null) {
+    return builtin;
+  } else {
+    return DB.getSoundpackById(id) ?? R.defaultSoundpack;
   }
 }

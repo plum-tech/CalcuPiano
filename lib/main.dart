@@ -22,7 +22,7 @@ void main() async {
   final settingsBox = await Hive.openBox("Settings");
   final soundpackBox = await Hive.openBox<String>("Soundpacks");
   H.box = settingsBox;
-  H.soundpacks = SoundpackStorage(soundpackBox);
+  DB.box = soundpackBox;
   // Remove prefix to unify the path
   AudioCache.instance = AudioCache(prefix: "");
   initFoundation();

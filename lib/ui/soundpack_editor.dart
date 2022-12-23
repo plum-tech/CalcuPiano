@@ -41,20 +41,24 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
         title: $name.text.text(overflow: TextOverflow.clip),
         centerTitle: ctx.isCupertino,
         actions: [
-          IconButton(icon: Icon(Icons.save_rounded), onPressed: () => onSave(ctx)),
+          IconButton(
+            icon: const Icon(Icons.save_rounded),
+            onPressed: () async => await onSave(ctx),
+          ),
         ],
       ),
       body: buildMetaEditor(ctx),
     );
   }
 
-  void onSave(BuildContext ctx) {
+  Future<void> onSave(BuildContext ctx) async {
     final meta = widget.soundpack.meta;
     meta.name = $name.text;
     meta.description = $description.text;
     meta.author = $author.text;
     meta.url = $url.text;
-    soundpack.saveSnapshot();
+    DB.setSoundpackSnapshotById(soundpack);
+    Packager.writeSoundpackMeta(soundpack);
     if (!mounted) return;
     ctx.navigator.pop();
   }
@@ -84,7 +88,6 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
       ].column(),
     );
   }
-
 
   @override
   void dispose() {
