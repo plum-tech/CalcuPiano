@@ -18,13 +18,19 @@ import 'package:url_launcher/url_launcher.dart';
 ///
 class Packager {
   Packager._();
+  static Future<void> pickAndImportSoundpackArchive() async {
+    final path = await Packager.tryPickSoundpackArchive();
+    if (path != null) {
+      await Packager.importSoundpackFromFile(path);
+    }
+  }
 
   /// Pick the possible soundpack archive depended on platform.
   /// Return the path if picked. Null if canceled.
   static Future<String?> tryPickSoundpackArchive() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['zip'],
+      allowedExtensions: const ['zip'],
       withData: true,
       lockParentWindow: true,
     );
@@ -146,7 +152,7 @@ class Packager {
     final targetPath = await FilePicker.platform.saveFile(
       type: FileType.custom,
       fileName: fileNameSuggestion,
-      allowedExtensions: ['zip'],
+      allowedExtensions: const ['zip'],
       lockParentWindow: true,
     );
     if (targetPath != null) {

@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
-import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/r.dart';
@@ -9,10 +8,10 @@ import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -183,21 +182,30 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
       body: AnimatedScale(
         scale: _isDrawerOpen ? 0.96 : 1,
         curve: Curves.fastLinearToSlowEaseIn,
-        duration: Duration(milliseconds: 1000),
-        child: [
-          buildMain(context, ctrl, _isDrawerOpen),
-          AnimatedBlur(
-            blur: _isDrawerOpen ? 3 : 0,
-            curve: Curves.fastLinearToSlowEaseIn,
-            duration: Duration(milliseconds: 1000),
-            child: SizedBox(
-              width: fullSize.width,
-              height: fullSize.height,
-            ),
-          ),
-        ].stack(),
+        duration: const Duration(milliseconds: 1000),
+        child: buildMainArea(context, ctrl, _isDrawerOpen, fullSize),
       ),
     );
+  }
+
+  Widget buildMainArea(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen, Size fullSize) {
+    if (kIsWeb) {
+      return buildMain(context, ctrl, _isDrawerOpen);
+    } else {
+      // ImplicitlyAnimatedWidget doesn't work on Flutter Web
+      return [
+        buildMain(context, ctrl, _isDrawerOpen),
+        AnimatedBlur(
+          blur: _isDrawerOpen ? 3 : 0,
+          curve: Curves.fastLinearToSlowEaseIn,
+          duration: const Duration(milliseconds: 1000),
+          child: SizedBox(
+            width: fullSize.width,
+            height: fullSize.height,
+          ),
+        ),
+      ].stack();
+    }
   }
 
   Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {

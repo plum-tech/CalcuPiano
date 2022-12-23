@@ -1,5 +1,3 @@
-import 'package:calcupiano/design/dialog.dart';
-
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
@@ -14,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:share_plus/share_plus.dart';
 
 const double _iconSize = 36;
 
@@ -61,7 +58,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
                     if (!kIsWeb)
                       PullDownMenuItem(
                         onTap: () async {
-                          await importSoundpackFromFilePicker();
+                          await Packager.pickAndImportSoundpackArchive();
                         },
                         title: 'Local File',
                         icon: Icons.storage,
@@ -83,14 +80,6 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         body: buildBody(),
       ),
     );
-  }
-
-  Future<void> importSoundpackFromFilePicker() async {
-    final path = await Packager.tryPickSoundpackArchive();
-    if (path != null) {
-      if (!mounted) return;
-      await context.showWaiting(until: Packager.importSoundpackFromFile(path), title: "Processing");
-    }
   }
 
   @ListenTo([K.customSoundpackIdList])
@@ -415,7 +404,7 @@ extension _MenuX on State {
         if (soundpack is LocalSoundpack && isDesktop)
           PopupMenuItem(
             child: ListTile(
-              leading: Icon(Icons.folder_outlined),
+              leading: const Icon(Icons.folder_outlined),
               // TODO: `Reveal in Finder` on macOS
               title: "Reveal in Folder".text(),
               onTap: () {
