@@ -5,6 +5,7 @@ import 'package:calcupiano/r.dart';
 import 'package:collection/collection.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sanitize_filename/sanitize_filename.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 ///
 class Packager {
   Packager._();
+
   static Future<void> pickAndImportSoundpackArchive() async {
     final path = await Packager.tryPickSoundpackArchive();
     if (path != null) {
@@ -199,7 +201,9 @@ class Packager {
   /// To prevent overwriting itself, all involved files will be cached in temporary folder during writing.
   static Future<void> writeSoundFiles(LocalSoundpack soundpack) async {}
 
+  /// Duplicate doesn't work on Web
   static Future<void> duplicateSoundpack(SoundpackProtocol source) async {
+    if (kIsWeb) return;
     final uuid = UUID.v4();
     final SoundpackMeta meta;
     if (source is ExternalSoundpackProtocol) {

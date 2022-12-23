@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';

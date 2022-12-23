@@ -391,16 +391,17 @@ extension _MenuX on State {
               },
             ),
           ),
-        PopupMenuItem(
-          child: ListTile(
-            leading: Icon(Icons.copy_outlined),
-            title: "Duplicate".text(),
-            onTap: () {
-              ctx.navigator.pop();
-              Packager.duplicateSoundpack(soundpack);
-            },
+        if (!kIsWeb)
+          PopupMenuItem(
+            child: ListTile(
+              leading: const Icon(Icons.copy_outlined),
+              title: "Duplicate".text(),
+              onTap: () {
+                ctx.navigator.pop();
+                Packager.duplicateSoundpack(soundpack);
+              },
+            ),
           ),
-        ),
         if (soundpack is LocalSoundpack && isDesktop)
           PopupMenuItem(
             child: ListTile(
