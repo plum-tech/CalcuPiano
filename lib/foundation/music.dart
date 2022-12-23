@@ -15,14 +15,14 @@ class Note {
   static const $9 = Note.named("9");
   static const $plus = Note.named("plus");
   static const $minus = Note.named("minus");
-  static const $div = Note.named("div");
   static const $mul = Note.named("mul");
+  static const $div = Note.named("div");
   static const $eq = Note.named("eq");
 
   @override
   String toString() => id;
 
-  static const all = [$1, $2, $3, $4, $5, $6, $7, $8, $9, $plus, $minus, $div, $mul, $eq];
+  static const all = [$1, $2, $3, $4, $5, $6, $7, $8, $9, $plus, $minus, $mul, $div, $eq];
 
   static const note2Numbered = {
     $1: "1",
@@ -36,8 +36,8 @@ class Note {
     $9: "9",
     $plus: "+",
     $minus: "-",
-    $div: "/",
     $mul: "*",
+    $div: "/",
     $eq: "="
   };
   static const note2TonicSolfa = {
@@ -52,8 +52,8 @@ class Note {
     $9: "Re+",
     $plus: "Mi+",
     $minus: "Fa+",
-    $div: "So+",
     $mul: "La+",
+    $div: "So+",
     $eq: "Ti+"
   };
   static const id2Note = {
@@ -68,8 +68,8 @@ class Note {
     "9": $9,
     "plus": $plus,
     "minus": $minus,
-    "div": $div,
     "mul": $mul,
+    "div": $div,
     "eq": $eq
   };
 

@@ -2,7 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
+import 'package:calcupiano/r.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/widget/text_span.dart';
@@ -18,7 +18,7 @@ class SoundpackComposer extends StatefulWidget {
 
 class _SoundpackComposerState extends State<SoundpackComposer> {
   LocalSoundpack get soundpack => widget.soundpack;
-  late final note2LocalFile = Map.of(soundpack.note2SoundFile);
+  late final $note2LocalFile = Map.of(soundpack.note2SoundFile);
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +27,48 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
         title: "Compose ${soundpack.displayName}".text(),
         centerTitle: context.isCupertino,
         actions: [
-          IconButton(icon: const Icon(Icons.save_rounded), onPressed: () => onSave(context)),
+          IconButton(
+              icon: const Icon(Icons.playlist_play_outlined), onPressed: () async => await playSoundInNoteOrder()),
+          IconButton(icon: const Icon(Icons.save_rounded), onPressed: () async => await onSave(context)),
         ],
       ),
       body: buildBody(context),
     );
   }
 
-  void onSave(BuildContext ctx) {
+  Future<void> onSave(BuildContext ctx) async {
+    // Replace old LocalSoundFile with new LocalSoundFile in sequence
+    for (final note in Note.all) {
+      final newFile = $note2LocalFile[note];
+      final formerFile = soundpack.note2SoundFile[note];
+      if (newFile != formerFile) {
+        await formerFile?.tryDelete();
+        if (newFile != null) {
+          final ext = extensionOfPath(newFile.localPath);
+          final targetPath = joinPath(R.soundpacksRootDir, soundpack.uuid, "${note.id}$ext");
+          await newFile.toFile().copy(targetPath);
+          // To prevent unsync due to exception, save the soundpack with new note2SoundFile each time a new LocalSoundFile is really saved.
+          soundpack.note2SoundFile[note] = LocalSoundFile(localPath: targetPath);
+          DB.setSoundpackSnapshotById(soundpack);
+        }
+      }
+    }
     if (!mounted) return;
     ctx.navigator.pop();
+  }
+
+  Future<void> playSoundInNoteOrder() async {
+    for (final note in Note.all) {
+      final file = $note2LocalFile[note];
+      if (file != null) {
+        final player = AudioPlayer();
+        await file.loadInto(player);
+        await player.setPlayerMode(PlayerMode.lowLatency);
+        await player.resume();
+        // TODO: Customize interval
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+    }
   }
 
   Widget buildBody(BuildContext ctx) {
@@ -48,12 +80,12 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
         return _SoundFileRow(
           note: note,
           edited: soundpack,
-          getFile: () => note2LocalFile[note],
+          getFile: () => $note2LocalFile[note],
           setFile: (f) {
             if (f == null) {
-              note2LocalFile.remove(note);
+              $note2LocalFile.remove(note);
             } else {
-              note2LocalFile[note] = f;
+              $note2LocalFile[note] = f;
             }
           },
         );
@@ -88,7 +120,10 @@ class _SoundFileRowState extends State<_SoundFileRow> {
 
   LocalSoundFile? get file => widget.getFile();
 
-  set file(LocalSoundFile? newFile) => widget.setFile(newFile);
+  set file(LocalSoundFile? newFile) {
+    widget.setFile(newFile);
+    setState(() {});
+  }
 
   SoundpackProtocol get edited => widget.edited;
 
@@ -130,24 +165,28 @@ class _SoundFileRowState extends State<_SoundFileRow> {
       alignment: MainAxisAlignment.center,
       children: [
         if (sound != null) buildPlaySoundBtn(sound),
-        buildSearchBtn(ctx),
       ],
     ).container(decoration: BoxDecoration(color: ctx.theme.backgroundColor, borderRadius: ctx.cardBorderRadiusBottom));
   }
 
-  Widget buildSearchBtn(BuildContext ctx) {
-    final widget = IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded));
-    return widget;
-  }
-
   Widget buildUploadArea(BuildContext ctx, LocalSoundFile? sound) {
     const icon = Icon(Icons.upload_file_outlined, size: 36);
-    final Widget center;
+    Widget center;
     if (sound != null) {
       center = [icon, basenameOfPath(sound.localPath).text()].column(maa: MainAxisAlignment.center);
     } else {
       center = icon;
     }
+    center = InkWell(
+      borderRadius: ctx.cardBorderRadius,
+      onTap: () async {
+        final audio = await Packager.tryPickAudioFile();
+        if (audio != null) {
+          file = LocalSoundFile(localPath: audio);
+        }
+      },
+      child: center,
+    );
     final widget = center.inCard(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -171,4 +210,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
       icon: const Icon(Icons.play_arrow),
     );
   }
+
+  /// Search a SoundFile in another soundpack.
+  Future<void> searchInAnother() async {}
 }

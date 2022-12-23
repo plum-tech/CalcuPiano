@@ -231,8 +231,20 @@ class Packager {
   static Future<void> revealSoundpackInFolder(LocalSoundpack soundpack) async {
     if (isDesktop) {
       final path = joinPath(R.soundpacksRootDir, soundpack.id);
-      final url = Uri.parse('file:///$path');
+      final url = Uri.file(path, windows: isWindows);
       launchUrl(url);
     }
+  }
+
+  /// Pick the possible audio file depended on platform.
+  /// Return the path if picked. Null if canceled.
+  static Future<String?> tryPickAudioFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: R.supportedAudioFormat,
+      withData: true,
+      lockParentWindow: true,
+    );
+    return result?.files.single.path;
   }
 }

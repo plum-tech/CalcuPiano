@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 export 'package:calcupiano/converter.dart';
 export 'package:calcupiano/packager.dart';
 export 'package:calcupiano/db.dart';
+export 'foundation/file.dart';
 import 'foundation/sound_file.dart';
 import 'foundation/soundpack.dart';
 import 'foundation/music.dart';

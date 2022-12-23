@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:flutter/services.dart';
 
 abstract class FileProtocol implements Convertible {
@@ -23,6 +22,17 @@ mixin BundledFileMixin implements BundledFileProtocol {
     await File(targetFile).writeAsBytes(bytes);
     return targetFile;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is BundledFileProtocol && runtimeType == other.runtimeType && path == other.path;
+  }
+
+  @override
+  int get hashCode => path.hashCode;
+
+  @override
+  String toString() => "Bundled($path)";
 }
 
 abstract class LocalFileProtocol implements Convertible {
@@ -35,6 +45,24 @@ mixin LocalFileMixin implements LocalFileProtocol {
     await File(localPath).copy(targetFile);
     return targetFile;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LocalFileProtocol && runtimeType == other.runtimeType && localPath == other.localPath;
+  }
+
+  @override
+  int get hashCode => localPath.hashCode;
+
+  @override
+  String toString() => "LocalFile($localPath)";
+}
+
+extension LocalFileProtocolX on LocalFileProtocol {
+  Future<void> tryDelete() async {
+    await toFile().delete();
+  }
+  File toFile() => File(localPath);
 }
 
 abstract class UrlFileProtocol implements Convertible {
@@ -48,4 +76,15 @@ mixin UrlFileMixin implements UrlFileProtocol {
     await Web.download(url, targetFile);
     return targetFile;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UrlFileProtocol && runtimeType == other.runtimeType && url == other.url;
+  }
+
+  @override
+  int get hashCode => url.hashCode;
+
+  @override
+  String toString() => "URL($url)";
 }
