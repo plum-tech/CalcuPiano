@@ -7,6 +7,7 @@ import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sanitize_filename/sanitize_filename.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Packager provides An abstract layer to interact with local storage, disk and cloud.
@@ -113,8 +114,14 @@ class Packager {
   /// - The packed soundpack will be saved in temporary folder, see [getTemporaryDirectory].
   ///
   /// return the path of soundpack archive in temporary folder.
-  static Future<String> packLocalSoundpack(LocalSoundpack soundpack) async {
-    final archiveTargetPath = joinPath(R.tmpDir, "${soundpack.uuid}.zip");
+  static Future<String> packLocalSoundpack(LocalSoundpack soundpack, {String? fileNameSuggestion}) async {
+    final String fileName;
+    if (fileNameSuggestion != null) {
+      fileName = sanitizeFilename(fileNameSuggestion);
+    } else {
+      fileName = sanitizeFilename("${soundpack.uuid}.zip");
+    }
+    final archiveTargetPath = joinPath(R.tmpDir, fileName);
     final rootDir = joinPath(R.soundpacksRootDir, soundpack.uuid);
 
     // ----------------------------------------------------------------
@@ -125,29 +132,52 @@ class Packager {
     return archiveTargetPath;
   }
 
-  /// Export the soundpack archive depended on platform.
-  /// The archive won't be removed after exported.
-  static Future<void> exportSoundpackArchive(LocalSoundpack soundpack) async {
-    if (isDesktop) {
-      var suggestedFileName = soundpack.meta.name;
-      if (suggestedFileName != null) {
-        suggestedFileName = sanitizeFilename("$suggestedFileName.zip");
-      }
-      final targetPath = await FilePicker.platform.saveFile(
-        type: FileType.custom,
-        fileName: suggestedFileName,
-        allowedExtensions: ['zip'],
-        lockParentWindow: true,
-      );
-      if (targetPath != null) {
-        final archivePath = await packLocalSoundpack(soundpack);
-        // TODO: Windows works fine. It lacks test on Linux and macOS.
-        await File(archivePath).copy(targetPath);
-        await File(archivePath).delete();
-      }
-    } else {
-
+  /// Save-as the soundpack archive depended on platform.
+  /// The archive will be removed after exported.
+  /// ## Supported Platforms:
+  /// - Windows
+  /// - macOS
+  /// - Linux
+  static Future<void> saveAsSoundpackArchive(LocalSoundpack soundpack) async {
+    var fileNameSuggestion = soundpack.meta.name;
+    if (fileNameSuggestion != null) {
+      fileNameSuggestion = sanitizeFilename("$fileNameSuggestion.zip");
     }
+    final targetPath = await FilePicker.platform.saveFile(
+      type: FileType.custom,
+      fileName: fileNameSuggestion,
+      allowedExtensions: ['zip'],
+      lockParentWindow: true,
+    );
+    if (targetPath != null) {
+      final archivePath = await packLocalSoundpack(soundpack);
+      // TODO: Windows works fine. It lacks test on Linux and macOS.
+      await File(archivePath).copy(targetPath);
+      await File(archivePath).delete();
+    }
+  }
+
+  /// Share the soundpack archive depended on platform.
+  /// The archive will be removed after exported.
+  /// ## Supported Platforms:
+  /// - Android
+  /// - iOS
+  /// - macOS
+  /// - Web
+  static Future<void> shareSoundpackArchive(LocalSoundpack soundpack) async {
+    // TODO: Test on iOS, Web and macOS.
+    var fileNameSuggestion = soundpack.meta.name;
+    if (fileNameSuggestion != null) {
+      fileNameSuggestion = sanitizeFilename("$fileNameSuggestion.zip");
+    }
+    final archivePath = await packLocalSoundpack(soundpack, fileNameSuggestion: fileNameSuggestion);
+    // TODO: Better meta
+    await Share.shareXFiles(
+      [XFile(archivePath)],
+      subject: soundpack.meta.name,
+      text: soundpack.meta.description,
+    );
+    await File(archivePath).delete();
   }
 
   /// Write [LocalSoundpack.meta] to local storage.

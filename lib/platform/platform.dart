@@ -23,6 +23,10 @@ bool get isFuchsia => currentPlatformBackend == PlatformType.fuchsia;
 
 bool get isDesktop => isWindows || isLinux || isMacOS;
 
+bool get isMobile => isAndroid || isIOS;
+
+bool get isSupportShareFiles => isAndroid || isIOS || isMacOS || isWeb;
+
 String get osName {
   switch (currentPlatformBackend) {
     case PlatformType.web:

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:share_plus/share_plus.dart';
 
 const double _iconSize = 36;
 
@@ -328,6 +329,35 @@ extension _MenuX on State {
     BuildContext ctx,
     SoundpackProtocol soundpack,
   ) {
+    List<PopupMenuEntry> buildExportSoundpackButtons(LocalSoundpack soundpack) {
+      final buttons = <PopupMenuEntry>[];
+      void add(String title, IconData icon, VoidCallback onTap) {
+        buttons.add(PopupMenuItem(
+          child: ListTile(
+            leading: Icon(icon),
+            title: title.text(),
+            onTap: () async {
+              ctx.navigator.pop();
+              onTap();
+            },
+          ),
+        ));
+      }
+
+      // TODO: I18n
+      if (isSupportShareFiles) {
+        add("Share", Icons.share_rounded, () async {
+          await Packager.shareSoundpackArchive(soundpack);
+        });
+      } else {
+        add("Save as", Icons.save_as, () async {
+          await Packager.saveAsSoundpackArchive(soundpack);
+        });
+      }
+
+      return buttons;
+    }
+
     final btn = PopupMenuButton(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
       position: PopupMenuPosition.under,
@@ -394,17 +424,7 @@ extension _MenuX on State {
               },
             ),
           ),
-        if (soundpack is LocalSoundpack)
-          PopupMenuItem(
-            child: ListTile(
-              leading: const Icon(Icons.upload_rounded),
-              title: "Export".text(),
-              onTap: () async {
-                ctx.navigator.pop();
-                await Packager.exportSoundpackArchive(soundpack);
-              },
-            ),
-          ),
+        if (soundpack is LocalSoundpack) ...buildExportSoundpackButtons(soundpack),
         if (soundpack is! BuiltinSoundpack)
           PopupMenuItem(
             child: ListTile(
