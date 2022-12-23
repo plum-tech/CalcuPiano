@@ -5,6 +5,8 @@ import 'package:rettulf/rettulf.dart';
 
 /// A Soundpack Editor should allow users to edit all properties of [SoundpackMeta].
 /// Save button will save to storage and write into file.
+///
+/// Navigation will return `true` if any changed and saved.
 class LocalSoundpackEditor extends StatefulWidget {
   final LocalSoundpack soundpack;
 
@@ -20,6 +22,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   late final $description = TextEditingController(text: widget.soundpack.meta.description);
   late final $author = TextEditingController(text: widget.soundpack.meta.author);
   late final $url = TextEditingController(text: widget.soundpack.meta.url);
+  final editing = SoundpackMeta();
 
   @override
   void initState() {
@@ -52,15 +55,20 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   }
 
   Future<void> onSave(BuildContext ctx) async {
-    final meta = widget.soundpack.meta;
-    meta.name = $name.text;
-    meta.description = $description.text;
-    meta.author = $author.text;
-    meta.url = $url.text;
-    DB.setSoundpackSnapshotById(soundpack);
-    Packager.writeSoundpackMetaFile(soundpack);
-    if (!mounted) return;
-    ctx.navigator.pop();
+    editing.name = $name.text;
+    editing.description = $description.text;
+    editing.author = $author.text;
+    editing.url = $url.text;
+    final former = soundpack.meta;
+    if (editing != former) {
+      soundpack.meta = editing;
+      DB.setSoundpackSnapshotById(soundpack);
+      Packager.writeSoundpackMetaFile(soundpack);
+      if (!mounted) return;
+      ctx.navigator.pop(true);
+    } else {
+      ctx.navigator.pop();
+    }
   }
 
   Widget buildMetaEditor(BuildContext ctx) {

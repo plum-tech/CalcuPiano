@@ -1,14 +1,34 @@
 import 'dart:io';
 
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
 import 'package:collection/collection.dart';
 import 'package:archive/archive_io.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sanitize_filename/sanitize_filename.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+/// Packager provides An abstract layer to interact with local storage, disk and cloud.
+///
+/// ## Use cases:
+/// - Dealing with soundpack archive, aka. `soundpack.zip`.
+///
+///
 class Packager {
   Packager._();
+
+  /// Pick the possible soundpack archive depended on platform.
+  /// Return the path if picked. Null if canceled.
+  static Future<String?> tryPickSoundpackArchive() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+      withData: true,
+      lockParentWindow: true,
+    );
+    return result?.files.single.path;
+  }
 
   /// For the file format of a Soundpack, please check the [Soundpack Specification](https://github.com/liplum/calcupiano/specifications/Soundpack.md).
   static Future<void> importSoundpackFromFile(String path) async {
@@ -92,8 +112,8 @@ class Packager {
   /// Postconditions:
   /// - The packed soundpack will be saved in temporary folder, see [getTemporaryDirectory].
   ///
-  /// return the path of `soundpack.zip` archive in temporary folder.
-  static Future<String> packageLocalSoundpack(LocalSoundpack soundpack) async {
+  /// return the path of soundpack archive in temporary folder.
+  static Future<String> packLocalSoundpack(LocalSoundpack soundpack) async {
     final archiveTargetPath = joinPath(R.tmpDir, "${soundpack.uuid}.zip");
     final rootDir = joinPath(R.soundpacksRootDir, soundpack.uuid);
 
@@ -103,6 +123,24 @@ class Packager {
     archive.zipDirectory(Directory(rootDir), filename: archiveTargetPath);
     // ----------------------------------------------------------------
     return archiveTargetPath;
+  }
+
+  /// Export the soundpack archive depended on platform.
+  /// The archive won't be removed after exported.
+  static Future<void> exportSoundpackArchive(LocalSoundpack soundpack) async {
+    if (isDesktop) {
+      var suggestedFileName = soundpack.meta.name;
+      if (suggestedFileName != null) {
+        suggestedFileName = sanitizeFilename(suggestedFileName);
+      }
+      final targetPath = await FilePicker.platform.saveFile(
+        type: FileType.custom,
+        fileName: suggestedFileName,
+        allowedExtensions: ['zip'],
+        lockParentWindow: true,
+      );
+      final archivePath = await packLocalSoundpack(soundpack);
+    } else {}
   }
 
   /// Write [LocalSoundpack.meta] to local storage.
@@ -116,9 +154,7 @@ class Packager {
 
   /// Write [LocalSoundpack.note2SoundFile] to local storage.
   /// To prevent overwriting itself, all involved files will be cached in temporary folder during writing.
-  static Future<void> writeSoundFiles(LocalSoundpack soundpack) async {
-    return;
-  }
+  static Future<void> writeSoundFiles(LocalSoundpack soundpack) async {}
 
   static Future<void> duplicateSoundpack(SoundpackProtocol source) async {
     final uuid = UUID.v4();
@@ -142,5 +178,14 @@ class Packager {
     }
     final soundpack = LocalSoundpack(uuid: uuid, meta: meta)..note2SoundFile = note2SoundFiles;
     DB.addSoundpackSnapshot(soundpack);
+  }
+
+  /// Only Works on Desktop
+  static Future<void> revealSoundpackInFolder(LocalSoundpack soundpack) async {
+    if (isDesktop) {
+      final path = joinPath(R.soundpacksRootDir, soundpack.id);
+      final url = Uri.parse('file:///$path');
+      launchUrl(url);
+    }
   }
 }

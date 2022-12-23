@@ -1,8 +1,7 @@
-import 'package:calcupiano/db.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/foundation/image_file.dart';
 import 'package:calcupiano/r.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:quiver/core.dart';
 
 part 'soundpack.g.dart';
 
@@ -217,6 +216,18 @@ class SoundpackMeta implements Convertible {
         ..description = description ?? this.description
         ..author = author ?? this.author
         ..url = url ?? this.url;
+
+  @override
+  bool operator ==(Object other) {
+    return other is SoundpackMeta &&
+        runtimeType == other.runtimeType &&
+        name == other.name &&
+        author == other.author &&
+        url == other.url;
+  }
+
+  @override
+  int get hashCode => hash4(name, description, author, url);
 }
 
 class NoSoundFileOfNoteException implements Exception {

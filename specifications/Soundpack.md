@@ -70,7 +70,7 @@ cascading objects.
 
 ### Hierarchy
 
-`SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack.zip file.
+`SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack archive file.
 
 `SoundpackProtocol` has several implementations, such as `BuiltinSoundpack`, `LocalSoundpack`, `UrlSoundpack`.
 
@@ -92,12 +92,12 @@ Users cannot modify a built-in soundpack, but they can duplicate it to a `LocalS
 **[Unavailable on CalcuPiano Web]**
 
 - It must have an ID to be unambiguous from other soundpacks.
-- It represents a real soundpack.zip file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
+- It represents a real soundpack archive file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
 - It can resolve the `SoundFile` of a `Note` to `LocalSoundFile`.
 - Modifiable.
 - Deletable.
 
-Users can import a `LocalSoundpack` from file or export it to a soundpack.zip file.
+Users can import a `LocalSoundpack` from file or export it to a soundpack archive file.
 
 Users can create an empty `LocalSoundpack` or duplicate one, then edit the metadata for their own one.
 

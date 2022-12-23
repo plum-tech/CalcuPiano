@@ -20,6 +20,7 @@ export 'foundation/music.dart';
 export 'foundation/page.dart';
 export 'foundation/sound_file.dart';
 export 'foundation/image_file.dart';
+export 'package:calcupiano/platform/platform.dart';
 
 final Log = Logger();
 const UUID = Uuid();

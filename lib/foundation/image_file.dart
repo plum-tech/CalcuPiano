@@ -8,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'image_file.g.dart';
 
 abstract class ImageFileProtocol implements FileProtocol {
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, {BoxFit? fit});
 }
 
 @JsonSerializable()
@@ -27,8 +27,8 @@ class BundledImageFile with BundledFileMixin implements ImageFileProtocol {
   int get version => 1;
 
   @override
-  Widget build(BuildContext context) {
-    return Image.asset(path);
+  Widget build(BuildContext context, {BoxFit? fit}) {
+    return Image.asset(path, fit: fit);
   }
 
   factory BundledImageFile.fromJson(Map<String, dynamic> json) => _$BundledImageFileFromJson(json);
@@ -47,8 +47,8 @@ class LocalImageFile with LocalFileMixin implements ImageFileProtocol {
   final String localPath;
 
   @override
-  Widget build(BuildContext context) {
-    return Image.file(File(localPath));
+  Widget build(BuildContext context, {BoxFit? fit}) {
+    return Image.file(File(localPath), fit: fit);
   }
 
   @override
@@ -73,8 +73,8 @@ class UrlImageFile with UrlFileMixin implements ImageFileProtocol {
   const UrlImageFile({required this.url});
 
   @override
-  Widget build(BuildContext context) {
-    return Image.network(url);
+  Widget build(BuildContext context, {BoxFit? fit}) {
+    return Image.network(url, fit: fit);
   }
 
   @override

@@ -8,15 +8,12 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
-
-import '../db.dart';
 
 const double _iconSize = 36;
 
@@ -88,12 +85,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   }
 
   Future<void> importSoundpackFromFilePicker() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['zip'],
-      withData: true,
-    );
-    final path = result?.files.single.path;
+    final path = await Packager.tryPickSoundpackArchive();
     if (path != null) {
       if (!mounted) return;
       await context.showWaiting(until: Packager.importSoundpackFromFile(path), title: "Processing");
@@ -112,8 +104,8 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   Widget buildSoundpackList(BuildContext ctx) {
     const builtinList = R.builtinSoundpacks;
     final customList = H.customSoundpackIdList ?? const [];
-    return MasonryGridView.count(
-      crossAxisCount: 2,
+    return MasonryGridView.extent(
+      maxCrossAxisExtent: 380,
       itemCount: builtinList.length + customList.length,
       physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
@@ -176,7 +168,12 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
           curve: Curves.fastLinearToSlowEaseIn,
           child: ClipRRect(
             borderRadius: ctx.cardBorderRadius,
-            child: soundpack.preview.build(ctx),
+            child: soundpack.preview
+                .build(
+                  ctx,
+                  fit: BoxFit.fill,
+                )
+                .container(w: double.infinity),
           ),
         ),
       ].stack(),
@@ -208,7 +205,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
               }
             },
           ),
-          _moreMenu(ctx, soundpack).align(at: Alignment.topRight),
+          moreMenu(ctx, soundpack).align(at: Alignment.topRight),
         ],
       ),
     ].column().inSoundpackCard(isSelected: isSelected).onTap(() {
@@ -282,7 +279,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
         (soundpack.meta.author ?? "No Author").text(),
         (soundpack.meta.description ?? "No Info").text(),
       ].column(caa: CrossAxisAlignment.start),
-      trailing: _moreMenu(ctx, soundpack),
+      trailing: moreMenu(ctx, soundpack),
     );
   }
 
@@ -296,7 +293,7 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       },
       title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
       subtitle: (soundpack.meta.description ?? "No Info").text(),
-      trailing: _moreMenu(ctx, soundpack),
+      trailing: moreMenu(ctx, soundpack),
     );
   }
 
@@ -320,89 +317,109 @@ Widget _buildSoundpackSwitchIcon(bool isSelected, SoundpackProtocol soundpack) {
   }
 }
 
-Widget _moreMenu(
-  BuildContext ctx,
-  SoundpackProtocol soundpack,
-) {
-  final btn = PopupMenuButton(
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-    position: PopupMenuPosition.under,
-    padding: EdgeInsets.zero,
-    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-      PopupMenuItem(
-        child: ListTile(
-          leading: const Icon(Icons.piano_outlined),
-          title: "Play".text(),
-          onTap: () async {
-            ctx.navigator.pop();
-            StageManager.showSoundpackPreviewOf(soundpack, ctx: context);
-          },
-        ),
-      ),
-      if (soundpack is LocalSoundpack)
+extension _MenuX on State {
+  Widget moreMenu(
+    BuildContext ctx,
+    SoundpackProtocol soundpack,
+  ) {
+    final btn = PopupMenuButton(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      position: PopupMenuPosition.under,
+      padding: EdgeInsets.zero,
+      itemBuilder: (BuildContext context) => <PopupMenuEntry>[
         PopupMenuItem(
           child: ListTile(
-            leading: const Icon(Icons.audio_file_outlined),
-            title: "Compose".text(),
+            leading: const Icon(Icons.piano_outlined),
+            title: "Play".text(),
             onTap: () async {
               ctx.navigator.pop();
-              ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackComposer(soundpack)));
+              StageManager.showSoundpackPreviewOf(soundpack, ctx: context);
             },
           ),
         ),
-      const PopupMenuDivider(),
-      if (soundpack is LocalSoundpack)
+        if (soundpack is LocalSoundpack)
+          PopupMenuItem(
+            child: ListTile(
+              leading: const Icon(Icons.audio_file_outlined),
+              title: "Compose".text(),
+              onTap: () async {
+                ctx.navigator.pop();
+                ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackComposer(soundpack)));
+              },
+            ),
+          ),
+        const PopupMenuDivider(),
+        if (soundpack is LocalSoundpack)
+          PopupMenuItem(
+            child: ListTile(
+              leading: const Icon(Icons.edit),
+              title: "Edit".text(),
+              onTap: () async {
+                ctx.navigator.pop();
+                final anyChanged =
+                    await ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
+                if (anyChanged == true) {
+                  if (!mounted) return;
+                  // ignore: invalid_use_of_protected_member
+                  setState(() {});
+                }
+              },
+            ),
+          ),
         PopupMenuItem(
           child: ListTile(
-            leading: const Icon(Icons.edit),
-            title: "Edit".text(),
+            leading: Icon(Icons.copy_outlined),
+            title: "Duplicate".text(),
             onTap: () {
               ctx.navigator.pop();
-              ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
+              Packager.duplicateSoundpack(soundpack);
             },
           ),
         ),
-      PopupMenuItem(
-        child: ListTile(
-          leading: Icon(Icons.copy_outlined),
-          title: "Duplicate".text(),
-          onTap: () {
-            ctx.navigator.pop();
-            Packager.duplicateSoundpack(soundpack);
-          },
-        ),
-      ),
-      if (soundpack is LocalSoundpack)
-        PopupMenuItem(
-          child: ListTile(
-            leading: const Icon(Icons.upload_rounded),
-            title: "Export".text(),
-            onTap: () async {
-              ctx.navigator.pop();
-              await Packager.packageLocalSoundpack(soundpack);
-            },
+        if (soundpack is LocalSoundpack && isDesktop)
+          PopupMenuItem(
+            child: ListTile(
+              leading: Icon(Icons.folder_outlined),
+              // TODO: `Reveal in Finder` on macOS
+              title: "Reveal in Folder".text(),
+              onTap: () {
+                ctx.navigator.pop();
+                Packager.revealSoundpackInFolder(soundpack);
+              },
+            ),
           ),
-        ),
-      if (soundpack is! BuiltinSoundpack)
-        PopupMenuItem(
-          child: ListTile(
-            leading: Icon(Icons.delete_outline, color: ctx.$red$),
-            title: "Delete".text(style: TextStyle(color: ctx.$red$)),
-            onTap: () async {
-              ctx.navigator.pop();
-              await Future.delayed(const Duration(milliseconds: 500));
-              await DB.removeSoundpackById(soundpack.id);
-            },
+        if (soundpack is LocalSoundpack)
+          PopupMenuItem(
+            child: ListTile(
+              leading: const Icon(Icons.upload_rounded),
+              title: "Export".text(),
+              onTap: () async {
+                ctx.navigator.pop();
+                await Packager.exportSoundpackArchive(soundpack);
+              },
+            ),
           ),
-        ),
-    ],
-    child: IgnorePointer(
-        child: TextButton(
-      child: const Icon(Icons.more_horiz_rounded),
-      onPressed: () {},
-    )),
-  );
-  return btn;
+        if (soundpack is! BuiltinSoundpack)
+          PopupMenuItem(
+            child: ListTile(
+              leading: Icon(Icons.delete_outline, color: ctx.$red$),
+              title: "Delete".text(style: TextStyle(color: ctx.$red$)),
+              onTap: () async {
+                ctx.navigator.pop();
+                await Future.delayed(const Duration(milliseconds: 500));
+                await DB.removeSoundpackById(soundpack.id);
+              },
+            ),
+          ),
+      ],
+      child: IgnorePointer(
+          child: TextButton(
+        child: const Icon(Icons.more_horiz_rounded),
+        onPressed: () {},
+      )),
+    );
+    return btn;
+  }
 }
 
 extension _SoundpackCardX on Widget {
