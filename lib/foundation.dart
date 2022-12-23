@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:calcupiano/converter.dart';
+import 'package:calcupiano/foundation/image_file.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
@@ -16,6 +17,7 @@ export 'foundation/soundpack.dart';
 export 'foundation/music.dart';
 export 'foundation/page.dart';
 export 'foundation/sound_file.dart';
+export 'foundation/image_file.dart';
 
 final Log = Logger();
 const UUID = Uuid();
@@ -26,10 +28,19 @@ void initFoundation() {
 }
 
 void initConverter() {
-  Converter.registerConverter(LocalSoundFile.type, (obj) => obj.toJson(), LocalSoundFile.fromJson);
-  Converter.registerConverter(LocalSoundpack.type, (obj) => obj.toJson(), LocalSoundpack.fromJson);
+  // SoundFile
   Converter.registerConverter(BundledSoundFile.type, (obj) => obj.toJson(), BundledSoundFile.fromJson);
+  Converter.registerConverter(LocalSoundFile.type, (obj) => obj.toJson(), LocalSoundFile.fromJson);
+  Converter.registerConverter(UrlSoundFile.type, (obj) => obj.toJson(), UrlSoundFile.fromJson);
+  // Soundpack
+  Converter.registerConverter(LocalSoundpack.type, (obj) => obj.toJson(), LocalSoundpack.fromJson);
+  Converter.registerConverter(UrlSoundpack.type, (obj) => obj.toJson(), UrlSoundpack.fromJson);
+  // Soundpack Meta
   Converter.registerConverter(SoundpackMeta.type, (obj) => obj.toJson(), SoundpackMeta.fromJson);
+  // ImageFile
+  Converter.registerConverter(LocalImageFile.type, (obj) => obj.toJson(), LocalImageFile.fromJson);
+  Converter.registerConverter(BundledImageFile.type, (obj) => obj.toJson(), BundledImageFile.fromJson);
+  Converter.registerConverter(UrlImageFile.type, (obj) => obj.toJson(), UrlImageFile.fromJson);
 }
 
 extension ColorX on Color {

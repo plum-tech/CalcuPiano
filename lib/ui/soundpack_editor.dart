@@ -1,8 +1,6 @@
-import 'package:calcupiano/db.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -46,7 +44,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
           IconButton(icon: Icon(Icons.save_rounded), onPressed: () => onSave(ctx)),
         ],
       ),
-      body: buildBody(ctx),
+      body: buildMetaEditor(ctx),
     );
   }
 
@@ -61,7 +59,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     ctx.navigator.pop();
   }
 
-  Widget buildBody(BuildContext ctx) {
+  Widget buildMetaEditor(BuildContext ctx) {
     return Form(
       child: [
         $TextField$(
@@ -87,25 +85,10 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     );
   }
 
+
   @override
   void dispose() {
     super.dispose();
     $name.dispose();
-  }
-}
-
-class UrlSoundpackEditor extends StatefulWidget {
-  final UrlSoundpack soundpack;
-
-  const UrlSoundpackEditor(this.soundpack, {super.key});
-
-  @override
-  State<UrlSoundpackEditor> createState() => _UrlSoundpackEditorState();
-}
-
-class _UrlSoundpackEditorState extends State<UrlSoundpackEditor> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }

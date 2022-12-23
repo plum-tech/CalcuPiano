@@ -7,6 +7,7 @@ import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/actions.dart';
+import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -168,7 +169,6 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
     BuildContext ctx,
   ) {
     final isSelected = H.currentSoundpackID == soundpack.id;
-
     return [
       [
         AnimatedOpacity(
@@ -214,19 +214,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
       ),
     ].column().inSoundpackCard(isSelected: isSelected).onTap(() {
       eventBus.fire(SoundpackChangeEvent(soundpack));
-    }).padAll(2);
-
-    return ListTile(
-      leading: soundpack.preview.build(ctx),
-      //leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
-      selected: isSelected,
-      onTap: () {
-        eventBus.fire(SoundpackChangeEvent(soundpack));
-      },
-      title: soundpack.name.text(style: ctx.textTheme.headlineSmall),
-      subtitle: soundpack.description.text(),
-      trailing: _moreMenu(ctx, soundpack),
-    );
+    });
   }
 }
 
@@ -344,27 +332,34 @@ Widget _moreMenu(
     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
       PopupMenuItem(
         child: ListTile(
-          leading: Icon(Icons.hearing_rounded),
-          title: "Preview".text(),
+          leading: const Icon(Icons.piano_outlined),
+          title: "Play".text(),
           onTap: () async {
             ctx.navigator.pop();
             StageManager.showSoundpackPreviewOf(soundpack, ctx: context);
           },
         ),
       ),
-      PopupMenuDivider(),
-      if (soundpack is! BuiltinSoundpack)
+      if (soundpack is LocalSoundpack)
         PopupMenuItem(
           child: ListTile(
-            leading: Icon(Icons.edit),
+            leading: const Icon(Icons.audio_file_outlined),
+            title: "Compose".text(),
+            onTap: () async {
+              ctx.navigator.pop();
+              ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackComposer(soundpack)));
+            },
+          ),
+        ),
+      const PopupMenuDivider(),
+      if (soundpack is LocalSoundpack)
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.edit),
             title: "Edit".text(),
             onTap: () {
               ctx.navigator.pop();
-              if (soundpack is LocalSoundpack) {
-                ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
-              } else if (soundpack is UrlSoundpack) {
-                ctx.navigator.push(MaterialPageRoute(builder: (_) => UrlSoundpackEditor(soundpack)));
-              }
+              ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
             },
           ),
         ),
