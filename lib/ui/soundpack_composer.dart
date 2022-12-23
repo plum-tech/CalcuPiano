@@ -27,7 +27,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
         title: "Compose ${soundpack.displayName}".text(),
         centerTitle: context.isCupertino,
         actions: [
-          IconButton(icon: Icon(Icons.save_rounded), onPressed: () => onSave(context)),
+          IconButton(icon: const Icon(Icons.save_rounded), onPressed: () => onSave(context)),
         ],
       ),
       body: buildBody(context),

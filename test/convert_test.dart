@@ -67,7 +67,6 @@ void main() {
   });
 }
 
-
 void workWithGeneratedAdapter() {
   final from = {
     "calcupiano.BundledSoundFile": BundledSoundFile.fromJson,

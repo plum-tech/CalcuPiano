@@ -17,7 +17,7 @@ class K {
 
 final H = HImpl._();
 // ignore: non_constant_identifier_names
-final DB = SoundpackStorageImpl();
+final DB = DBImpl();
 
 class HImpl {
   HImpl._();
@@ -68,7 +68,7 @@ class ListenTo {
 }
 
 /// [SoundpackStorage] contains all external soundpacks.
-class SoundpackStorageImpl {
+class DBImpl {
   late final Box<String> box;
 
   /// High-level operation

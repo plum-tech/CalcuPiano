@@ -92,13 +92,11 @@ class Packager {
   /// Postconditions:
   /// - The packed soundpack will be saved in temporary folder, see [getTemporaryDirectory].
   ///
-  /// return the path of `soundpack.zip` archive.
+  /// return the path of `soundpack.zip` archive in temporary folder.
   static Future<String> packageLocalSoundpack(LocalSoundpack soundpack) async {
     final archiveTargetPath = joinPath(R.tmpDir, "${soundpack.uuid}.zip");
     final rootDir = joinPath(R.soundpacksRootDir, soundpack.uuid);
-    // ----------------------------------------------------------------
-    // Save `soundpack.json`
-    //soundpack.
+
     // ----------------------------------------------------------------
     // Zipping
     final archive = ZipFileEncoder();
@@ -107,12 +105,19 @@ class Packager {
     return archiveTargetPath;
   }
 
-  static Future<void> writeSoundpackMeta(LocalSoundpack soundpack) async {
+  /// Write [LocalSoundpack.meta] to local storage.
+  static Future<void> writeSoundpackMetaFile(LocalSoundpack soundpack) async {
     final rootDir = joinPath(R.soundpacksRootDir, soundpack.uuid);
     final soundpackJson = Converter.toUntypedJson(soundpack.meta, indent: 2);
     if (soundpackJson != null) {
       await File(joinPath(rootDir, "soundpack.json")).writeAsString(soundpackJson);
     }
+  }
+
+  /// Write [LocalSoundpack.note2SoundFile] to local storage.
+  /// To prevent overwriting itself, all involved files will be cached in temporary folder during writing.
+  static Future<void> writeSoundFiles(LocalSoundpack soundpack) async {
+    return;
   }
 
   static Future<void> duplicateSoundpack(SoundpackProtocol source) async {

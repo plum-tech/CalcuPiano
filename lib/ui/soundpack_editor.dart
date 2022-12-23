@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
 /// A Soundpack Editor should allow users to edit all properties of [SoundpackMeta].
+/// Save button will save to storage and write into file.
 class LocalSoundpackEditor extends StatefulWidget {
   final LocalSoundpack soundpack;
 
@@ -57,7 +58,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     meta.author = $author.text;
     meta.url = $url.text;
     DB.setSoundpackSnapshotById(soundpack);
-    Packager.writeSoundpackMeta(soundpack);
+    Packager.writeSoundpackMetaFile(soundpack);
     if (!mounted) return;
     ctx.navigator.pop();
   }
