@@ -1,14 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
-import 'package:calcupiano/extension/soundpack.dart';
+import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
-import '../R.dart';
-import '../db.dart';
-import '../foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class PianoKeyboard extends StatefulWidget {
