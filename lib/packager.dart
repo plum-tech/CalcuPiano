@@ -131,7 +131,7 @@ class Packager {
     if (isDesktop) {
       var suggestedFileName = soundpack.meta.name;
       if (suggestedFileName != null) {
-        suggestedFileName = sanitizeFilename(suggestedFileName);
+        suggestedFileName = sanitizeFilename("$suggestedFileName.zip");
       }
       final targetPath = await FilePicker.platform.saveFile(
         type: FileType.custom,
@@ -139,8 +139,15 @@ class Packager {
         allowedExtensions: ['zip'],
         lockParentWindow: true,
       );
-      final archivePath = await packLocalSoundpack(soundpack);
-    } else {}
+      if (targetPath != null) {
+        final archivePath = await packLocalSoundpack(soundpack);
+        // TODO: Windows works fine. It lacks test on Linux and macOS.
+        await File(archivePath).copy(targetPath);
+        await File(archivePath).delete();
+      }
+    } else {
+
+    }
   }
 
   /// Write [LocalSoundpack.meta] to local storage.

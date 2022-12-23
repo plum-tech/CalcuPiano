@@ -160,7 +160,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
     BuildContext ctx,
   ) {
     final isSelected = H.currentSoundpackID == soundpack.id;
-    return [
+    Widget card = [
       [
         AnimatedOpacity(
           opacity: isSelected ? 1.0 : 0.15,
@@ -208,9 +208,15 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
           moreMenu(ctx, soundpack).align(at: Alignment.topRight),
         ],
       ),
-    ].column().inSoundpackCard(isSelected: isSelected).onTap(() {
-      eventBus.fire(SoundpackChangeEvent(soundpack));
-    });
+    ].column();
+    card = InkWell(
+      borderRadius: ctx.cardBorderRadius,
+      onTap: () {
+        eventBus.fire(SoundpackChangeEvent(soundpack));
+      },
+      child: card,
+    ).inSoundpackCard(isSelected: isSelected);
+    return card;
   }
 }
 
