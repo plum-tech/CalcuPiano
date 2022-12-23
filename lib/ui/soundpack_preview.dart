@@ -45,6 +45,7 @@ class _SoundpackPreviewWindowState extends State<SoundpackPreviewWindow> {
   void initState() {
     super.initState();
     eventBus.on<OrientationChangeEvent>().listen((event) {
+      if (!mounted) return;
       setState(() {
         scaleDelta = 0.0;
       });

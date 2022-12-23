@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/platform/platform.dart';
+import 'package:calcupiano/utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -80,7 +82,8 @@ class SoundpackStorage {
 
   /// Low-level operation.
   /// Set the soundpack directly will not clear the local file, or change [H.customSoundpackIdList].
-  void setSoundpackById(ExternalSoundpackProtocol soundpack) {
+  /// Note: Any further change won't be saved.
+  void setSoundpackSnapshotById(ExternalSoundpackProtocol soundpack) {
     final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
     if (json != null) {
       soundpacks.put(soundpack.id, json);
@@ -88,10 +91,13 @@ class SoundpackStorage {
   }
 
   /// High-level operation
-  void addSoundpack(ExternalSoundpackProtocol soundpack) {
-    setSoundpackById(soundpack);
+  /// Add current snapshot of soundpack to storage.
+  /// Note: Any further change won't be saved.
+  void addSoundpackSnapshot(ExternalSoundpackProtocol soundpack) {
+    setSoundpackSnapshotById(soundpack);
     final idList = H.customSoundpackIdList ?? [];
     idList.add(soundpack.id);
+    idList.distinct();
     H.customSoundpackIdList = idList;
   }
 

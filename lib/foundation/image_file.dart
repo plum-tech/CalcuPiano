@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:calcupiano/foundation/file.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_file.g.dart';
@@ -27,7 +28,12 @@ class BundledImageFile with BundledFileMixin implements ImageFileProtocol {
 
   @override
   Widget build(BuildContext context) {
+    return Image.network( 'https://source.unsplash.com/random/800x600?house');
     return Image.asset(path);
+    var cardImage = NetworkImage(
+        'https://source.unsplash.com/random/800x600?house');
+    return Ink.image(image: cardImage);
+    return Ink.image(image:  AssetImage(path));
   }
 
   factory BundledImageFile.fromJson(Map<String, dynamic> json) => _$BundledImageFileFromJson(json);

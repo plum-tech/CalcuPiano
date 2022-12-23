@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/theme/keyboard.dart';
@@ -129,7 +130,7 @@ class _PianoKeyState extends State<PianoKey> {
       style: TextStyle(fontSize: 24),
     ).center();
     txt = InkWell(
-      borderRadius: (context.theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius?,
+      borderRadius: context.cardBorderRadius,
       child: txt,
       onTapDown: (_) async {
         await playSound();

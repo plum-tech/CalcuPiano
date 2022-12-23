@@ -56,7 +56,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     meta.description = $description.text;
     meta.author = $author.text;
     meta.url = $url.text;
-    soundpack.save();
+    soundpack.saveSnapshot();
     if (!mounted) return;
     ctx.navigator.pop();
   }

@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
+import 'dart:ui';
+
 import 'package:calcupiano/converter.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
@@ -18,6 +20,7 @@ export 'foundation/sound_file.dart';
 final Log = Logger();
 const UUID = Uuid();
 final Web = Dio();
+
 void initFoundation() {
   initConverter();
 }
@@ -27,4 +30,14 @@ void initConverter() {
   Converter.registerConverter(LocalSoundpack.type, (obj) => obj.toJson(), LocalSoundpack.fromJson);
   Converter.registerConverter(BundledSoundFile.type, (obj) => obj.toJson(), BundledSoundFile.fromJson);
   Converter.registerConverter(SoundpackMeta.type, (obj) => obj.toJson(), SoundpackMeta.fromJson);
+}
+
+extension ColorX on Color {
+  static Color colorFromJson(dynamic json) {
+    return Color(json as int);
+  }
+
+  static dynamic colorToJson(Color obj) {
+    return obj.value;
+  }
 }

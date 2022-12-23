@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:calcupiano/db.dart';
 import 'package:calcupiano/extension/soundpack.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/foundation/image_file.dart';
 import 'package:calcupiano/platform/platform.dart';
 import 'package:calcupiano/r.dart';
 import 'package:collection/collection.dart';
@@ -71,13 +71,17 @@ Future<void> importSoundpackFromFile(String path) async {
   }
   // ----------------------------------------------------------------
   // Find the `preview.png`
-  final previewPngLocalPath = findCaseInsensitiveLocalFileByName("soundpack.json");
-
+  final previewPngLocalPath = findCaseInsensitiveLocalFileByName("preview.png");
+  LocalImageFile? previewImg ;
+  if(previewPngLocalPath != null){
+    previewImg = LocalImageFile(localPath: previewPngLocalPath);
+  }
   // ----------------------------------------------------------------
   // Make the final LocalSoundpack object.
   final soundpack = LocalSoundpack(uuid: uuid, meta: meta ?? SoundpackMeta());
+  soundpack.preview = previewImg;
   soundpack.note2SoundFile = note2SoundFile;
-  soundpack.addToStorage();
+  soundpack.addSnapshotToStorage();
 }
 
 Future<void> duplicateSoundpack(SoundpackProtocol source) async {
@@ -101,5 +105,5 @@ Future<void> duplicateSoundpack(SoundpackProtocol source) async {
     note2SoundFiles[note] = LocalSoundFile(localPath: localFilePath);
   }
   final soundpack = LocalSoundpack(uuid: uuid, meta: meta)..note2SoundFile = note2SoundFiles;
-  soundpack.addToStorage();
+  soundpack.addSnapshotToStorage();
 }

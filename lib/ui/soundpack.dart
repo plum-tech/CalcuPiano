@@ -1,6 +1,7 @@
 import 'package:calcupiano/design/dialog.dart';
 
 import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -11,6 +12,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -110,7 +112,8 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   Widget buildSoundpackList(BuildContext ctx) {
     const builtinList = R.builtinSoundpacks;
     final customList = H.customSoundpackIdList ?? const [];
-    return ListView.separated(
+    return MasonryGridView.count(
+      crossAxisCount: 2,
       itemCount: builtinList.length + customList.length,
       physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
@@ -123,9 +126,6 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
           res = CustomSoundpackItem(id: customList[index - builtinList.length]);
         }
         return res;
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return const Divider(thickness: 1);
       },
     );
   }
@@ -143,8 +143,20 @@ class BuiltinSoundpackItem extends StatefulWidget {
   State<BuiltinSoundpackItem> createState() => _BuiltinSoundpackItemState();
 }
 
-class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
+class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with TickerProviderStateMixin {
   BuiltinSoundpack get soundpack => widget.soundpack;
+  var isPlaying = false;
+  late final AnimationController ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+      reverseDuration: const Duration(milliseconds: 500),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +168,55 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> {
     BuildContext ctx,
   ) {
     final isSelected = H.currentSoundpackID == soundpack.id;
+
+    return [
+      [
+        AnimatedOpacity(
+          opacity: isSelected ? 1.0 : 0.15,
+          duration: Duration(milliseconds: 800),
+          curve: Curves.fastLinearToSlowEaseIn,
+          child: ClipRRect(
+            borderRadius: ctx.cardBorderRadius,
+            child: soundpack.preview.build(ctx),
+          ),
+        ),
+      ].stack(),
+      ListTile(
+        selected: isSelected,
+        title: soundpack.displayName.text(style: ctx.textTheme.titleLarge),
+        subtitle: [
+          "Liplum".text(style: ctx.textTheme.bodyLarge),
+          "This is description".text(style: ctx.textTheme.bodySmall),
+        ].column(caa: CrossAxisAlignment.start),
+      ),
+      ButtonBar(
+        children: [
+          IconButton(
+            icon: AnimatedIcon(
+              icon: AnimatedIcons.play_pause,
+              progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+            ),
+            onPressed: () {
+              setState(() {
+                isPlaying = !isPlaying;
+              });
+              if (isPlaying) {
+                ctrl.forward();
+              } else {
+                ctrl.reverse();
+              }
+            },
+          ),
+          _moreMenu(ctx, soundpack).align(at: Alignment.topRight),
+        ],
+      ),
+    ].column().inSoundpackCard(isSelected: isSelected).onTap(() {
+      eventBus.fire(SoundpackChangeEvent(soundpack));
+    }).padAll(2);
+
     return ListTile(
-      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
+      leading: soundpack.preview.build(ctx),
+      //leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
       selected: isSelected,
       onTap: () {
         eventBus.fire(SoundpackChangeEvent(soundpack));
@@ -331,10 +390,18 @@ Widget _moreMenu(
         ),
     ],
     child: IgnorePointer(
-        child: IconButton(
-      icon: const Icon(Icons.more_horiz_rounded, size: _iconSize),
+        child: TextButton(
+      child: const Icon(Icons.more_horiz_rounded),
       onPressed: () {},
     )),
   );
   return btn;
+}
+
+extension _SoundpackCardX on Widget {
+  Widget inSoundpackCard({required bool isSelected}) {
+    return inCard(
+      elevation: isSelected ? 15 : 2,
+    );
+  }
 }

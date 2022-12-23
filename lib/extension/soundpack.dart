@@ -16,11 +16,15 @@ extension SoundpackX on SoundpackProtocol {
 }
 
 extension ExternalSoundpackX on ExternalSoundpackProtocol {
-  void save() {
-    H.soundpacks.setSoundpackById(this);
+  /// Save current snapshot.
+  /// Note: Any further change won't be saved.
+  void saveSnapshot() {
+    H.soundpacks.setSoundpackSnapshotById(this);
   }
 
-  void addToStorage() {
-    H.soundpacks.addSoundpack(this);
+  /// Add current snapshot to storage.
+  /// Note: Any further change won't be saved.
+  void addSnapshotToStorage() {
+    H.soundpacks.addSoundpackSnapshot(this);
   }
 }

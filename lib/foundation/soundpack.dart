@@ -65,7 +65,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   Map<Note, LocalSoundFile> note2SoundFile = {};
   @override
   @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
-  ImageFileProtocol? preview;
+  LocalImageFile? preview;
 
   LocalSoundpack({required this.uuid, required this.meta, this.preview});
 
@@ -104,7 +104,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
     String? uuid,
     SoundpackMeta? meta,
     Map<Note, LocalSoundFile>? note2SoundFile,
-    ImageFileProtocol? preview,
+    LocalImageFile? preview,
   }) =>
       LocalSoundpack(
         uuid: uuid ?? this.uuid,
