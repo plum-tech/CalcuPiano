@@ -1,32 +1,61 @@
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
-import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/r.dart';
-import 'package:calcupiano/theme/keyboard.dart';
-import 'package:calcupiano/ui/piano.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 
-class SoundpackPreviewWindow extends StatefulWidget {
-  final SoundpackProtocol soundpack;
+const _kWindowAspectRatio = 4 / 3;
+
+typedef SizedWidgetBuilder = Widget Function(BuildContext ctx, Size size);
+
+Future<void> showWindow({
+  Key? key,
+  required String title,
+  required WidgetBuilder builder,
+  BuildContext? ctx,
+}) async {
+  late final CloseableProtocol closeable;
+  final entry = showTop(
+      context: ctx,
+      key: key,
+      (context) => Window(
+            title: title,
+            builder: builder,
+            closeable: closeable,
+          ));
+  closeable = CloseableDelegate(self: entry);
+}
+
+Future<void> closeWindowByKey(Key key, {BuildContext? ctx}) async {
+  final entry = getTopEntry(key: key, context: ctx);
+  entry?.closeWindow();
+}
+
+class Window extends StatefulWidget {
+  final String title;
+
+  /// If you know width:
+  ///   height = width * [aspectRatio]
+  ///
+  /// If you know height:
+  ///   width = height / [aspectRatio]
   final double aspectRatio;
   final CloseableProtocol? closeable;
+  final WidgetBuilder builder;
 
-  const SoundpackPreviewWindow(
-    this.soundpack, {
+  const Window({
     super.key,
+    required this.title,
     this.closeable,
-    this.aspectRatio = R.soundpackWindowAspectRatio,
+    required this.builder,
+    this.aspectRatio = _kWindowAspectRatio,
   });
 
   @override
-  State<SoundpackPreviewWindow> createState() => _SoundpackPreviewWindowState();
+  State<Window> createState() => _WindowState();
 }
 
-class _SoundpackPreviewWindowState extends State<SoundpackPreviewWindow> {
-  SoundpackProtocol get soundpack => widget.soundpack;
+class _WindowState extends State<Window> {
   var _x = 0.0;
   var _y = 0.0;
   final _mainBodyKey = GlobalKey();
@@ -105,7 +134,7 @@ class _SoundpackPreviewWindowState extends State<SoundpackPreviewWindow> {
                   }
                 },
               ).sized(w: windowSize.width),
-              buildKeyboard(windowSize),
+              widget.builder(context).sizedIn(windowSize),
             ].column().inCard()),
       ].stack().safeArea(),
     );
@@ -125,7 +154,7 @@ class _SoundpackPreviewWindowState extends State<SoundpackPreviewWindow> {
     } else {
       final style = ctx.textTheme.headlineSmall;
       res = [
-        soundpack.displayName
+        widget.title
             .text(style: style, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1)
             .padSymmetric(h: 10, v: 10)
             .align(at: Alignment.center),
@@ -157,12 +186,5 @@ class _SoundpackPreviewWindowState extends State<SoundpackPreviewWindow> {
             },
             icon: const Icon(Icons.close)),
     ].row();
-  }
-
-  Widget buildKeyboard(Size windowSize) {
-    return ChangeNotifierProvider(
-      create: (_) => KeyboardThemeModel(const KeyboardThemeData(elevation: 5)),
-      child: PianoKeyboard(fixedSoundpack: soundpack).sizedIn(windowSize),
-    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
@@ -36,7 +35,7 @@ class R {
     "ogg",
     "mp3",
   ];
-  static List<String> supportedAudioExtension = const [
+  static List<String> supportedAudioDotExtension = const [
     ".wav",
     ".ogg",
     ".mp3",
@@ -47,11 +46,4 @@ class R {
   static String get hiveDir => joinPath(localStorageDir, "hive");
 
   static String get soundpacksRootDir => joinPath(localStorageDir, "soundpack");
-
-  /// If you know width:
-  ///   height = width * [soundpackWindowAspectRatio]
-  ///
-  /// If you know height:
-  ///   width = height / [soundpackWindowAspectRatio]
-  static const soundpackWindowAspectRatio = 4 / 3;
 }

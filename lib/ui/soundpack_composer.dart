@@ -214,3 +214,24 @@ class _SoundFileRowState extends State<_SoundFileRow> {
   /// Search a SoundFile in another soundpack.
   Future<void> searchInAnother() async {}
 }
+
+/// A composition operation
+abstract class _Op {
+  Future<void> perform();
+}
+
+/// Replace old SoundFile with new SoundFile from different Soundpack
+class _ReplaceOp implements _Op {
+  @override
+  Future<void> perform() {
+    throw UnimplementedError();
+  }
+}
+
+/// Swap two SoundFiles in the same Soundpack
+class _SwapOp implements _Op {
+  @override
+  Future<void> perform() {
+    throw UnimplementedError();
+  }
+}

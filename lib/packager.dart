@@ -80,7 +80,7 @@ class Packager {
       if (candidates.isEmpty) throw Exception("Sound file of Note<$note> not found.");
       if (candidates.length > 1) throw Exception("Ambiguous sound audio file detected, $candidates, of Note<$note>.");
       final noteFile = candidates[0].value;
-      if (R.supportedAudioExtension.contains(extensionOfPath(noteFile.name).toLowerCase())) {
+      if (R.supportedAudioDotExtension.contains(extensionOfPath(noteFile.name).toLowerCase())) {
         note2SoundFile[note] = LocalSoundFile(localPath: joinPath(rootDir, noteFile.name));
         continue;
       }

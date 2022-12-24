@@ -17,6 +17,13 @@ abstract class SoundpackProtocol {
   ImageFileProtocol? get preview;
 }
 
+class SoundFileLoc {
+  final SoundpackProtocol soundpack;
+  final SoundFileProtocol file;
+
+  SoundFileLoc(this.soundpack, this.file);
+}
+
 class BuiltinSoundpack implements SoundpackProtocol {
   @override
   String get displayName => name;
