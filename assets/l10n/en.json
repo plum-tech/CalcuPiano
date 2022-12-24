@@ -1,6 +1,6 @@
 {
   "common": {
-    "op": {
+    "operation": {
       "revealInFolder": {
         "mac": "Reveal in Finder",
         "other": "Reveal in Folder"
@@ -14,6 +14,13 @@
       "edit": "Edit",
       "duplicate": "Duplicate",
       "delete": "Delete"
+    },
+    "soundpack": {
+      "name": "Soundpack Name",
+      "author": "Author",
+      "description": "Description",
+      "email": "E-mail",
+      "url": "URL"
     }
   },
   "ui": {
@@ -26,6 +33,8 @@
       "corruptedSoundpack": "A Corrupted Soundpack",
       "corruptedSoundpackSubtitle": "Sorry, please delete this",
       "compose": "Compose"
+    },
+    "soundpack_editor": {
     }
   }
 }

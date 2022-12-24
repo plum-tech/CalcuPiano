@@ -1,10 +1,13 @@
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
+
+part 'soundpack_editor.i18n.dart';
 
 /// A Soundpack Editor should allow users to edit all properties of [SoundpackMeta].
 /// Save button will save to storage and write into file.
@@ -123,21 +126,21 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
       child: [
         $TextField$(
           controller: $name,
-          labelText: "Soundpack Name",
+          labelText: I18n.soundpack.name,
         ).padSymmetric(h: 20, v: 5),
         [
           $TextField$(
             controller: $author,
-            labelText: "Author",
+            labelText: I18n.soundpack.author,
           ).padFromLTRB(20, 5, 5, 5).flexible(flex: 1),
           $TextField$(
             controller: $url,
-            labelText: "Url",
+            labelText: I18n.soundpack.url,
           ).padFromLTRB(5, 5, 20, 5).flexible(flex: 2),
         ].row(),
         $TextField$(
           controller: $description,
-          labelText: "Description",
+          labelText: I18n.soundpack.description,
           maxLines: 6,
         ).padSymmetric(h: 20, v: 5),
       ].column(),
@@ -148,5 +151,8 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   void dispose() {
     super.dispose();
     $name.dispose();
+    $description.dispose();
+    $author.dispose();
+    $url.dispose();
   }
 }

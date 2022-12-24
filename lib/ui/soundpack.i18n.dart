@@ -20,7 +20,7 @@ class I18n {
   static String get corruptedSoundpackSubtitle => "$_ns.corruptedSoundpackSubtitle".tr();
 }
 
-class Op extends I18nXOp {
+class Op extends $I18n$Op {
   Op._();
   String get compose => "$_ns.compose".tr();
 }

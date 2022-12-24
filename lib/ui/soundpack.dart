@@ -6,7 +6,6 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
