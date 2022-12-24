@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sanitize_filename/sanitize_filename.dart';
 import 'package:share_plus/share_plus.dart';
@@ -246,5 +247,19 @@ class Packager {
       lockParentWindow: true,
     );
     return result?.files.single.path;
+  }
+
+  static Future<String?> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    return image?.path;
+  }
+
+  /// Return the `preview.png`.
+  static Future<LocalImageFile> copyImageAsPreview(LocalSoundpack soundpack, {required String sourceImagePath}) async {
+    final targetPath = joinPath(R.soundpacksRootDir, soundpack.uuid, "preview.png");
+    await File(sourceImagePath).copy(targetPath);
+    return LocalImageFile(localPath: targetPath);
   }
 }

@@ -67,6 +67,8 @@ dependencies:
   sanitize_filename: ^1.0.4
   quiver: ^3.2.1
   share_plus: ^6.3.0
+  image_picker: ^0.8.6
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +99,7 @@ flutter:
      - assets/soundpack/default/
      - assets/soundpack/default_long_tone/
      - assets/soundpack/classic/
+     - assets/img/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

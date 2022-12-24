@@ -28,7 +28,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     super.build(context);
     return WillPopScope(
       onWillPop: () async {
-        StageManager.closeSoundpackPreview(ctx: context);
+        await StageManager.closeSoundpackPreview(ctx: context);
         return true;
       },
       child: Scaffold(
@@ -336,10 +336,12 @@ extension _MenuX on State {
       // TODO: I18n
       if (isSupportShareFiles) {
         add("Share", Icons.share_rounded, () async {
+          await StageManager.closeSoundpackPreview(ctx: context);
           await Packager.shareSoundpackArchive(soundpack);
         });
       } else {
         add("Save as", Icons.save_as, () async {
+          await StageManager.closeSoundpackPreview(ctx: context);
           await Packager.saveAsSoundpackArchive(soundpack);
         });
       }
@@ -368,6 +370,7 @@ extension _MenuX on State {
               leading: const Icon(Icons.audio_file_outlined),
               title: "Compose".text(),
               onTap: () async {
+                await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
                 ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackComposer(soundpack)));
               },
@@ -380,6 +383,7 @@ extension _MenuX on State {
               leading: const Icon(Icons.edit),
               title: "Edit".text(),
               onTap: () async {
+                await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
                 final anyChanged =
                     await ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
@@ -396,9 +400,10 @@ extension _MenuX on State {
             child: ListTile(
               leading: const Icon(Icons.copy_outlined),
               title: "Duplicate".text(),
-              onTap: () {
+              onTap: () async{
+                await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
-                Packager.duplicateSoundpack(soundpack);
+                await Packager.duplicateSoundpack(soundpack);
               },
             ),
           ),
@@ -408,9 +413,10 @@ extension _MenuX on State {
               leading: const Icon(Icons.folder_outlined),
               // TODO: `Reveal in Finder` on macOS
               title: "Reveal in Folder".text(),
-              onTap: () {
+              onTap: () async{
+                await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
-                Packager.revealSoundpackInFolder(soundpack);
+                await Packager.revealSoundpackInFolder(soundpack);
               },
             ),
           ),
@@ -421,6 +427,7 @@ extension _MenuX on State {
               leading: Icon(Icons.delete_outline, color: ctx.$red$),
               title: "Delete".text(style: TextStyle(color: ctx.$red$)),
               onTap: () async {
+                await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
                 await Future.delayed(const Duration(milliseconds: 500));
                 await DB.removeSoundpackById(soundpack.id);

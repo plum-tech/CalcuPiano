@@ -229,6 +229,7 @@ class SoundpackMeta implements Convertible {
     return other is SoundpackMeta &&
         runtimeType == other.runtimeType &&
         name == other.name &&
+        description == other.description &&
         author == other.author &&
         url == other.url;
   }
