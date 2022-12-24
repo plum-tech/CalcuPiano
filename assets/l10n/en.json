@@ -44,5 +44,10 @@
         "lightMode": "Light Mode"
       }
     }
+  },
+  "app": {
+    "soundpack": "Soundpack",
+    "settings": "Settings",
+    "about": "About"
   }
 }

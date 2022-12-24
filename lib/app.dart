@@ -19,6 +19,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'db.dart';
 
+part 'app.i18n.dart';
+
 class CalcuPianoApp extends StatefulWidget {
   const CalcuPianoApp({super.key});
 
@@ -298,7 +300,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
         ),
         const VerticalDivider(thickness: 1, width: 1),
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           child: routePage(),
         ).expanded(),
       ].row(),
@@ -347,11 +349,11 @@ class CalcuPianoDrawer extends HookWidget {
         child: [
           Column(
             children: [
-              DrawerHeader(child: SizedBox()).flexible(flex: 1),
+              const DrawerHeader(child: SizedBox()).flexible(flex: 1),
               ListTile(
-                leading: Icon(Icons.music_note),
-                title: Text('Soundpack'),
-                trailing: Icon(Icons.navigate_next),
+                leading: const Icon(Icons.music_note),
+                title: I18n.soundpack.text(),
+                trailing: const Icon(Icons.navigate_next),
                 onTap: () {
                   closeDrawer();
                   context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
@@ -361,15 +363,15 @@ class CalcuPianoDrawer extends HookWidget {
           ).expanded(),
           const Spacer(),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
+            leading: const Icon(Icons.settings),
+            title: I18n.settings.text(),
             onTap: () {
               closeDrawer();
               context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.build),
+            leading: const Icon(Icons.info_outline_rounded),
             title: version.text(),
           ),
         ].column(),
