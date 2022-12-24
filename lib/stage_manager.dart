@@ -35,9 +35,9 @@ class StageManagerImpl {
   Future<void> showSoundFileExplorer({BuildContext? ctx}) async {
     await showWindow(
       ctx: ctx,
-      key: _soundpackPreviewKey,
+      key: _soundFileExplorerKey,
       title: "Sound Explorer",
-      builder: (_) => SoundFileExplorer(),
+      builder: (_) => const SoundFileExplorer(),
     );
   }
   Future<void> closeSoundFileExplorerKey({BuildContext? ctx}) async {

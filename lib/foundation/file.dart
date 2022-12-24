@@ -5,7 +5,14 @@ import 'package:flutter/services.dart';
 
 abstract class FileProtocol implements Convertible {
   /// Return the target path.
-  Future<String> copyToFolder(String pathOfFolder);
+  /// The file name should follow [extSuggestion], but it is not required to.
+  /// ## For example:
+  /// - [parentFolder] is `myDisk/myFolder`.
+  /// - [basenameWithoutExt] is `myFile`.
+  /// - [extSuggestion] is `.wav`.
+  /// The return value could be `myDisk/myFolder/myFile.wav`.
+  /// But if the source file isn't a *.wav but a *.mp3, it can be `myDisk/myFolder/myFile.mp3`.
+  Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion});
 }
 
 abstract class BundledFileProtocol implements FileProtocol {
@@ -14,11 +21,10 @@ abstract class BundledFileProtocol implements FileProtocol {
 
 mixin BundledFileMixin implements BundledFileProtocol {
   @override
-  Future<String> copyToFolder(String pathOfFolder) async {
+  Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
     ByteData data = await rootBundle.load(path);
     List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(path));
+    String targetFile = joinPath(parentFolder, basenameWithoutExt, extensionOfPath(path));
     await File(targetFile).writeAsBytes(bytes);
     return targetFile;
   }
@@ -35,13 +41,14 @@ mixin BundledFileMixin implements BundledFileProtocol {
   String toString() => "Bundled($path)";
 }
 
-abstract class LocalFileProtocol implements Convertible {
+abstract class LocalFileProtocol implements FileProtocol, Convertible {
   String get localPath;
 }
 
 mixin LocalFileMixin implements LocalFileProtocol {
-  Future<String> copyToFolder(String pathOfFolder) async {
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(localPath));
+  @override
+  Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
+    String targetFile = joinPath(parentFolder, basenameWithoutExt, extensionOfPath(localPath));
     await File(localPath).copy(targetFile);
     return targetFile;
   }
@@ -62,17 +69,18 @@ extension LocalFileProtocolX on LocalFileProtocol {
   Future<void> tryDelete() async {
     await toFile().delete();
   }
+
   File toFile() => File(localPath);
 }
 
-abstract class UrlFileProtocol implements Convertible {
+abstract class UrlFileProtocol implements FileProtocol, Convertible {
   String get url;
 }
 
 mixin UrlFileMixin implements UrlFileProtocol {
-  Future<String> copyToFolder(String pathOfFolder) async {
-    // TODO: How can I know the file name and extension?
-    String targetFile = joinPath(pathOfFolder, basenameOfPath(url));
+  @override
+  Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
+    String targetFile = joinPath(parentFolder, basenameWithoutExt, extSuggestion);
     await Web.download(url, targetFile);
     return targetFile;
   }

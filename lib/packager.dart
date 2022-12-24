@@ -221,7 +221,7 @@ class Packager {
     await Directory(rootDir).create(recursive: true);
     for (final note in Note.all) {
       final file = source.resolve(note);
-      final localFilePath = await file.copyToFolder(rootDir);
+      final localFilePath = await file.copyTo(rootDir, note.id);
       note2SoundFiles[note] = LocalSoundFile(localPath: localFilePath);
     }
     final soundpack = LocalSoundpack(uuid: uuid, meta: meta)..note2SoundFile = note2SoundFiles;
@@ -261,5 +261,15 @@ class Packager {
     final targetPath = joinPath(R.soundpacksRootDir, soundpack.uuid, "preview.png");
     await File(sourceImagePath).copy(targetPath);
     return LocalImageFile(localPath: targetPath);
+  }
+
+  static Future<void> swapFiles(LocalFileProtocol a, LocalFileProtocol b) async {
+    final temp = joinPath(R.tmpDir, "FILE_SWAP_TEMP");
+    // copy a to temp
+    await a.toFile().copy(temp);
+    // copy b to a
+    await b.toFile().copy(a.localPath);
+    // copy temp to b
+    await File(temp).copy(a.localPath);
   }
 }

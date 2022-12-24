@@ -92,7 +92,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
       ].column(maa: MainAxisAlignment.center).padAll(20.w).inCard(elevation: 6),
     );
     return LongPressDraggable<SoundFileLoc>(
-      data: SoundFileLoc(selected, file),
+      data: SoundFileLoc(selected, note),
       dragAnchorStrategy: (_, __, ___) => Offset(80.w, 80.w),
       feedback: feedback,
       child: res,

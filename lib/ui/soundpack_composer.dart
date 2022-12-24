@@ -225,6 +225,12 @@ class _SoundFileRowState extends State<_SoundFileRow> {
   Future<void> searchInAnother() async {}
 }
 
+class _OpQueue {
+  final queue = <_Op>[];
+
+  void add(_Op op) {}
+}
+
 /// A composition operation
 abstract class _Op {
   Future<void> perform();
@@ -232,6 +238,11 @@ abstract class _Op {
 
 /// Replace old SoundFile with new SoundFile from different Soundpack
 class _ReplaceOp implements _Op {
+  final SoundFileProtocol source;
+  final SoundFileLoc target;
+
+  const _ReplaceOp(this.source, this.target);
+
   @override
   Future<void> perform() {
     throw UnimplementedError();
@@ -240,6 +251,11 @@ class _ReplaceOp implements _Op {
 
 /// Swap two SoundFiles in the same Soundpack
 class _SwapOp implements _Op {
+  final SoundFileLoc a;
+  final SoundFileLoc b;
+
+  const _SwapOp(this.a, this.b);
+
   @override
   Future<void> perform() {
     throw UnimplementedError();

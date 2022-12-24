@@ -19,9 +19,9 @@ abstract class SoundpackProtocol {
 
 class SoundFileLoc {
   final SoundpackProtocol soundpack;
-  final SoundFileProtocol file;
+  final Note note;
 
-  SoundFileLoc(this.soundpack, this.file);
+  const SoundFileLoc(this.soundpack, this.note);
 }
 
 class BuiltinSoundpack implements SoundpackProtocol {

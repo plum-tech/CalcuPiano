@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:flutter/foundation.dart';
