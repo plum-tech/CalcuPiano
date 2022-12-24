@@ -3,6 +3,7 @@ import 'package:calcupiano/app.dart';
 import 'package:calcupiano/event_handler.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -11,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   if (!kIsWeb) {
     final appDocDir = await getApplicationDocumentsDirectory();
     R.appDir = appDocDir.path;
@@ -30,7 +32,21 @@ void main() async {
   initFoundation();
   initEssential();
   EventHandler.init();
-  runApp(const CalcuPianoApp());
+  runApp(wrapWithEasyLocalization(
+    const CalcuPianoApp(),
+  ));
+}
+
+const defaultLocale = Locale('en');
+const supportedLocales = [defaultLocale];
+
+Widget wrapWithEasyLocalization(Widget child) {
+  return EasyLocalization(
+    supportedLocales: supportedLocales,
+    path: 'assets/l10n',
+    fallbackLocale: defaultLocale,
+    child: child,
+  );
 }
 
 Future<void> initEssential() async {

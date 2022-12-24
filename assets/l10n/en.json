@@ -1,0 +1,31 @@
+{
+  "common": {
+    "op": {
+      "revealInFolder": {
+        "mac": "Reveal in Finder",
+        "other": "Reveal in Folder"
+      },
+      "share": "Share",
+      "saveAs": "Save as",
+      "play": {
+        "music": "Play",
+        "game": "Play"
+      },
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete"
+    }
+  },
+  "ui": {
+    "soundpack": {
+      "title": "Soundpack",
+      "createSoundpack": "Create a soundpack",
+      "importSoundpack": "Import Soundpack",
+      "link": "Link",
+      "localFile": "Local File",
+      "corruptedSoundpack": "A Corrupted Soundpack",
+      "corruptedSoundpackSubtitle": "Sorry, please delete this",
+      "compose": "Compose"
+    }
+  }
+}

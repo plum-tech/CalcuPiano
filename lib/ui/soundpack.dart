@@ -6,12 +6,16 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:calcupiano/i18n.dart';
+
+part 'soundpack.i18n.dart';
 
 const double _iconSize = 36;
 
@@ -33,26 +37,26 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
       },
       child: Scaffold(
         appBar: AppBar(
-          title: "Soundpack".text(),
+          title: I18n.title.text(),
           centerTitle: context.isCupertino,
           actions: [
             PullDownButton(
               itemBuilder: (context) => [
                 PullDownMenuItem(
                   icon: Icons.create,
-                  title: 'Create a soundpack',
+                  title: I18n.createSoundpack,
                   onTap: () {},
                 ),
                 const PullDownMenuDivider(),
                 PullDownMenuTitle(
-                  title: "Import Soundpack".text(),
+                  title: I18n.importSoundpack.text(),
                 ),
                 PullDownMenuActionsRow.medium(
                   items: [
                     PullDownMenuItem(
                       enabled: false,
                       onTap: () {},
-                      title: 'Link',
+                      title: I18n.link,
                       icon: Icons.link,
                     ),
                     if (!kIsWeb)
@@ -60,7 +64,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
                         onTap: () async {
                           await Packager.pickAndImportSoundpackArchive();
                         },
-                        title: 'Local File',
+                        title: I18n.localFile,
                         icon: Icons.storage,
                       )
                   ],
@@ -154,7 +158,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
       [
         AnimatedOpacity(
           opacity: isSelected ? 1.0 : 0.15,
-          duration: Duration(milliseconds: 800),
+          duration: const Duration(milliseconds: 800),
           curve: Curves.fastLinearToSlowEaseIn,
           child: ClipRRect(
             borderRadius: ctx.cardBorderRadius,
@@ -295,9 +299,9 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
     return ListTile(
-      leading: Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
-      title: "A Corrupted Soundpack".text(),
-      subtitle: "Sorry, please delete this".text(),
+      leading: const Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
+      title: I18n.corruptedSoundpack.text(),
+      subtitle: I18n.corruptedSoundpackSubtitle.text(),
       trailing: Icon(Icons.delete_outline, color: ctx.$red$, size: _iconSize).onTap(() async {
         await DB.removeSoundpackById(widget.id);
       }),
@@ -335,12 +339,12 @@ extension _MenuX on State {
 
       // TODO: I18n
       if (isSupportShareFiles) {
-        add("Share", Icons.share_rounded, () async {
+        add(I18n.op.share, Icons.share_rounded, () async {
           await StageManager.closeSoundpackPreview(ctx: context);
           await Packager.shareSoundpackArchive(soundpack);
         });
       } else {
-        add("Save as", Icons.save_as, () async {
+        add(I18n.op.saveAs, Icons.save_as, () async {
           await StageManager.closeSoundpackPreview(ctx: context);
           await Packager.saveAsSoundpackArchive(soundpack);
         });
@@ -357,7 +361,7 @@ extension _MenuX on State {
         PopupMenuItem(
           child: ListTile(
             leading: const Icon(Icons.piano_outlined),
-            title: "Play".text(),
+            title: I18n.op.play$Music.text(),
             onTap: () async {
               ctx.navigator.pop();
               StageManager.showSoundpackPreviewOf(soundpack, ctx: context);
@@ -368,7 +372,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: const Icon(Icons.audio_file_outlined),
-              title: "Compose".text(),
+              title:I18n.op.compose.text(),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
@@ -381,7 +385,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: const Icon(Icons.edit),
-              title: "Edit".text(),
+              title: I18n.op.edit.text(),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
@@ -399,7 +403,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: const Icon(Icons.copy_outlined),
-              title: "Duplicate".text(),
+              title: I18n.op.duplicate.text(),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
@@ -411,8 +415,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: const Icon(Icons.folder_outlined),
-              // TODO: `Reveal in Finder` on macOS
-              title: "Reveal in Folder".text(),
+              title: I18n.op.revealInFolder.text(),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
@@ -425,7 +428,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: Icon(Icons.delete_outline, color: ctx.$red$),
-              title: "Delete".text(style: TextStyle(color: ctx.$red$)),
+              title: I18n.op.delete.text(style: TextStyle(color: ctx.$red$)),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();

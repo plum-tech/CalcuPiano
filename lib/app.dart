@@ -8,6 +8,7 @@ import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -50,6 +51,9 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
             child: Consumer<CalcuPianoThemeModel>(
               builder: (_, model, __) {
                 return MaterialApp(
+                  localizationsDelegates: context.localizationDelegates,
+                  supportedLocales: context.supportedLocales,
+                  locale: context.locale,
                   theme: bakeTheme(context, ThemeData.light(), model.data),
                   darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
                   themeMode: model.resolveThemeMode(),
