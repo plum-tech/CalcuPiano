@@ -17,7 +17,6 @@ abstract class SoundpackProtocol {
   ImageFileProtocol? get preview;
 }
 
-
 abstract class SoundFileLoc implements SoundFileResolveProtocol {
   SoundpackProtocol get soundpack;
 

@@ -40,6 +40,7 @@ class StageManagerImpl {
       builder: (_) => const SoundFileExplorer(),
     );
   }
+
   Future<void> closeSoundFileExplorerKey({BuildContext? ctx}) async {
     closeWindowByKey(_soundFileExplorerKey, ctx: ctx);
   }

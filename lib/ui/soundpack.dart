@@ -400,7 +400,7 @@ extension _MenuX on State {
             child: ListTile(
               leading: const Icon(Icons.copy_outlined),
               title: "Duplicate".text(),
-              onTap: () async{
+              onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
                 await Packager.duplicateSoundpack(soundpack);
@@ -413,7 +413,7 @@ extension _MenuX on State {
               leading: const Icon(Icons.folder_outlined),
               // TODO: `Reveal in Finder` on macOS
               title: "Reveal in Folder".text(),
-              onTap: () async{
+              onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
                 await Packager.revealSoundpackInFolder(soundpack);
