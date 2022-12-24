@@ -8,6 +8,8 @@ import 'package:settings_ui/settings_ui.dart';
 
 import '../theme/theme.dart';
 
+part 'settings.i18n.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -25,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   Widget buildPortrait(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
-        title: "Settings".text(),
+        title: I18n.title.text(),
         centerTitle: ctx.isCupertino,
       ),
       body: buildSettings(ctx),
@@ -54,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
       darkTheme: theme,
       sections: [
         SettingsSection(
-          title: Text('Common'),
+          title: I18n.common.title.text(),
           tiles: <SettingsTile>[
             SettingsTile.switchTile(
               onToggle: (value) {
@@ -67,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
                     ? const Icon(key: ValueKey("Light"), Icons.dark_mode)
                     : const Icon(key: ValueKey("Dark"), Icons.light_mode),
               ),
-              title: isDarkMode ? Text("Dark Mode") : Text("Light Mode"),
+              title: isDarkMode ? I18n.common.darkMode.text() : I18n.common.lightMode.text(),
             ),
           ],
         ),

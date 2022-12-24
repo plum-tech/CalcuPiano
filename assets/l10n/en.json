@@ -35,6 +35,14 @@
       "compose": "Compose"
     },
     "soundpack_editor": {
+    },
+    "settings": {
+      "title": "Settings",
+      "common": {
+        "title": "Common",
+        "darkMode": "Dark Mode",
+        "lightMode": "Light Mode"
+      }
     }
   }
 }
