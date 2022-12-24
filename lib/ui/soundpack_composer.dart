@@ -3,6 +3,7 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/stage_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/widget/text_span.dart';
@@ -22,17 +23,26 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: "Compose ${soundpack.displayName}".text(),
-        centerTitle: context.isCupertino,
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.playlist_play_outlined), onPressed: () async => await playSoundInNoteOrder()),
-          IconButton(icon: const Icon(Icons.save_rounded), onPressed: () async => await onSave(context)),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        await StageManager.closeSoundFileExplorerKey(ctx: context);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: soundpack.displayName.text(overflow: TextOverflow.fade),
+          centerTitle: context.isCupertino,
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.playlist_play_outlined), onPressed: () async => await playSoundInNoteOrder()),
+            IconButton(
+                icon: const Icon(Icons.search_rounded),
+                onPressed: () async => await StageManager.showSoundFileExplorer(ctx: context)),
+            IconButton(icon: const Icon(Icons.save_rounded), onPressed: () async => await onSave(context)),
+          ],
+        ),
+        body: buildBody(context),
       ),
-      body: buildBody(context),
     );
   }
 

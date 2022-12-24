@@ -10,7 +10,7 @@ abstract class SoundpackProtocol {
   /// The [H.currentSoundpackID] will use this as identity.
   String get id;
 
-  Future<SoundFileProtocol> resolve(Note note);
+  SoundFileProtocol resolve(Note note);
 
   String get displayName;
 
@@ -40,7 +40,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
   String get id => R.genBuiltinSoundpackId(name);
 
   @override
-  Future<SoundFileProtocol> resolve(Note note) async {
+  SoundFileProtocol resolve(Note note) {
     // Note: Don't use [joinPath] here, assets only slash-separator.
     // On Windows, [joinPath] will add backslashes.
     return BundledSoundFile(path: "assets/${R.assetsSoundpackDir}/$name/${note.id}.wav");
@@ -80,7 +80,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   String get id => uuid;
 
   @override
-  Future<SoundFileProtocol> resolve(Note note) async {
+  SoundFileProtocol resolve(Note note) {
     final file = note2SoundFile[note];
     if (file == null) {
       throw NoSoundFileOfNoteException(note);
@@ -147,7 +147,7 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   String get id => uuid;
 
   @override
-  Future<SoundFileProtocol> resolve(Note note) async {
+  SoundFileProtocol resolve(Note note) {
     final file = note2SoundFile[note];
     if (file == null) {
       throw NoSoundFileOfNoteException(note);
@@ -242,4 +242,18 @@ class NoSoundFileOfNoteException implements Exception {
   final Note note;
 
   NoSoundFileOfNoteException(this.note);
+}
+
+extension SoundpackX on SoundpackProtocol {
+  Iterable<MapEntry<Note, SoundFileProtocol>> iterateNote2SoundFile() sync* {
+    for (final note in Note.all) {
+      yield MapEntry(note, resolve(note));
+    }
+  }
+
+  Iterable<SoundFileProtocol> iterateSoundFiles() sync* {
+    for (final note in Note.all) {
+      yield resolve(note);
+    }
+  }
 }

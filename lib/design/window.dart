@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:flutter/foundation.dart';
@@ -113,31 +116,55 @@ class _WindowState extends State<Window> {
 
   @override
   Widget build(BuildContext context) {
-    final windowSize = calcuBestSize(context);
     return AnimatedOpacity(
       opacity: opacity,
       duration: const Duration(milliseconds: 300),
       child: [
         Positioned(
-            key: _mainBodyKey,
-            left: _x,
-            top: _y,
-            child: [
-              Listener(
-                child: buildWindowHead(context),
-                onPointerMove: (d) {
-                  if (!isResizing) {
-                    setState(() {
-                      _x += d.delta.dx;
-                      _y += d.delta.dy;
-                    });
-                  }
-                },
-              ).sized(w: windowSize.width),
-              widget.builder(context).sizedIn(windowSize),
-            ].column().inCard()),
+          key: _mainBodyKey,
+          left: _x,
+          top: _y,
+          child: buildWindowContent(context),
+        ),
       ].stack().safeArea(),
     );
+  }
+
+  Widget buildWindowContent(BuildContext ctx) {
+    final windowSize = calcuBestSize(ctx);
+    Widget content = [
+      Listener(
+        child: buildWindowHead(ctx),
+        onPointerMove: (d) {
+          if (!isResizing) {
+            setState(() {
+              _x += d.delta.dx;
+              _y += d.delta.dy;
+            });
+          }
+        },
+      ).sized(w: windowSize.width),
+      widget.builder(ctx).sizedIn(windowSize),
+    ].column();
+    /* Glassmorphism
+    content = [
+        ClipRRect(
+          child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 6,
+            sigmaY: 6,
+          ),
+          child: SizedBox(
+            width: windowSize.width,
+            height: windowSize.height,
+          ),
+      ),
+        ),
+      content,
+    ].stack();
+    content = content.inCard(color: Colors.transparent);*/
+    content = content.inCard();
+    return content;
   }
 
   Widget buildTitle(BuildContext ctx) {
@@ -152,7 +179,7 @@ class _WindowState extends State<Window> {
         },
       );
     } else {
-      final style = ctx.textTheme.headlineSmall;
+      final style = ctx.textTheme.titleMedium;
       res = [
         widget.title
             .text(style: style, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1)

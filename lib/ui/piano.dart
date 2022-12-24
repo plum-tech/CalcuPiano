@@ -141,7 +141,7 @@ class _PianoKeyState extends State<PianoKey> {
 
   Future<void> playSound() async {
     final player = AudioPlayer();
-    final sound = await _soundpack.resolve(note);
+    final sound = _soundpack.resolve(note);
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
     await player.resume();

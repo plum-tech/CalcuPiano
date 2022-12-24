@@ -220,7 +220,7 @@ class Packager {
     final rootDir = joinPath(R.soundpacksRootDir, uuid);
     await Directory(rootDir).create(recursive: true);
     for (final note in Note.all) {
-      final file = await source.resolve(note);
+      final file = source.resolve(note);
       final localFilePath = await file.copyToFolder(rootDir);
       note2SoundFiles[note] = LocalSoundFile(localPath: localFilePath);
     }
