@@ -1,4 +1,4 @@
-* text=lf
+* text=auto
 *.txt text
 *.dart text
 *.md text
