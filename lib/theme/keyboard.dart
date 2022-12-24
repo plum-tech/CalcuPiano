@@ -5,30 +5,34 @@ enum KeyboardDisplayMode {
   tonicSolfa;
 }
 
-class KeyboardData {
+class KeyboardThemeData {
   final KeyboardDisplayMode displayMode;
+  final double? elevation;
 
-  const KeyboardData({
+  const KeyboardThemeData({
     this.displayMode = KeyboardDisplayMode.numbered,
+    this.elevation,
   });
 
-  KeyboardData copyWith({
+  KeyboardThemeData copyWith({
     KeyboardDisplayMode? displayMode,
+    double? elevation,
   }) {
-    return KeyboardData(
+    return KeyboardThemeData(
       displayMode: displayMode ?? this.displayMode,
+      elevation: elevation ?? this.elevation,
     );
   }
 }
 
-class KeyboardModel with ChangeNotifier {
-  KeyboardData _data;
+class KeyboardThemeModel with ChangeNotifier {
+  KeyboardThemeData _data;
 
-  KeyboardData get data => _data;
+  KeyboardThemeData get data => _data;
 
-  KeyboardModel([KeyboardData data = const KeyboardData()]) : _data = data;
+  KeyboardThemeModel([KeyboardThemeData data = const KeyboardThemeData()]) : _data = data;
 
-  set data(KeyboardData newData) {
+  set data(KeyboardThemeData newData) {
     _data = newData;
     notifyListeners();
   }

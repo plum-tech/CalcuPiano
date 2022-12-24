@@ -1,14 +1,17 @@
 import 'package:animations/animations.dart';
 import 'package:calcupiano/design/animated.dart';
-import 'package:calcupiano/design/multiplatform.dart';
+import 'package:calcupiano/design/overlay.dart';
+import 'package:calcupiano/events.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -36,20 +39,26 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<CalcuPianoThemeModel>(
-            create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
-      ],
-      child: Consumer<CalcuPianoThemeModel>(
-        builder: (_, model, __) {
-          return MaterialApp(
-            theme: bakeTheme(context, ThemeData.light(), model.data),
-            darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
-            themeMode: model.resolveThemeMode(),
-            home: const CalcuPianoHomePage(),
-          );
-        },
+    return wrapWithScreenUtil(
+      wrapWithTop(
+        wrapWithOrientationWatcher(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider<CalcuPianoThemeModel>(
+                  create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+            ],
+            child: Consumer<CalcuPianoThemeModel>(
+              builder: (_, model, __) {
+                return MaterialApp(
+                  theme: bakeTheme(context, ThemeData.light(), model.data),
+                  darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
+                  themeMode: model.resolveThemeMode(),
+                  home: const CalcuPianoHomePage(),
+                );
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -61,17 +70,35 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
             side: BorderSide(color: Colors.transparent), //the outline color
             borderRadius: BorderRadius.all(Radius.circular(16))),
       ),
-      appBarTheme: const AppBarTheme(elevation: 0),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
+      useMaterial3: true,
       // TODO: Temporarily debug Visual effects on iOS.
-      //  platform: TargetPlatform.iOS,
+      //   platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
     );
+  }
+
+  Widget wrapWithOrientationWatcher(Widget mainBody) {
+    return OrientationWatcher(child: mainBody);
+  }
+
+  Widget wrapWithTop(Widget mainBody) {
+    return Top.global(child: mainBody);
+  }
+
+  Widget wrapWithScreenUtil(Widget mainBody) {
+    return ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return mainBody;
+        });
   }
 }
 
@@ -155,21 +182,30 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
       body: AnimatedScale(
         scale: _isDrawerOpen ? 0.96 : 1,
         curve: Curves.fastLinearToSlowEaseIn,
-        duration: Duration(milliseconds: 1000),
-        child: [
-          buildMain(context, ctrl, _isDrawerOpen),
-          AnimatedBlur(
-            blur: _isDrawerOpen ? 3 : 0,
-            curve: Curves.fastLinearToSlowEaseIn,
-            duration: Duration(milliseconds: 1000),
-            child: SizedBox(
-              width: fullSize.width,
-              height: fullSize.height,
-            ),
-          ),
-        ].stack(),
+        duration: const Duration(milliseconds: 1000),
+        child: buildMainArea(context, ctrl, _isDrawerOpen, fullSize),
       ),
     );
+  }
+
+  Widget buildMainArea(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen, Size fullSize) {
+    if (kIsWeb) {
+      return buildMain(context, ctrl, _isDrawerOpen);
+    } else {
+      // ImplicitlyAnimatedWidget doesn't work on Flutter Web
+      return [
+        buildMain(context, ctrl, _isDrawerOpen),
+        AnimatedBlur(
+          blur: _isDrawerOpen ? 3 : 0,
+          curve: Curves.fastLinearToSlowEaseIn,
+          duration: const Duration(milliseconds: 1000),
+          child: SizedBox(
+            width: fullSize.width,
+            height: fullSize.height,
+          ),
+        ),
+      ].stack();
+    }
   }
 
   Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
@@ -202,6 +238,12 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
             .safeArea()
       ].stack(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    ctrl.dispose();
   }
 }
 
@@ -329,5 +371,30 @@ class CalcuPianoDrawer extends HookWidget {
         ].column(),
       ),
     );
+  }
+}
+
+class OrientationWatcher extends StatefulWidget {
+  final Widget child;
+
+  const OrientationWatcher({super.key, required this.child});
+
+  @override
+  State<OrientationWatcher> createState() => _OrientationWatcherState();
+}
+
+class _OrientationWatcherState extends State<OrientationWatcher> {
+  Size? lastSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = context.mediaQuery.size;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (size != lastSize) {
+        eventBus.fire(OrientationChangeEvent(Orientation.portrait));
+        lastSize = size;
+      }
+    });
+    return widget.child;
   }
 }

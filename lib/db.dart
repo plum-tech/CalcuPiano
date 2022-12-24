@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/platform/platform.dart';
+import 'package:calcupiano/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -15,6 +15,8 @@ class K {
 }
 
 final H = HImpl._();
+// ignore: non_constant_identifier_names
+final DB = DBImpl();
 
 class HImpl {
   HImpl._();
@@ -22,9 +24,6 @@ class HImpl {
   /// To reduce complexity, CalcuPiano will save the settings in only one box with fixed keys,
   /// see [K], application-wide.
   late Box<dynamic> box;
-
-  /// [SoundpackStorage] contains all external soundpacks.
-  late SoundpackStorage soundpacks;
 
   String? get currentSoundpackID => box.get(K.currentSoundpackID) as String?;
 
@@ -67,31 +66,34 @@ class ListenTo {
   const ListenTo([this.keys]);
 }
 
-class SoundpackStorage {
-  final Box<String> soundpacks;
-
-  const SoundpackStorage(this.soundpacks);
+/// [SoundpackStorage] contains all external soundpacks.
+class DBImpl {
+  late final Box<String> box;
 
   /// High-level operation
   ExternalSoundpackProtocol? getSoundpackById(String id) {
-    final json = soundpacks.get(id);
+    final json = box.get(id);
     return Converter.fromJson<ExternalSoundpackProtocol>(json);
   }
 
   /// Low-level operation.
   /// Set the soundpack directly will not clear the local file, or change [H.customSoundpackIdList].
-  void setSoundpackById(ExternalSoundpackProtocol soundpack) {
+  /// Note: Any further change won't be saved.
+  void setSoundpackSnapshotById(ExternalSoundpackProtocol soundpack) {
     final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
     if (json != null) {
-      soundpacks.put(soundpack.id, json);
+      box.put(soundpack.id, json);
     }
   }
 
   /// High-level operation
-  void addSoundpack(ExternalSoundpackProtocol soundpack) {
-    setSoundpackById(soundpack);
+  /// Add current snapshot of soundpack to storage.
+  /// Note: Any further change won't be saved.
+  void addSoundpackSnapshot(ExternalSoundpackProtocol soundpack) {
+    setSoundpackSnapshotById(soundpack);
     final idList = H.customSoundpackIdList ?? [];
     idList.add(soundpack.id);
+    idList.distinct();
     H.customSoundpackIdList = idList;
   }
 
@@ -121,5 +123,5 @@ class SoundpackStorage {
     await file.delete(recursive: true);
   }
 
-  ValueListenable<Box<String>> listenable({List<String>? keys}) => soundpacks.listenable(keys: keys);
+  ValueListenable<Box<String>> listenable({List<String>? keys}) => box.listenable(keys: keys);
 }

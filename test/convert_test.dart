@@ -32,7 +32,7 @@ void main() {
     test("polymorphism", () {
       initConverter();
       const list = [
-        BundledSoundFile(pathInAssets: "default/1.wav"),
+        BundledSoundFile(path: "assets/default/1.wav"),
         LocalSoundFile(localPath: '/usr/liplum/soundpack/1.wav'),
       ];
       final res = Converter.toJson(list);
@@ -56,7 +56,13 @@ void main() {
       final restored = Converter.fromJson<List>(json);
       assert(restored != null);
       assert(restored![0] is BundledSoundFile);
-      assert((restored![0] as BundledSoundFile).pathInAssets == "MIGRATED");
+      assert((restored![0] as BundledSoundFile).path == "MIGRATED");
+    });
+  });
+  group("Stuff", () {
+    test("Test generic inheritance checking", () {
+      assert(isSubtype<String, Convertible>() == false);
+      assert(isSubtype<BundledSoundFile, Convertible>() == true);
     });
   });
 }
@@ -90,12 +96,12 @@ void workWithGeneratedAdapter() {
   }
 
   final JsonCodec json = JsonCodec(reviver: reviver, toEncodable: toEncodable);
-  const f = BundledSoundFile(pathInAssets: "default/1.wav");
+  const f = BundledSoundFile(path: "assets/default/1.wav");
   final res = json.encode(f);
-  assert(res.contains('default/1.wav'));
+  assert(res.contains('assets/default/1.wav'));
   final restored = json.decode(res);
   assert(restored is! LocalSoundFile);
-  assert((restored as BundledSoundFile).pathInAssets == "default/1.wav");
+  assert((restored as BundledSoundFile).path == "assets/default/1.wav");
 }
 
 void mapCustomClass() {

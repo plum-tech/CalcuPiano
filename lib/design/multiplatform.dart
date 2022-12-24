@@ -164,10 +164,9 @@ class $TextField$ extends StatelessWidget {
   final String? placeholder;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final int? maxLines;
   final bool autofocus;
 
-  /// On Cupertino, it's a candidate of placeholder.
-  /// On Material, it's the [InputDecoration.labelText]
   final String? labelText;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onSubmit;
@@ -182,32 +181,39 @@ class $TextField$ extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.onSubmit,
+    this.maxLines = 1,
   });
 
   @override
   Widget build(BuildContext context) {
+    final label = labelText;
     if (context.isCupertino) {
-      return CupertinoTextField(
-          controller: controller,
-          autofocus: autofocus,
-          placeholder: placeholder ?? labelText,
-          textInputAction: textInputAction,
-          prefix: prefixIcon,
-          suffix: suffixIcon,
-          onSubmitted: onSubmit,
-          decoration: const BoxDecoration(
-            color: CupertinoDynamicColor.withBrightness(
-              color: CupertinoColors.white,
-              darkColor: CupertinoColors.darkBackgroundGray,
+      return [
+        if (label != null) label.text().padV(5),
+        CupertinoTextField(
+            controller: controller,
+            autofocus: autofocus,
+            placeholder: placeholder,
+            textInputAction: textInputAction,
+            prefix: prefixIcon,
+            suffix: suffixIcon,
+            maxLines: maxLines,
+            onSubmitted: onSubmit,
+            decoration: const BoxDecoration(
+              color: CupertinoDynamicColor.withBrightness(
+                color: CupertinoColors.white,
+                darkColor: CupertinoColors.darkBackgroundGray,
+              ),
+              border: _kDefaultRoundedBorder,
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
-            border: _kDefaultRoundedBorder,
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
-          style: CupertinoTheme.of(context).textTheme.textStyle);
+            style: CupertinoTheme.of(context).textTheme.textStyle),
+      ].column(mas: MainAxisSize.min, caa: CrossAxisAlignment.start);
     } else {
       return TextFormField(
         controller: controller,
         autofocus: autofocus,
+        maxLines: maxLines,
         textInputAction: textInputAction,
         decoration: InputDecoration(
           hintText: placeholder,

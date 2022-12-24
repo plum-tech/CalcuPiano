@@ -1,6 +1,7 @@
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -32,7 +33,11 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   }
 
   Widget buildLandscape(BuildContext ctx) {
-    return buildSettings(ctx).padH(150);
+    // TODO: Adaptive to split screen.
+    return LayoutBuilder(builder: (ctx, box) {
+      final padding = box.maxWidth / 5;
+      return buildSettings(ctx).padH(padding);
+    });
     // TODO: Add some notes around?
     return [
       SizedBox().flexible(flex: 1),

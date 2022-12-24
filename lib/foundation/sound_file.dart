@@ -1,30 +1,32 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:calcupiano/db.dart';
-import 'package:calcupiano/foundation.dart';
-import 'package:calcupiano/r.dart';
+import 'package:calcupiano/foundation/file.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'sound_file.g.dart';
 
+abstract class SoundFileResolveProtocol {
+  SoundFileProtocol resolve();
+}
+
 /// SoundFile is an abstract file of a sound.
 /// It could be the ref of a bundled file, or a real local file.
-abstract class SoundFileProtocol implements Convertible {
+abstract class SoundFileProtocol implements FileProtocol, SoundFileResolveProtocol {
   Future<void> loadInto(AudioPlayer player);
 }
 
 /// A bundled sound file in assets.
 @JsonSerializable()
-class BundledSoundFile implements SoundFileProtocol {
+class BundledSoundFile with BundledFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.BundledSoundFile";
+  @override
   @JsonKey()
-  final String pathInAssets;
+  final String path;
 
-  const BundledSoundFile({required this.pathInAssets});
+  const BundledSoundFile({required this.path});
 
   @override
   Future<void> loadInto(AudioPlayer player) async {
-    await player.setSourceAsset(pathInAssets);
+    await player.setSourceAsset(path);
   }
 
   factory BundledSoundFile.fromJson(Map<String, dynamic> json) => _$BundledSoundFileFromJson(json);
@@ -36,11 +38,15 @@ class BundledSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  BundledSoundFile resolve() => this;
 }
 
 @JsonSerializable()
-class LocalSoundFile implements SoundFileProtocol {
+class LocalSoundFile with LocalFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.LocalSoundFile";
+  @override
   @JsonKey()
   final String localPath;
 
@@ -60,16 +66,19 @@ class LocalSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  LocalSoundFile resolve() => this;
 }
 
 @JsonSerializable()
-class UrlSoundFile implements SoundFileProtocol {
+class UrlSoundFile with UrlFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.UrlSoundFile";
+  @override
   @JsonKey()
   final String url;
-  final String md5;
 
-  const UrlSoundFile({required this.url, required this.md5});
+  const UrlSoundFile({required this.url});
 
   @override
   Future<void> loadInto(AudioPlayer player) async {
@@ -85,4 +94,7 @@ class UrlSoundFile implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  UrlSoundFile resolve() => this;
 }

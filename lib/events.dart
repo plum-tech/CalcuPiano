@@ -32,3 +32,9 @@ class SoundpackChangeEvent {
 
   const SoundpackChangeEvent(this.newSoundpack);
 }
+
+class OrientationChangeEvent {
+  final Orientation newOrientation;
+
+  OrientationChangeEvent(this.newOrientation);
+}

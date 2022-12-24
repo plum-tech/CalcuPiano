@@ -19,6 +19,15 @@ class _K {
   static const version = "@version";
 }
 
+bool isSubtype<Child, Parent>() => <Child>[] is List<Parent>;
+
+///
+/// Generate the json converter with this template:
+/// ```
+/// factory .fromJson(Map<String, dynamic> json) => _$FromJson(json);
+/// Map<String, dynamic> toJson() => _$ToJson(this);
+/// ```
+///
 class Converter {
   Converter._();
 
@@ -30,7 +39,7 @@ class Converter {
   static Object? _reviver(Object? key, Object? value) {
     if (value is Map) {
       final type = value[_K.type];
-      if(type == null){
+      if (type == null) {
         // It's a normal map, so return itself.
         return value;
       }
@@ -75,9 +84,14 @@ class Converter {
     _migrations[typeName] = migration;
   }
 
-  static String? toJson<T>(T obj) {
+  static String? toJson<T>(T obj, {int? indent}) {
     try {
-      return _jsonCodec.encode(obj);
+      if (indent != null) {
+        final encoder = JsonEncoder.withIndent(' ' * indent, _toEncodable);
+        return encoder.convert(obj);
+      } else {
+        return _jsonCodec.encode(obj);
+      }
     } on JsonUnsupportedObjectError catch (e) {
       Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
@@ -124,11 +138,16 @@ class Converter {
     }
   }
 
-  static String? toUntypedJson<T>(T? obj, Map<String, dynamic> Function(T obj) toJson) {
+  static String? toUntypedJson<T>(T? obj, {Map<String, dynamic> Function(T obj)? toJson, int? indent}) {
     if (obj == null) return null;
     try {
-      final jObj = toJson(obj);
-      return jsonEncode(jObj);
+      final jObj = toJson != null ? toJson(obj) : obj;
+      if (indent != null) {
+        final encoder = JsonEncoder.withIndent(' ' * indent);
+        return encoder.convert(obj);
+      } else {
+        return jsonEncode(jObj);
+      }
     } on JsonUnsupportedObjectError catch (e) {
       Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
@@ -140,5 +159,6 @@ class Converter {
       return null;
     }
   }
+
   static dynamic directConvertFunc(dynamic any) => any;
 }

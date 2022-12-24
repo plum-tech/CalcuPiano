@@ -13,9 +13,9 @@ If not, all notes should be exposed in the root.
 
 It could have a `sheets/` directory that consists of the built-in sheet music of this soundpack.
 
-The `icon.png`, `preview.png` are optional.
+The `preview.png` are optional.
 
-The essential file, `soundpack.json`, is the meta data.
+The optional `soundpack.json` is the metadata of soundpack.
 
 It should be:
 
@@ -35,11 +35,10 @@ MySoundpack.zip/  # Any name you want
     minus.wav
     mul.wav
     plus.wav
-    sheets/
+    sheet/
         MySheetMusic.txt  # Any name you want
-    icon.png  # Optional
     preview.png # Optional
-    soundpack.json # Essential
+    soundpack.json # Optinal
 ```
 
 - `sheets/` directory is optional. Every sheet music will be loaded and marked as `From MySoundpack`
@@ -63,21 +62,7 @@ cascading objects.
   "name": "My Soundpack",
   "description": "My first soundpack of CalcuPiano.",
   "author": "Liplum",
-  "url": "https://github.com/liplum/calcupiano",
-  "l10n": {
-    "en": {
-      "name": "My Soundpack",
-      "description": "My first soundpack of CalcuPiano."
-    },
-    "ru": {
-      "name": "Мой саундпак",
-      "description": "Мой первый саундпак CalcuPiano."
-    },
-    "zh": {
-      "name": "我的声音包",
-      "description": "我的第一个 CalcuPiano 音色包。"
-    }
-  }
+  "url": "https://github.com/liplum/calcupiano"
 }
 ```
 
@@ -85,7 +70,7 @@ cascading objects.
 
 ### Hierarchy
 
-`SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack.zip file.
+`SoundpackProtocol` is an abstract term on the programing side, different from the real soundpack archive file.
 
 `SoundpackProtocol` has several implementations, such as `BuiltinSoundpack`, `LocalSoundpack`, `UrlSoundpack`.
 
@@ -107,12 +92,12 @@ Users cannot modify a built-in soundpack, but they can duplicate it to a `LocalS
 **[Unavailable on CalcuPiano Web]**
 
 - It must have an ID to be unambiguous from other soundpacks.
-- It represents a real soundpack.zip file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
+- It represents a real soundpack archive file. After being unpacked, it's a folder in the local storage CalcuPiano managed.
 - It can resolve the `SoundFile` of a `Note` to `LocalSoundFile`.
 - Modifiable.
 - Deletable.
 
-Users can import a `LocalSoundpack` from file or export it to a soundpack.zip file.
+Users can import a `LocalSoundpack` from file or export it to a soundpack archive file.
 
 Users can create an empty `LocalSoundpack` or duplicate one, then edit the metadata for their own one.
 

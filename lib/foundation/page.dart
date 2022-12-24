@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rettulf/rettulf.dart';
 
-
 mixin LockOrientationMixin<T extends StatefulWidget> on State<T> {
   @override
   @mustCallSuper
