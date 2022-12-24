@@ -58,22 +58,14 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
   }
 
   Future<void> onSave(BuildContext ctx) async {
-    // Replace old LocalSoundFile with new LocalSoundFile in sequence
-/*    for (final note in Note.all) {
-      final newFile = $note2LocalFileView[note];
-      final formerFile = soundpack.note2SoundFile[note];
-      if (newFile != formerFile) {
-        await formerFile?.tryDelete();
-        if (newFile != null) {
-          final ext = extensionOfPath(newFile.localPath);
-          final targetPath = joinPath(R.soundpacksRootDir, soundpack.uuid, "${note.id}$ext");
-          await newFile.toFile().copy(targetPath);
-          // To prevent unsync due to exception, save the soundpack with new note2SoundFile each time a new LocalSoundFile is really saved.
-          soundpack.note2SoundFile[note] = LocalSoundFile(localPath: targetPath);
-          DB.setSoundpackSnapshotById(soundpack);
-        }
-      }
-    }*/
+    // TODO: on Windows: OS Error: The process cannot access the file because it is being used by another process.
+    final changed = await queue.performAll(soundpack);
+    if (changed) {
+      DB.setSoundpackSnapshotById(soundpack);
+      // TODO: I don't know why it doesn't work on Android. Users have to restart Calcupiano.
+      await AudioCache.instance.clearAll();
+    }
+    await StageManager.closeSoundFileExplorerKey(ctx: ctx);
     if (!mounted) return;
     ctx.navigator.pop();
   }
@@ -105,8 +97,10 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
           setFile: (f) {
             if (f == null) {
               $view.remove(note);
+              queue.add(_RemoveOp(note));
             } else {
               $view[note] = f;
+              queue.add(_ReplaceOp(f.resolve(), note));
             }
           },
         );
@@ -288,42 +282,46 @@ class _OpQueue {
     _queue.add(op);
   }
 
-  Future<void> performAll() async {
+  Future<bool> performAll(LocalSoundpack soundpack) async {
+    var changed = false;
     for (final op in _queue) {
-      await op.perform();
+      await op.perform(soundpack);
+      changed = true;
     }
     _queue.clear();
+    return changed;
   }
 }
 
 /// A composition operation
 abstract class _Op {
-  Future<void> perform();
+  Future<void> perform(LocalSoundpack soundpack);
 }
 
 /// Replace old SoundFile with new SoundFile from different Soundpack
 class _ReplaceOp implements _Op {
   final SoundFileProtocol newFile;
-  final LocalSoundFileLoc target;
+  final Note target;
 
   const _ReplaceOp(this.newFile, this.target);
 
   @override
-  Future<void> perform() async {
-    final targetSoundpack = target.soundpack;
-    newFile.copyTo(joinPath(R.soundpacksRootDir, targetSoundpack.uuid), target.note.id);
+  Future<void> perform(LocalSoundpack soundpack) async {
+    final copied = await newFile.copyTo(joinPath(R.soundpacksRootDir, soundpack.uuid), target.id, extSuggestion: null);
+    soundpack.note2SoundFile[target] = LocalSoundFile(localPath: copied);
   }
 }
 
 class _RemoveOp implements _Op {
-  final LocalSoundFileLoc removed;
+  final Note removed;
 
   const _RemoveOp(this.removed);
 
   @override
-  Future<void> perform() async {
-    final file = removed.resolve();
+  Future<void> perform(LocalSoundpack soundpack) async {
+    final file = soundpack.resolve(removed);
     await file.toFile().delete();
+    soundpack.note2SoundFile.remove(removed);
   }
 }
 
@@ -335,9 +333,11 @@ class _SwapOp implements _Op {
   const _SwapOp(this.a, this.b);
 
   @override
-  Future<void> perform() async {
+  Future<void> perform(LocalSoundpack soundpack) async {
     final fileA = a.resolve();
     final fileB = b.resolve();
     await Packager.swapFiles(fileA.localPath, fileB.localPath);
+    soundpack.note2SoundFile[a.note] = fileB;
+    soundpack.note2SoundFile[b.note] = fileA;
   }
 }
