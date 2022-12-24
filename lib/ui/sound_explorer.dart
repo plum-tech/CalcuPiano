@@ -89,11 +89,11 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
       child: [
         const Icon(Icons.audio_file_outlined, size: 36),
         note.id.text(style: ctx.textTheme.headlineSmall),
-      ].column(maa: MainAxisAlignment.center).padAll(20.w).inCard(elevation: 6),
+      ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(elevation: 6),
     );
     return LongPressDraggable<SoundFileLoc>(
-      data: SoundFileLoc(selected, note),
-      dragAnchorStrategy: (_, __, ___) => Offset(80.w, 80.w),
+      data: SoundFileLoc.of(selected, note),
+      dragAnchorStrategy: (_, __, ___) => Offset(60.w, 80.w),
       feedback: feedback,
       child: res,
     );

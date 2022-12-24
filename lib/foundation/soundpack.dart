@@ -17,11 +17,25 @@ abstract class SoundpackProtocol {
   ImageFileProtocol? get preview;
 }
 
-class SoundFileLoc {
+
+abstract class SoundFileLoc implements SoundFileResolveProtocol {
+  SoundpackProtocol get soundpack;
+
+  Note get note;
+
+  factory SoundFileLoc.of(SoundpackProtocol soundpack, Note note) => _SoundFileLocImpl(soundpack, note);
+}
+
+class _SoundFileLocImpl implements SoundFileLoc {
+  @override
   final SoundpackProtocol soundpack;
+  @override
   final Note note;
 
-  const SoundFileLoc(this.soundpack, this.note);
+  const _SoundFileLocImpl(this.soundpack, this.note);
+
+  @override
+  SoundFileProtocol resolve() => soundpack.resolve(note);
 }
 
 class BuiltinSoundpack implements SoundpackProtocol {
@@ -40,7 +54,7 @@ class BuiltinSoundpack implements SoundpackProtocol {
   String get id => R.genBuiltinSoundpackId(name);
 
   @override
-  SoundFileProtocol resolve(Note note) {
+  BundledSoundFile resolve(Note note) {
     // Note: Don't use [joinPath] here, assets only slash-separator.
     // On Windows, [joinPath] will add backslashes.
     return BundledSoundFile(path: "assets/${R.assetsSoundpackDir}/$name/${note.id}.wav");
@@ -48,6 +62,18 @@ class BuiltinSoundpack implements SoundpackProtocol {
 
   @override
   ImageFileProtocol get preview => BundledImageFile(path: "assets/${R.assetsSoundpackDir}/$name/preview.png");
+}
+
+class BuiltinSoundFileLoc implements SoundFileLoc {
+  @override
+  final BuiltinSoundpack soundpack;
+  @override
+  final Note note;
+
+  const BuiltinSoundFileLoc(this.soundpack, this.note);
+
+  @override
+  BundledSoundFile resolve() => soundpack.resolve(note);
 }
 
 abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {
@@ -80,7 +106,7 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   String get id => uuid;
 
   @override
-  SoundFileProtocol resolve(Note note) {
+  LocalSoundFile resolve(Note note) {
     final file = note2SoundFile[note];
     if (file == null) {
       throw NoSoundFileOfNoteException(note);
@@ -117,6 +143,18 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
         meta: meta ?? this.meta,
         preview: preview ?? this.preview,
       )..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
+}
+
+class LocalSoundFileLoc implements SoundFileLoc {
+  @override
+  final LocalSoundpack soundpack;
+  @override
+  final Note note;
+
+  const LocalSoundFileLoc(this.soundpack, this.note);
+
+  @override
+  LocalSoundFile resolve() => soundpack.resolve(note);
 }
 
 @JsonSerializable()
@@ -186,6 +224,18 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
         url: url ?? this.url,
         preview: preview ?? this.preview,
       )..note2SoundFile = note2SoundFile ?? this.note2SoundFile;
+}
+
+class UrlSoundFileLoc implements SoundFileLoc {
+  @override
+  final UrlSoundpack soundpack;
+  @override
+  final Note note;
+
+  const UrlSoundFileLoc(this.soundpack, this.note);
+
+  @override
+  SoundFileProtocol resolve() => soundpack.resolve(note);
 }
 
 @JsonSerializable()

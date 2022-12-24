@@ -4,9 +4,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'sound_file.g.dart';
 
+abstract class SoundFileResolveProtocol {
+  SoundFileProtocol resolve();
+}
+
 /// SoundFile is an abstract file of a sound.
 /// It could be the ref of a bundled file, or a real local file.
-abstract class SoundFileProtocol implements FileProtocol {
+abstract class SoundFileProtocol implements FileProtocol, SoundFileResolveProtocol {
   Future<void> loadInto(AudioPlayer player);
 }
 
@@ -34,6 +38,9 @@ class BundledSoundFile with BundledFileMixin implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  BundledSoundFile resolve() => this;
 }
 
 @JsonSerializable()
@@ -59,6 +66,9 @@ class LocalSoundFile with LocalFileMixin implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  LocalSoundFile resolve() => this;
 }
 
 @JsonSerializable()
@@ -84,4 +94,7 @@ class UrlSoundFile with UrlFileMixin implements SoundFileProtocol {
 
   @override
   int get version => 1;
+
+  @override
+  UrlSoundFile resolve() => this;
 }

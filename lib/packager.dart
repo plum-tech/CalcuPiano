@@ -263,13 +263,13 @@ class Packager {
     return LocalImageFile(localPath: targetPath);
   }
 
-  static Future<void> swapFiles(LocalFileProtocol a, LocalFileProtocol b) async {
+  static Future<void> swapFiles(String pathA, String pathB) async {
     final temp = joinPath(R.tmpDir, "FILE_SWAP_TEMP");
     // copy a to temp
-    await a.toFile().copy(temp);
+    await File(pathA).copy(temp);
     // copy b to a
-    await b.toFile().copy(a.localPath);
+    await File(pathB).copy(pathA);
     // copy temp to b
-    await File(temp).copy(a.localPath);
+    await File(temp).copy(pathB);
   }
 }

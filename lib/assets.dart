@@ -2,9 +2,11 @@
 final Assets = _Assets();
 
 class _Assets {
+  static const _ns = "assets";
   final img = _Img();
 }
 
 class _Img {
-  final previewPlaceholder = "assets/img/preview-placeholder.svg";
+  static const _ns = "${_Assets._ns}/img";
+  final previewPlaceholder = "$_ns/preview-placeholder.svg";
 }

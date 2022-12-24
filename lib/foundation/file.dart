@@ -24,7 +24,7 @@ mixin BundledFileMixin implements BundledFileProtocol {
   Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
     ByteData data = await rootBundle.load(path);
     List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    String targetFile = joinPath(parentFolder, basenameWithoutExt, extensionOfPath(path));
+    String targetFile = joinPath(parentFolder, "$basenameWithoutExt${extensionOfPath(path)}");
     await File(targetFile).writeAsBytes(bytes);
     return targetFile;
   }
@@ -48,7 +48,7 @@ abstract class LocalFileProtocol implements FileProtocol, Convertible {
 mixin LocalFileMixin implements LocalFileProtocol {
   @override
   Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
-    String targetFile = joinPath(parentFolder, basenameWithoutExt, extensionOfPath(localPath));
+    String targetFile = joinPath(parentFolder, "$basenameWithoutExt${extensionOfPath(localPath)}");
     await File(localPath).copy(targetFile);
     return targetFile;
   }
@@ -80,7 +80,8 @@ abstract class UrlFileProtocol implements FileProtocol, Convertible {
 mixin UrlFileMixin implements UrlFileProtocol {
   @override
   Future<String> copyTo(String parentFolder, String basenameWithoutExt, {String? extSuggestion}) async {
-    String targetFile = joinPath(parentFolder, basenameWithoutExt, extSuggestion);
+    final fileName = extSuggestion != null ? "$basenameWithoutExt$extSuggestion" : basenameWithoutExt;
+    String targetFile = joinPath(parentFolder, fileName);
     await Web.download(url, targetFile);
     return targetFile;
   }

@@ -71,6 +71,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     } else {
       img = SvgPicture.asset(
         Assets.img.previewPlaceholder,
+        placeholderBuilder: (_) => const Icon(Icons.image_outlined),
       ).fitted().constrained(maxW: fullW * 0.4, maxH: fullH * 0.4);
     }
     img = ClipRRect(
