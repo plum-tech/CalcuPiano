@@ -27,6 +27,7 @@ class _SoundpackViewerState extends State<SoundpackViewer> {
   late final $name = TextEditingController(text: widget.soundpack.displayName);
   late final $description = TextEditingController(text: widget.soundpack.description);
   late final $author = TextEditingController(text: widget.soundpack.author);
+  late final $email = TextEditingController(text: widget.soundpack.email);
   late final $url = TextEditingController(text: widget.soundpack.url);
 
   @override
@@ -87,10 +88,15 @@ class _SoundpackViewerState extends State<SoundpackViewer> {
           ).padFromLTRB(20, 5, 5, 5).flexible(flex: 1),
           $TextField$(
             readOnly: true,
-            controller: $url,
-            labelText: I18n.soundpack.url,
+            controller: $email,
+            labelText: I18n.soundpack.email,
           ).padFromLTRB(5, 5, 20, 5).flexible(flex: 2),
         ].row(),
+        $TextField$(
+          readOnly: true,
+          controller: $url,
+          labelText: I18n.soundpack.url,
+        ).padSymmetric(h: 20, v: 5),
         $TextField$(
           readOnly: true,
           controller: $description,
@@ -107,6 +113,7 @@ class _SoundpackViewerState extends State<SoundpackViewer> {
     $name.dispose();
     $description.dispose();
     $author.dispose();
+    $email.dispose();
     $url.dispose();
   }
 }

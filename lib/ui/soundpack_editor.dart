@@ -32,6 +32,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   late final $name = TextEditingController(text: widget.soundpack.meta.name);
   late final $description = TextEditingController(text: widget.soundpack.meta.description);
   late final $author = TextEditingController(text: widget.soundpack.meta.author);
+  late final $email = TextEditingController(text: widget.soundpack.meta.email);
   late final $url = TextEditingController(text: widget.soundpack.meta.url);
   final editing = SoundpackMeta();
   late LocalImageFile? $preview = soundpack.preview;
@@ -144,10 +145,15 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
           ).padFromLTRB(20, 5, 5, 5).flexible(flex: 1),
           $TextField$(
             readOnly: readonly,
-            controller: $url,
-            labelText: I18n.soundpack.url,
+            controller: $email,
+            labelText: I18n.soundpack.email,
           ).padFromLTRB(5, 5, 20, 5).flexible(flex: 2),
         ].row(),
+        $TextField$(
+          readOnly: readonly,
+          controller: $url,
+          labelText: I18n.soundpack.url,
+        ).padSymmetric(h: 20, v: 5),
         $TextField$(
           readOnly: readonly,
           controller: $description,
@@ -164,6 +170,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     $name.dispose();
     $description.dispose();
     $author.dispose();
+    $email.dispose();
     $url.dispose();
   }
 }
