@@ -3,6 +3,7 @@ import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/service/soundpack.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
@@ -96,47 +97,40 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
 
   @ListenTo([K.customSoundpackIdList])
   Widget buildSoundpackList(BuildContext ctx) {
-    const builtinList = R.builtinSoundpacks;
-    final customList = H.customSoundpackIdList ?? const [];
+    final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.customSoundpackIdList ?? const []);
     return MasonryGridView.extent(
       maxCrossAxisExtent: 380,
-      itemCount: builtinList.length + customList.length,
+      itemCount: allSoundpacks.length,
       physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
-        final Widget res;
-        if (index < builtinList.length) {
-          res = BuiltinSoundpackItem(
-            soundpack: builtinList[index],
-          );
-        } else {
-          res = CustomSoundpackItem(id: customList[index - builtinList.length]);
-        }
-        return res;
+        return SoundpackItem(id: allSoundpacks[index]);
       },
     );
   }
 }
 
-class BuiltinSoundpackItem extends StatefulWidget {
-  final BuiltinSoundpack soundpack;
+class SoundpackItem extends StatefulWidget {
+  final String id;
 
-  const BuiltinSoundpackItem({
+  const SoundpackItem({
     super.key,
-    required this.soundpack,
+    required this.id,
   });
 
   @override
-  State<BuiltinSoundpackItem> createState() => _BuiltinSoundpackItemState();
+  State<SoundpackItem> createState() => _SoundpackItemState();
 }
 
-class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with TickerProviderStateMixin {
-  BuiltinSoundpack get soundpack => widget.soundpack;
+class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateMixin {
+  /// Cache the Soundpack object, because deserialization is expensive.
+  SoundpackProtocol? _soundpack;
   var isPlaying = false;
   late final AnimationController ctrl;
 
   @override
   void initState() {
     super.initState();
+    _soundpack = SoundpackService.findById(widget.id);
     ctrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -145,13 +139,29 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
   }
 
   @override
+  void didUpdateWidget(covariant SoundpackItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update current Soundpack object, perhaps due to a deletion.
+    _soundpack = SoundpackService.findById(widget.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return H.listenToCurrentSoundpackID() << (ctx, _, __) => buildCard(context);
+    return H.listenToCurrentSoundpackID() <<
+        (ctx, _, __) {
+          final soundpack = _soundpack;
+          if (soundpack != null) {
+            return buildCard(context, soundpack);
+          } else {
+            return buildCorruptedSoundpack(context);
+          }
+        };
   }
 
   @ListenTo([K.currentSoundpackID])
   Widget buildCard(
     BuildContext ctx,
+    SoundpackProtocol soundpack,
   ) {
     final isSelected = H.currentSoundpackID == soundpack.id;
     Widget card = [
@@ -163,7 +173,7 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
           child: ClipRRect(
             borderRadius: ctx.cardBorderRadius,
             child: soundpack.preview
-                .build(
+                ?.build(
                   ctx,
                   fit: BoxFit.fill,
                 )
@@ -175,8 +185,8 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
         selected: isSelected,
         title: soundpack.displayName.text(style: ctx.textTheme.titleLarge),
         subtitle: [
-          "Liplum".text(style: ctx.textTheme.bodyLarge),
-          "This is a description.".text(
+          soundpack.author.text(style: ctx.textTheme.bodyLarge),
+          soundpack.description.text(
             style: ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           ),
         ].column(caa: CrossAxisAlignment.start),
@@ -212,89 +222,6 @@ class _BuiltinSoundpackItemState extends State<BuiltinSoundpackItem> with Ticker
     ).inSoundpackCard(isSelected: isSelected);
     return card;
   }
-}
-
-class CustomSoundpackItem extends StatefulWidget {
-  final String id;
-
-  const CustomSoundpackItem({
-    super.key,
-    required this.id,
-  });
-
-  @override
-  State<CustomSoundpackItem> createState() => _CustomSoundpackItemState();
-}
-
-class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
-  /// Cache the Soundpack object, because deserialization is expensive.
-  ExternalSoundpackProtocol? _soundpack;
-
-  @override
-  void initState() {
-    super.initState();
-    _soundpack = DB.getSoundpackById(widget.id);
-  }
-
-  @override
-  void didUpdateWidget(covariant CustomSoundpackItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Update current Soundpack object, perhaps due to a deletion.
-    _soundpack = DB.getSoundpackById(widget.id);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final soundpack = _soundpack;
-    if (soundpack != null) {
-      return H.listenToCurrentSoundpackID() << (ctx, _, __) => buildCard(context, soundpack);
-    } else {
-      return buildCorruptedSoundpack(context);
-    }
-  }
-
-  @ListenTo([K.currentSoundpackID])
-  Widget buildCard(BuildContext ctx, ExternalSoundpackProtocol soundpack) {
-    final isSelected = H.currentSoundpackID == soundpack.id;
-    if (soundpack is LocalSoundpack) {
-      return buildLocalSoundpackCard(ctx, isSelected, soundpack);
-    } else if (soundpack is UrlSoundpack) {
-      return buildUrlSoundpackCard(ctx, isSelected, soundpack);
-    } else {
-      return const SizedBox();
-    }
-  }
-
-  @ListenTo([K.currentSoundpackID])
-  Widget buildLocalSoundpackCard(BuildContext ctx, bool isSelected, LocalSoundpack soundpack) {
-    return ListTile(
-      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
-      onTap: () {
-        eventBus.fire(SoundpackChangeEvent(soundpack));
-      },
-      selected: isSelected,
-      title: soundpack.displayName.text(style: ctx.textTheme.headlineSmall),
-      subtitle: [
-        soundpack.author.text(),
-        soundpack.description.text(),
-      ].column(caa: CrossAxisAlignment.start),
-      trailing: moreMenu(ctx, soundpack),
-    );
-  }
-
-  @ListenTo([K.currentSoundpackID])
-  Widget buildUrlSoundpackCard(BuildContext ctx, bool isSelected, UrlSoundpack soundpack) {
-    return ListTile(
-      leading: _buildSoundpackSwitchIcon(isSelected, soundpack),
-      selected: isSelected,
-      onTap: () {
-        eventBus.fire(SoundpackChangeEvent(soundpack));
-      },
-      title: soundpack.displayName.text(style: ctx.textTheme.headlineSmall),
-      subtitle: soundpack.description.text(),
-      trailing: moreMenu(ctx, soundpack),
-    );
-  }
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
     return ListTile(
@@ -305,14 +232,6 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
         await DB.removeSoundpackById(widget.id);
       }),
     );
-  }
-}
-
-Widget _buildSoundpackSwitchIcon(bool isSelected, SoundpackProtocol soundpack) {
-  if (isSelected) {
-    return const Icon(Icons.done, size: _iconSize);
-  } else {
-    return const SizedBox.square(dimension: _iconSize);
   }
 }
 

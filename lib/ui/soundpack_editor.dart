@@ -78,7 +78,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     final preview = $preview;
     Widget img;
     if (preview != null) {
-      img = preview.build(ctx).fitted();
+      img = preview.build(ctx);
     } else {
       img = SvgPicture.asset(
         Assets.img.previewPlaceholder,

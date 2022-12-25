@@ -64,23 +64,23 @@
     "default": {
       "name": "Default",
       "author": "CalcuPiano",
-      "email": "",
+      "email": "Li_plum@outlook.com",
       "url": "https://github.com/liplum/calcupiano",
-      "description": "The default soundpack derived from a musical calculator."
+      "description": "Derived from a musical calculator."
     },
     "default_long_tone": {
       "name": "Default Long Tone",
       "author": "CalcuPiano",
-      "email": "",
+      "email": "Li_plum@outlook.com",
       "url": "https://github.com/liplum/calcupiano",
-      "description": "The default long tone soundpack derived from a musical calculator."
+      "description": "Derived from a musical calculator."
     },
     "classic": {
       "name": "Classical Piano",
       "author": "CalcuPiano",
-      "email": "",
+      "email": "Li_plum@outlook.com",
       "url": "https://github.com/liplum/calcupiano",
-      "description": "A soundpack that simulates a real classical piano."
+      "description": "To simulate a real classical piano."
     }
   }
 }
