@@ -1,0 +1,87 @@
+{
+  "common": {
+    "operation": {
+      "revealInFolder": {
+        "mac": "Открыть в Finder",
+        "other": "Открыть в Folder"
+      },
+      "share": "Поделиться",
+      "saveAs": "Сохранить как...",
+      "play": {
+        "music": "Воспроизвести",
+        "game": "Играть"
+      },
+      "edit": "Редактировать",
+      "duplicate": "Копировать",
+      "delete": "Удалить",
+      "info": "Сведения"
+    },
+    "soundpack": {
+      "name": "Имя звукового пакета",
+      "author": "Автор",
+      "description": "Описание",
+      "email": "Адрес электронной почты",
+      "url": "URL-адрес",
+      "nameEmpty": "Безымянный звуковой пакет",
+      "authorEmpty": "Аноним",
+      "descriptionEmpty": "Описание отсутствует."
+    }
+  },
+  "ui": {
+    "soundpack": {
+      "title": "Звуковой пакет",
+      "createSoundpack": "Создать звуковой пакет",
+      "importSoundpack": "Импортировать пакет",
+      "link": "Ссылка",
+      "localFile": "Локальный файл",
+      "corruptedSoundpack": "Поврежденный звуковой пакет",
+      "corruptedSoundpackSubtitle": "Возникли проблемы с пакетом. Пожалуйста, удалите пакет из приложения.",
+      "compose": "Составить"
+    },
+    "soundpack_editor": {
+    },
+    "settings": {
+      "title": "Настройки",
+      "appearance": {
+        "name": "Внешний вид",
+        "brightness": "Яркость",
+        "darkMode": "Темная тема",
+        "lightMode": "Светлая тема",
+        "language": "Язык приложения"
+      }
+    }
+  },
+  "app": {
+    "soundpack": "Звуковые пакеты",
+    "settings": "Настройки",
+    "about": "О программе"
+  },
+  "language": {
+    "en": "English (английский)",
+    "zh_CN": "Simplified Chinese (упрощенный китайский)",
+    "ru": "Русский"
+  },
+  "builtinSoundpack": {
+    "default": {
+      "name": "Стандартный",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "Получен из музыкального калькулятора"
+    },
+    "default_long_tone": {
+      "name": "Стандартный (длинный тон)",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "Получен из музыкального калькулятора."
+    },
+    "classic": {
+      "name": "Классическое пианино",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "Имитирует настоящее классическое пианино."
+    }
+  }
+}
