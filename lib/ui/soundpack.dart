@@ -215,9 +215,10 @@ class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateM
     ].column();
     card = InkWell(
       borderRadius: ctx.cardBorderRadius,
-      onTap: () {
+      onTap: () async {
         if (H.currentSoundpackID != soundpack.id) {
           eventBus.fire(SoundpackChangeEvent(soundpack));
+          await Player.preloadSoundpack(soundpack);
         }
       },
       child: card,
