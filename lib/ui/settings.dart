@@ -19,10 +19,9 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: I18n.title.text(),
@@ -42,6 +41,7 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   Widget buildSettings(BuildContext ctx) {
     return SettingsAdaptivePanel(groups: [
       SettingsGroup(
+          icon: Icons.palette_outlined,
           name: I18n.appearance.name,
           builder: (ctx) {
             return [
@@ -89,6 +89,20 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   }
 }
 
+typedef GroupBuilder = List<Widget> Function(BuildContext ctx);
+
+class SettingsGroup {
+  final IconData icon;
+  final String name;
+  final GroupBuilder builder;
+
+  SettingsGroup({
+    required this.icon,
+    required this.name,
+    required this.builder,
+  });
+}
+
 class SettingsAdaptivePanel extends StatelessWidget {
   final List<SettingsGroup> groups;
 
@@ -100,7 +114,7 @@ class SettingsAdaptivePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (ctx, box) {
-      if (box.minWidth < 600) {
+      if (box.maxWidth < 600) {
         return SettingsPanelSmall(groups: groups);
       } else {
         return SettingsPanelLarge(groups: groups);
@@ -134,7 +148,10 @@ class _SettingsPanelSmallState extends State<SettingsPanelSmall> {
   Widget buildGroup(BuildContext ctx, SettingsGroup group) {
     final titleStyle = ctx.textTheme.titleLarge;
     final list = <Widget>[];
-    list.add(group.name.text(style: titleStyle?.copyWith(color: titleStyle.color?.withOpacity(0.8))).padAll(5));
+    list.add([
+      group.icon.make(),
+      group.name.text(style: titleStyle?.copyWith(color: titleStyle.color?.withOpacity(0.8))),
+    ].row(maa: MainAxisAlignment.center).padAll(5));
     final tiles = group.builder(ctx);
     list.addAll(tiles);
     return list.column();
@@ -154,22 +171,38 @@ class SettingsPanelLarge extends StatefulWidget {
 }
 
 class _SettingsPanelLargeState extends State<SettingsPanelLarge> {
+  int selected = 0;
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return [
+      buildGroupSelector(context).flexible(flex: 1),
+      const VerticalDivider(
+        thickness: 1,
+      ),
+      buildGroupContent(context, widget.groups[selected]).flexible(flex: 3),
+    ].row();
   }
-}
 
-typedef GroupBuilder = List<Widget> Function(BuildContext ctx);
+  Widget buildGroupSelector(BuildContext ctx) {
+    return ListView.builder(
+      physics: const RangeMaintainingScrollPhysics(),
+      itemCount: widget.groups.length,
+      itemBuilder: (ctx, i) {
+        final group = widget.groups[i];
+        return ListTile(
+          leading: group.icon.make(),
+          selected: i == selected,
+          title: group.name.text(),
+        ).inCard();
+      },
+    );
+  }
 
-class SettingsGroup {
-  final String name;
-  final GroupBuilder builder;
-
-  SettingsGroup({
-    required this.name,
-    required this.builder,
-  });
+  Widget buildGroupContent(BuildContext ctx, SettingsGroup group) {
+    final tiles = group.builder(ctx);
+    return tiles.column();
+  }
 }
 
 class SettingsKeyThemeData {

@@ -53,6 +53,7 @@
     "about": "About"
   },
   "language": {
-    "en": "English"
+    "en": "English",
+    "zh_CN": "Simplified Chinese"
   }
 }
