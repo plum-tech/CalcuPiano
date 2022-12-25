@@ -2,57 +2,58 @@
   "common": {
     "operation": {
       "revealInFolder": {
-        "mac": "Reveal in Finder",
-        "other": "Reveal in Folder"
+        "mac": "在访达中显示",
+        "other": "在文件夹中显示"
       },
-      "share": "Share",
-      "saveAs": "Save as",
+      "share": "分享",
+      "saveAs": "存储为",
       "play": {
-        "music": "Play",
-        "game": "Play"
+        "music": "演奏",
+        "game": "游玩"
       },
-      "edit": "Edit",
-      "duplicate": "Duplicate",
-      "delete": "Delete"
+      "edit": "编辑",
+      "duplicate": "复制",
+      "delete": "删除"
     },
     "soundpack": {
-      "name": "Soundpack Name",
-      "author": "Author",
-      "description": "Description",
+      "name": "音色包名称",
+      "author": "作者",
+      "description": "描述",
       "email": "E-mail",
-      "url": "URL"
+      "url": "链接"
     }
   },
   "ui": {
     "soundpack": {
-      "title": "Soundpack",
-      "createSoundpack": "Create a soundpack",
-      "importSoundpack": "Import Soundpack",
-      "link": "Link",
-      "localFile": "Local File",
-      "corruptedSoundpack": "A Corrupted Soundpack",
-      "corruptedSoundpackSubtitle": "Sorry, please delete this",
-      "compose": "Compose"
+      "title": "音色包",
+      "createSoundpack": "创建音色包",
+      "importSoundpack": "导入音色包",
+      "link": "链接",
+      "localFile": "本地文件",
+      "corruptedSoundpack": "音色包已损坏",
+      "corruptedSoundpackSubtitle": "请删除",
+      "compose": "作曲"
     },
     "soundpack_editor": {
     },
     "settings": {
-      "title": "Settings",
+      "title": "设置",
       "appearance": {
-        "name": "Appearance",
-        "brightness": "Brightness",
-        "darkMode": "Dark Mode",
-        "lightMode": "Light Mode",
-        "language": "Language"
+        "name": "外观",
+        "brightness": "亮度",
+        "darkMode": "深色模式",
+        "lightMode": "浅色模式",
+        "language": "语言"
       }
     }
   },
   "app": {
-    "soundpack": "Soundpack",
-    "settings": "Settings",
-    "about": "About"
+    "soundpack": "音效包",
+    "settings": "设置",
+    "about": "关于"
   },
   "language": {
-    "en": "English"
+    "en": "English",
+    "zh-CN": "简体中文"
   }
 }
