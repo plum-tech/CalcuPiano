@@ -3,6 +3,7 @@ import 'package:calcupiano/app.dart';
 import 'package:calcupiano/event_handler.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/service/soundpack.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -28,12 +29,13 @@ void main() async {
   DB.box = soundpackBox;
   // Remove prefix to unify the path
   AudioCache.instance = AudioCache(prefix: "");
-  initFoundation();
-  initEssential();
+  await initFoundation();
+  await initEssential();
   EventHandler.init();
   runApp(wrapWithEasyLocalization(
     const CalcuPianoApp(),
   ));
+  await preloadCurrentSoundpack();
 }
 
 Widget wrapWithEasyLocalization(Widget child) {
@@ -43,6 +45,11 @@ Widget wrapWithEasyLocalization(Widget child) {
     fallbackLocale: R.defaultLocale,
     child: child,
   );
+}
+
+Future<void> preloadCurrentSoundpack() async {
+  final currentSoundpack = SoundpackService.findById(H.currentSoundpackID) ?? R.defaultSoundpack;
+  await Player.preloadSoundpack(currentSoundpack);
 }
 
 Future<void> initEssential() async {

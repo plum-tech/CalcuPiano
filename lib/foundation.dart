@@ -30,7 +30,7 @@ final Log = Logger();
 const UUID = Uuid();
 final Web = Dio();
 
-void initFoundation() {
+Future<void> initFoundation() async {
   initConverter();
 }
 
