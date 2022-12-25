@@ -14,4 +14,4 @@ jobs:
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           workingDir: calcupiano
-          baseHref: /calcupiano/
+          baseHref: /CalcuPiano/
