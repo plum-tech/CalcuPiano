@@ -25,4 +25,6 @@ class _Appearance {
   String get lightMode => "$_ns.lightMode".tr();
 
   String get darkMode => "$_ns.darkMode".tr();
+
+  String nativeReadableNameOf(Locale locale) => "language.$locale".tr();
 }

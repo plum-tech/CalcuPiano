@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
     ).sized(w: 80);
     return ListTile(
       title: I18n.appearance.language.text(style: ctx.textTheme.headlineSmall),
-      subtitle: curLocale.toString().text(),
+      subtitle: I18n.appearance.nativeReadableNameOf(curLocale).text(),
       trailing: toggle,
     );
   }

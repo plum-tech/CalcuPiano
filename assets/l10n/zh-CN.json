@@ -13,14 +13,18 @@
       },
       "edit": "编辑",
       "duplicate": "复制",
-      "delete": "删除"
+      "delete": "删除",
+      "info": "Info"
     },
     "soundpack": {
       "name": "音色包名称",
       "author": "作者",
       "description": "描述",
       "email": "E-mail",
-      "url": "链接"
+      "url": "链接",
+      "nameEmpty": "Unnamed Soundpack",
+      "authorEmpty": "Anonymous",
+      "descriptionEmpty": "No description."
     }
   },
   "ui": {
@@ -54,6 +58,29 @@
   },
   "language": {
     "en": "English",
-    "zh-CN": "简体中文"
+    "zh_CN": "简体中文"
+  },
+  "builtinSoundpack": {
+    "default": {
+      "name": "Default",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "Derived from a musical calculator."
+    },
+    "default_long_tone": {
+      "name": "Default Long Tone",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "Derived from a musical calculator."
+    },
+    "classic": {
+      "name": "Classical Piano",
+      "author": "CalcuPiano",
+      "email": "Li_plum@outlook.com",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "To simulate a real classical piano."
+    }
   }
 }
