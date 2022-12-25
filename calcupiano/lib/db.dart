@@ -118,7 +118,6 @@ class DBImpl {
       }
     }
     // Delete the local files.
-    // TODO: What if the [LocalSoundFile] is referenced in another soundpack? To prevent the deletion, or to only delete unreferenced files?
     final file = File(joinPath(R.soundpacksRootDir, id));
     await file.delete(recursive: true);
   }

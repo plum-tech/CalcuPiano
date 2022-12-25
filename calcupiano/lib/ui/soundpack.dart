@@ -258,7 +258,6 @@ extension _MenuX on State {
         ));
       }
 
-      // TODO: I18n
       if (isSupportShareFiles) {
         add(I18n.op.share, Icons.share_rounded, () async {
           await StageManager.closeSoundpackPreview(ctx: context);

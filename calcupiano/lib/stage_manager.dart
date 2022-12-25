@@ -44,4 +44,9 @@ class StageManagerImpl {
   Future<void> closeSoundFileExplorerKey({BuildContext? ctx}) async {
     closeWindowByKey(_soundFileExplorerKey, ctx: ctx);
   }
+
+  Future<void> closeAllPageSpecificWindow({BuildContext? ctx}) async {
+    await closeWindowByKey(_soundpackPreviewKey, ctx: ctx);
+    await closeWindowByKey(_soundFileExplorerKey, ctx: ctx);
+  }
 }

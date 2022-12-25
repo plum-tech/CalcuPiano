@@ -3,6 +3,7 @@ import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
@@ -263,8 +264,9 @@ class HomeLandscape extends StatefulWidget {
 class _Page {
   const _Page._();
 
-  static const piano = 0;
-  static const settings = 0;
+  static const soundpack = 0;
+  static const piano = 1;
+  static const settings = 2;
 }
 
 class _HomeLandscapeState extends State<HomeLandscape> {
@@ -278,10 +280,11 @@ class _HomeLandscapeState extends State<HomeLandscape> {
         NavigationRail(
           minWidth: 30,
           selectedIndex: _curPage,
-          onDestinationSelected: (dest) {
+          onDestinationSelected: (dest) async{
             setState(() {
               _curPage = dest;
             });
+            await StageManager.closeAllPageSpecificWindow(ctx: context);
           },
           groupAlignment: 1.0,
           labelType: NavigationRailLabelType.all,
@@ -290,6 +293,11 @@ class _HomeLandscapeState extends State<HomeLandscape> {
               icon: const Icon(Icons.piano_outlined),
               selectedIcon: const Icon(Icons.piano),
               label: "Music".text(),
+            ),
+            NavigationRailDestination(
+              icon: const Icon(Icons.library_music_outlined),
+              selectedIcon: const Icon(Icons.library_music_rounded),
+              label: "Soundpack".text(),
             ),
             NavigationRailDestination(
               icon: const Icon(Icons.settings_outlined),
@@ -322,8 +330,10 @@ class _HomeLandscapeState extends State<HomeLandscape> {
 
   Widget routePage() {
     switch (_curPage) {
-      case _Page.piano:
+      case _Page.soundpack:
         return buildBody();
+      case _Page.piano:
+        return const SoundpackPage();
       default:
         return const SettingsPage();
     }
