@@ -24,7 +24,17 @@ abstract class SoundFileLoc implements SoundFileResolveProtocol {
 
   Note get note;
 
-  factory SoundFileLoc.of(SoundpackProtocol soundpack, Note note) => _SoundFileLocImpl(soundpack, note);
+  factory SoundFileLoc.fromSoundpackType(SoundpackProtocol soundpack, Note note) {
+    if (soundpack is LocalSoundpack) {
+      return LocalSoundFileLoc(soundpack, note);
+    } else if (soundpack is BuiltinSoundpack) {
+      return BuiltinSoundFileLoc(soundpack, note);
+    } else if (soundpack is UrlSoundpack) {
+      return UrlSoundFileLoc(soundpack, note);
+    } else {
+      return _SoundFileLocImpl(soundpack, note);
+    }
+  }
 }
 
 class _SoundFileLocImpl implements SoundFileLoc {
@@ -293,6 +303,8 @@ class NoSoundFileOfNoteException implements Exception {
 }
 
 extension SoundpackX on SoundpackProtocol {
+  bool idEquals(SoundpackProtocol other) => id == other.id;
+
   Iterable<MapEntry<Note, SoundFileProtocol>> iterateNote2SoundFile() sync* {
     for (final note in Note.all) {
       yield MapEntry(note, resolve(note));

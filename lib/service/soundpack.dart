@@ -2,7 +2,8 @@ import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 
 class SoundpackService {
-  static SoundpackProtocol? findById(String id) {
+  static SoundpackProtocol? findById(String? id) {
+    if(id == null) return null;
     final builtin = R.id2BuiltinSoundpacks[id];
     if (builtin != null) {
       return builtin;

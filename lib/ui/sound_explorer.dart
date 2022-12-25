@@ -17,11 +17,16 @@ class SoundFileExplorer extends StatefulWidget {
 class _SoundFileExplorerState extends State<SoundFileExplorer> {
   final List<SoundpackProtocol> soundpacks = [];
   SoundpackProtocol selected = R.defaultSoundpack;
+  static String? lastSelectedId;
 
   @override
   void initState() {
     super.initState();
     soundpacks.addAll(SoundpackService.iterateAllSoundpacks());
+    final lastSelected = SoundpackService.findById(lastSelectedId);
+    if (lastSelected != null) {
+      selected = lastSelected;
+    }
   }
 
   @override
@@ -40,10 +45,11 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
           final soundpack = soundpacks[i];
           final tile = ListTile(
             title: soundpack.displayName.text(),
-            selected: selected == soundpack,
+            selected: selected.idEquals(soundpack),
             onTap: () {
               setState(() {
                 selected = soundpack;
+                lastSelectedId = soundpack.id;
               });
             },
           );
@@ -88,7 +94,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
       ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(elevation: 6),
     );
     return LongPressDraggable<SoundFileLoc>(
-      data: SoundFileLoc.of(selected, note),
+      data: SoundFileLoc.fromSoundpackType(selected, note),
       dragAnchorStrategy: (_, __, ___) => Offset(60.w, 80.w),
       feedback: feedback,
       child: res,

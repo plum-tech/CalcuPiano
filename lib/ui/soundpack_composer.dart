@@ -19,16 +19,16 @@ class SoundpackComposer extends StatefulWidget {
 }
 
 class _SoundpackComposerState extends State<SoundpackComposer> {
-  LocalSoundpack get soundpack => widget.soundpack;
+  LocalSoundpack get edited => widget.soundpack;
   final Map<Note, SoundFileResolveProtocol> $view = {};
   final queue = _OpQueue();
 
   @override
   void initState() {
     super.initState();
-    for (final p in soundpack.note2SoundFile.entries) {
+    for (final p in edited.note2SoundFile.entries) {
       final note = p.key;
-      $view[note] = LocalSoundFileLoc(soundpack, note);
+      $view[note] = LocalSoundFileLoc(edited, note);
     }
   }
 
@@ -41,7 +41,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: soundpack.displayName.text(overflow: TextOverflow.fade),
+          title: edited.displayName.text(overflow: TextOverflow.fade),
           centerTitle: context.isCupertino,
           actions: [
             IconButton(
@@ -59,9 +59,9 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
 
   Future<void> onSave(BuildContext ctx) async {
     // TODO: on Windows: OS Error: The process cannot access the file because it is being used by another process.
-    final changed = await queue.performAll(soundpack);
+    final changed = await queue.performAll(edited);
     if (changed) {
-      DB.setSoundpackSnapshotById(soundpack);
+      DB.setSoundpackSnapshotById(edited);
       // TODO: I don't know why it doesn't work on Android. Users have to restart Calcupiano.
       await AudioCache.instance.clearAll();
     }
@@ -89,7 +89,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
         final note = Note.all[index];
         return _SoundFileRow(
           note: note,
-          edited: soundpack,
+          edited: edited,
           getFile: () => $view[note],
           setFile: (f) {
             if (f == null) {
@@ -97,7 +97,12 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
               queue.add(_RemoveOp(note));
             } else {
               $view[note] = f;
-              queue.add(_ReplaceOp(f.resolve(), note));
+              if (f is LocalSoundFileLoc && f.soundpack.idEquals(edited)) {
+                // If the source is target, swap these two files to avoid to copy self.
+                queue.add(_SwapOp(f, LocalSoundFileLoc(edited, note)));
+              } else {
+                queue.add(_ReplaceOp(f.resolve(), note));
+              }
             }
           },
         );
@@ -216,7 +221,12 @@ class _SoundFileRowState extends State<_SoundFileRow> {
   Widget buildDropIndicator(BuildContext ctx, SoundFileLoc loc) {
     const icon = Icon(Icons.move_to_inbox_outlined, size: 36);
     // TODO: I18n
-    final subtitle = "${loc.note.id} from ${loc.soundpack.displayName}";
+    final String subtitle;
+    if (loc is LocalSoundFileLoc && loc.soundpack.idEquals(edited)) {
+      subtitle = "Swap ${loc.note.id} with ${note.id}";
+    } else {
+      subtitle = "${loc.note.id} from ${loc.soundpack.displayName}";
+    }
     Widget dropIndicator = [
       icon,
       basenameOfPath(subtitle).text(),
@@ -241,7 +251,12 @@ class _SoundFileRowState extends State<_SoundFileRow> {
         file = loc;
       },
       onWillAccept: (loc) {
-        return loc != null;
+        if (loc == null) return false;
+        if (loc is LocalSoundFileLoc && loc.soundpack.idEquals(edited)) {
+          return loc.note != note;
+        } else {
+          return true;
+        }
       },
     );
     final res = dropArea.inCard(
