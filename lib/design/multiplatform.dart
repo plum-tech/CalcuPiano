@@ -166,6 +166,7 @@ class $TextField$ extends StatelessWidget {
   final Widget? suffixIcon;
   final int? maxLines;
   final bool readOnly;
+  final bool enabled;
   final bool autofocus;
 
   final String? labelText;
@@ -184,6 +185,7 @@ class $TextField$ extends StatelessWidget {
     this.onSubmit,
     this.maxLines = 1,
     this.readOnly = false,
+    this.enabled = true,
   });
 
   @override
@@ -199,7 +201,8 @@ class $TextField$ extends StatelessWidget {
             textInputAction: textInputAction,
             prefix: prefixIcon,
             suffix: suffixIcon,
-            enabled: !readOnly,
+            readOnly: readOnly,
+            enabled: enabled,
             maxLines: maxLines,
             onSubmitted: onSubmit,
             decoration: const BoxDecoration(
@@ -217,7 +220,8 @@ class $TextField$ extends StatelessWidget {
         controller: controller,
         autofocus: autofocus,
         maxLines: maxLines,
-        enabled: !readOnly,
+        readOnly: readOnly,
+        enabled: enabled,
         textInputAction: textInputAction,
         decoration: InputDecoration(
           hintText: placeholder,

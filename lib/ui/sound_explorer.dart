@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/service/soundpack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rettulf/rettulf.dart';
@@ -20,12 +21,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
   @override
   void initState() {
     super.initState();
-    /*for(final id in idList){
-      id2Soundpack[id] = SoundpackX.;
-    }*/
-    for (final builtin in R.builtinSoundpacks) {
-      soundpacks.add(builtin);
-    }
+    soundpacks.addAll(SoundpackService.iterateAllSoundpacks());
   }
 
   @override
@@ -59,7 +55,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
     final note2Files = selected.iterateNote2SoundFile().toList();
 
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 80),
       itemCount: note2Files.length,
       itemBuilder: (BuildContext context, int index) {
         final p = note2Files[index];

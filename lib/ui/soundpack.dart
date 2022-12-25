@@ -87,7 +87,7 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
     );
   }
 
-  @ListenTo([K.customSoundpackIdList])
+  @ListenTo([K.externalSoundpackIdList])
   Widget buildBody() {
     return H.listenToCustomSoundpackIdList() <<
         (ctx, _, c) {
@@ -95,9 +95,9 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
         };
   }
 
-  @ListenTo([K.customSoundpackIdList])
+  @ListenTo([K.externalSoundpackIdList])
   Widget buildSoundpackList(BuildContext ctx) {
-    final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.customSoundpackIdList ?? const []);
+    final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.externalSoundpackIdList ?? const []);
     return MasonryGridView.extent(
       maxCrossAxisExtent: 380,
       itemCount: allSoundpacks.length,
@@ -216,7 +216,9 @@ class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateM
     card = InkWell(
       borderRadius: ctx.cardBorderRadius,
       onTap: () {
-        eventBus.fire(SoundpackChangeEvent(soundpack));
+        if (H.currentSoundpackID != soundpack.id) {
+          eventBus.fire(SoundpackChangeEvent(soundpack));
+        }
       },
       child: card,
     ).inSoundpackCard(isSelected: isSelected);
