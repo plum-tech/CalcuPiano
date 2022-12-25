@@ -1,9 +1,10 @@
+import 'dart:math';
+
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -41,29 +42,48 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   Widget buildSettings(BuildContext ctx) {
     return SettingsAdaptivePanel(groups: [
       SettingsGroup(
-          name: "Appearance",
+          name: I18n.appearance.name,
           builder: (ctx) {
             return [
-              sectionCommon(ctx),
+              brightness(ctx),
+              language(ctx),
             ];
           })
     ]);
   }
 
-  Widget sectionCommon(BuildContext ctx) {
+  Widget brightness(BuildContext ctx) {
     final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
     final toggle = SettingsKeySwitch(
-      on: NotePair(Note.$5, const Icon(key: ValueKey("Light"), Icons.dark_mode)),
-      off: NotePair(Note.$1, const Icon(key: ValueKey("Dark"), Icons.light_mode)),
+      on: NotePair(Note.$5, const Icon(Icons.dark_mode)),
+      off: NotePair(Note.$1, const Icon(Icons.light_mode)),
       current: isDarkMode,
       onChanged: (newV) {
         Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = newV;
       },
     ).sized(w: 80);
-    final mode = isDarkMode?  I18n.common.darkMode: I18n.common.lightMode;
     return ListTile(
-      title: "Brightness".text(style: ctx.textTheme.headlineSmall),
-      subtitle: mode.text(),
+      title: I18n.appearance.brightness.text(style: ctx.textTheme.headlineSmall),
+      subtitle: I18n.appearance.themeMode(isDarkMode).text(),
+      trailing: toggle,
+    );
+  }
+
+  Widget language(BuildContext ctx) {
+    const icon = Icon(Icons.language);
+    final locales = ctx.supportedLocales;
+    final curLocale = ctx.locale;
+    final curIndex = max(0, locales.indexOf(curLocale));
+    final toggle = SettingsKeyMultiSwitch(
+      states: Note.loopSequence(locales.length).map((note) => NotePair(note, icon)).toList(),
+      current: curIndex,
+      onChanged: (selectedIndex) {
+        ctx.setLocale(ctx.supportedLocales[selectedIndex]);
+      },
+    ).sized(w: 80);
+    return ListTile(
+      title: I18n.appearance.language.text(style: ctx.textTheme.headlineSmall),
+      subtitle: curLocale.toString().text(),
       trailing: toggle,
     );
   }
@@ -282,7 +302,7 @@ class _SettingsKeyMultiSwitchState extends State<SettingsKeyMultiSwitch> {
       onTap: () {
         widget.onChanged((widget.current + 1) % widget.states.length);
       },
-      child: cur.child,
+      child: cur.child.center(),
     );
   }
 }

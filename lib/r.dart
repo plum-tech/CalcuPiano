@@ -10,6 +10,7 @@ class R {
   static const defaultLocale = Locale('en');
   static const supportedLocales = [
     defaultLocale,
+    Locale("zh", "CN"),
   ];
 
   static final version = Version(1, 0, 0);

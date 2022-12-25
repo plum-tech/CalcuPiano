@@ -6,15 +6,21 @@ class I18n {
   I18n._();
 
   static String get title => "${_$ns}.title".tr();
-  static final common = _Common._();
+  static final appearance = _Appearance._();
 }
 
-class _Common {
-  _Common._();
+class _Appearance {
+  _Appearance._();
 
-  static const _ns = "${_$ns}.common";
+  static const _ns = "${_$ns}.appearance";
 
-  String get title => "$_ns.title".tr();
+  String get name => "$_ns.name".tr();
+
+  String get brightness => "$_ns.brightness".tr();
+
+  String get language => "$_ns.language".tr();
+
+  String themeMode(bool isDarkMode) => isDarkMode ? darkMode : lightMode;
 
   String get lightMode => "$_ns.lightMode".tr();
 

@@ -344,7 +344,7 @@ class CalcuPianoDrawer extends HookWidget {
     final packageInfo = R.packageInfo;
     final version = packageInfo != null ? "v ${packageInfo.version}" : "v ${R.version}";
     return SizedBox(
-      width: 200,
+      width: 220,
       child: Drawer(
         child: [
           Column(
