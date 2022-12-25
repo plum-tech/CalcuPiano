@@ -125,7 +125,7 @@ class _PianoKeyState extends State<PianoKey> {
     final theme = Provider.of<KeyboardThemeModel?>(context);
     Widget txt = AutoSizeText(
       note.numberedText,
-      style: TextStyle(fontSize: 24),
+      style: const TextStyle(fontSize: 24),
     ).center();
     txt = InkWell(
       borderRadius: context.cardBorderRadius,
@@ -140,11 +140,7 @@ class _PianoKeyState extends State<PianoKey> {
   }
 
   Future<void> playSound() async {
-    final player = AudioPlayer();
-    final sound = _soundpack.resolve(note);
-    await sound.loadInto(player);
-    await player.setPlayerMode(PlayerMode.lowLatency);
-    await player.resume();
+    await Player.playSound(_soundpack.resolve(note));
   }
 }
 

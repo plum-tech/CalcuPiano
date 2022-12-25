@@ -3,7 +3,6 @@ import 'package:calcupiano/app.dart';
 import 'package:calcupiano/event_handler.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -37,14 +36,11 @@ void main() async {
   ));
 }
 
-const defaultLocale = Locale('en');
-const supportedLocales = [defaultLocale];
-
 Widget wrapWithEasyLocalization(Widget child) {
   return EasyLocalization(
-    supportedLocales: supportedLocales,
+    supportedLocales: R.supportedLocales,
     path: 'assets/l10n',
-    fallbackLocale: defaultLocale,
+    fallbackLocale: R.defaultLocale,
     child: child,
   );
 }

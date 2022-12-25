@@ -43,7 +43,6 @@ dependencies:
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.11
-  settings_ui: ^2.0.2
   provider: ^6.0.5
   animations: ^2.0.7
   hive_flutter: ^1.1.0

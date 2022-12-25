@@ -86,4 +86,3 @@ extension NoteX on Note {
   String get tonicSolfaText => Note.note2TonicSolfa[this] ?? "?";
 }
 
-class Sound {}

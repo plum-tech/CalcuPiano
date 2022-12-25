@@ -74,10 +74,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
     for (final note in Note.all) {
       final file = $view[note]?.resolve();
       if (file != null) {
-        final player = AudioPlayer();
-        await file.loadInto(player);
-        await player.setPlayerMode(PlayerMode.lowLatency);
-        await player.resume();
+        Player.playSound(file);
         // TODO: Customize interval
         await Future.delayed(const Duration(milliseconds: 500));
       }
@@ -114,8 +111,8 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
 
 class _SoundFileRow extends StatefulWidget {
   final Note note;
-  final SoundFileResolveProtocol? Function() getFile;
-  final void Function(SoundFileResolveProtocol? newFile) setFile;
+  final ValueGetter<SoundFileResolveProtocol?> getFile;
+  final ValueSetter<SoundFileResolveProtocol?> setFile;
   final LocalSoundpack edited;
 
   const _SoundFileRow({
@@ -262,10 +259,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
   Widget buildPlaySoundBtn(SoundFileResolveProtocol loc) {
     return IconButton(
       onPressed: () async {
-        final player = AudioPlayer();
-        await loc.resolve().loadInto(player);
-        await player.setPlayerMode(PlayerMode.lowLatency);
-        await player.resume();
+        Player.playSound(loc.resolve());
       },
       icon: const Icon(Icons.play_arrow),
     );

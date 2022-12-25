@@ -1,9 +1,16 @@
+import 'dart:ui';
+
 import 'package:calcupiano/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 class R {
   R._();
+
+  static const defaultLocale = Locale('en');
+  static const supportedLocales = [
+    defaultLocale,
+  ];
 
   static final version = Version(1, 0, 0);
   static late final String appDir;
