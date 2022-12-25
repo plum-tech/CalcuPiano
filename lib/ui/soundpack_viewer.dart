@@ -7,45 +7,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
 
-part 'soundpack_editor.i18n.dart';
+part 'soundpack_viewer.i18n.dart';
 
 /// A Soundpack Editor should allow users to edit all properties of [SoundpackMeta].
 /// Save button will save to storage and write into file.
 ///
 /// Navigation will return `true` if any changed and saved.
-class LocalSoundpackEditor extends StatefulWidget {
-  final LocalSoundpack soundpack;
-  final bool readonly;
+class SoundpackViewer extends StatefulWidget {
+  final SoundpackProtocol soundpack;
 
-  const LocalSoundpackEditor(
-    this.soundpack, {
-    super.key,
-    this.readonly = false,
-  });
+  const SoundpackViewer(this.soundpack, {super.key});
 
   @override
-  State<LocalSoundpackEditor> createState() => _LocalSoundpackEditorState();
+  State<SoundpackViewer> createState() => _SoundpackViewerState();
 }
 
-class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
-  LocalSoundpack get soundpack => widget.soundpack;
-  late final $name = TextEditingController(text: widget.soundpack.meta.name);
-  late final $description = TextEditingController(text: widget.soundpack.meta.description);
-  late final $author = TextEditingController(text: widget.soundpack.meta.author);
-  late final $url = TextEditingController(text: widget.soundpack.meta.url);
-  final editing = SoundpackMeta();
-  late LocalImageFile? $preview = soundpack.preview;
-
-  bool get readonly => widget.readonly;
-
-  @override
-  void initState() {
-    super.initState();
-    $name.addListener(() {
-      // To Change the AppBar title.
-      setState(() {});
-    });
-  }
+class _SoundpackViewerState extends State<SoundpackViewer> {
+  SoundpackProtocol get soundpack => widget.soundpack;
+  late final $name = TextEditingController(text: widget.soundpack.displayName);
+  late final $description = TextEditingController(text: widget.soundpack.description);
+  late final $author = TextEditingController(text: widget.soundpack.author);
+  late final $url = TextEditingController(text: widget.soundpack.url);
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +37,8 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   Widget buildMain(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
-        title: $name.text.text(overflow: TextOverflow.clip),
+        title: soundpack.displayName.text(overflow: TextOverflow.clip),
         centerTitle: ctx.isCupertino,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save_rounded),
-            onPressed: () async => await onSave(ctx),
-          ),
-        ],
       ),
       body: [
         buildPreview(ctx),
@@ -74,7 +50,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
   Widget buildPreview(BuildContext ctx) {
     final fullW = ctx.mediaQuery.size.width;
     final fullH = ctx.mediaQuery.size.height;
-    final preview = $preview;
+    final preview = soundpack.preview;
     Widget img;
     if (preview != null) {
       img = preview.build(ctx).fitted();
@@ -88,15 +64,6 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
       borderRadius: ctx.cardBorderRadius,
       child: img,
     ).padAll(20.w);
-    img = img.onTap(() async {
-      final path = await Packager.pickImage();
-      if (path != null) {
-        if (!mounted) return;
-        setState(() {
-          $preview = LocalImageFile(localPath: path);
-        });
-      }
-    });
     return AnimatedSize(
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
@@ -104,52 +71,28 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     );
   }
 
-  Future<void> onSave(BuildContext ctx) async {
-    var changed = false;
-    editing.name = $name.text;
-    editing.description = $description.text;
-    editing.author = $author.text;
-    editing.url = $url.text;
-    final former = soundpack.meta;
-    if (editing != former) {
-      soundpack.meta = editing;
-      await Packager.writeSoundpackMetaFile(soundpack);
-      changed = true;
-    }
-    final preview = $preview;
-    if (preview != soundpack.preview && preview != null) {
-      soundpack.preview = await Packager.copyImageAsPreview(soundpack, sourceImagePath: preview.localPath);
-      changed = true;
-    }
-    if (changed) {
-      DB.setSoundpackSnapshotById(soundpack);
-    }
-    if (!mounted) return;
-    ctx.navigator.pop(changed);
-  }
-
   Widget buildMetaEditor(BuildContext ctx) {
     return Form(
       child: [
         $TextField$(
-          readOnly: readonly,
+          readOnly: true,
           controller: $name,
           labelText: I18n.soundpack.name,
         ).padSymmetric(h: 20, v: 5),
         [
           $TextField$(
-            readOnly: readonly,
+            readOnly: true,
             controller: $author,
             labelText: I18n.soundpack.author,
           ).padFromLTRB(20, 5, 5, 5).flexible(flex: 1),
           $TextField$(
-            readOnly: readonly,
+            readOnly: true,
             controller: $url,
             labelText: I18n.soundpack.url,
           ).padFromLTRB(5, 5, 20, 5).flexible(flex: 2),
         ].row(),
         $TextField$(
-          readOnly: readonly,
+          readOnly: true,
           controller: $description,
           labelText: I18n.soundpack.description,
           maxLines: 6,

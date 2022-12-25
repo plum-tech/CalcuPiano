@@ -6,6 +6,7 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:calcupiano/ui/soundpack_composer.dart';
 import 'package:calcupiano/ui/soundpack_editor.dart';
+import 'package:calcupiano/ui/soundpack_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -351,6 +352,40 @@ extension _MenuX on State {
       return buttons;
     }
 
+    PopupMenuEntry buildViewOrEditBtn() {
+      if (soundpack is LocalSoundpack) {
+        return PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.edit),
+            title: I18n.op.edit.text(),
+            onTap: () async {
+              await StageManager.closeSoundpackPreview(ctx: context);
+              ctx.navigator.pop();
+              final anyChanged =
+                  await ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
+              if (anyChanged == true) {
+                if (!mounted) return;
+                // ignore: invalid_use_of_protected_member
+                setState(() {});
+              }
+            },
+          ),
+        );
+      } else {
+        return PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.info_outline_rounded),
+            title: I18n.op.info.text(),
+            onTap: () async {
+              await StageManager.closeSoundpackPreview(ctx: context);
+              ctx.navigator.pop();
+              ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackViewer(soundpack)));
+            },
+          ),
+        );
+      }
+    }
+
     final btn = PopupMenuButton(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
       position: PopupMenuPosition.under,
@@ -379,24 +414,7 @@ extension _MenuX on State {
             ),
           ),
         const PopupMenuDivider(),
-        if (soundpack is LocalSoundpack)
-          PopupMenuItem(
-            child: ListTile(
-              leading: const Icon(Icons.edit),
-              title: I18n.op.edit.text(),
-              onTap: () async {
-                await StageManager.closeSoundpackPreview(ctx: context);
-                ctx.navigator.pop();
-                final anyChanged =
-                    await ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
-                if (anyChanged == true) {
-                  if (!mounted) return;
-                  // ignore: invalid_use_of_protected_member
-                  setState(() {});
-                }
-              },
-            ),
-          ),
+        buildViewOrEditBtn(),
         if (!kIsWeb)
           PopupMenuItem(
             child: ListTile(

@@ -13,3 +13,21 @@ extension DistinctEx<E> on List<E> {
     return list;
   }
 }
+
+extension StringX on String? {
+  bool get isEmptyOrNull {
+    final self = this;
+    return self == null || self.isEmpty;
+  }
+
+  String notEmptyNullOr(String replacement) {
+    final self = this;
+    if (self == null) {
+      return replacement;
+    } else if (self.isEmpty) {
+      return replacement;
+    } else {
+      return self;
+    }
+  }
+}

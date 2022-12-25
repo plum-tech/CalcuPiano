@@ -1,6 +1,7 @@
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/i18n.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/core.dart';
 
@@ -307,7 +308,7 @@ extension SoundpackX on SoundpackProtocol {
   String get displayName {
     final self = this;
     if (self is ExternalSoundpackProtocol) {
-      return self.meta.name ?? I18n.soundpack.nameEmpty;
+      return self.meta.name.notEmptyNullOr(I18n.soundpack.nameEmpty);
     } else if (self is BuiltinSoundpack) {
       return I18n.nameOf(self);
     }
@@ -317,7 +318,7 @@ extension SoundpackX on SoundpackProtocol {
   String get author {
     final self = this;
     if (self is ExternalSoundpackProtocol) {
-      return self.meta.author ?? I18n.soundpack.authorEmpty;
+      return self.meta.author.notEmptyNullOr(I18n.soundpack.authorEmpty);
     } else if (self is BuiltinSoundpack) {
       return I18n.authorOf(self);
     }
@@ -347,7 +348,7 @@ extension SoundpackX on SoundpackProtocol {
   String get description {
     final self = this;
     if (self is ExternalSoundpackProtocol) {
-      return self.meta.description ?? I18n.soundpack.descriptionEmpty;
+      return self.meta.description.notEmptyNullOr(I18n.soundpack.descriptionEmpty);
     } else if (self is BuiltinSoundpack) {
       return I18n.descriptionOf(self);
     }

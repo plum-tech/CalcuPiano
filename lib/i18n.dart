@@ -45,6 +45,8 @@ class $I18n$Op {
 
   String get edit => "$_ns.edit".tr();
 
+  String get info => "$_ns.info".tr();
+
   String get duplicate => "$_ns.duplicate".tr();
 
   String get delete => "$_ns.delete".tr();
