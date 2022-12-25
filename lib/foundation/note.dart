@@ -76,6 +76,22 @@ class Note {
   static Note of(String id, {Note fallback = $none}) {
     return id2Note[id] ?? fallback;
   }
+
+  static Iterable<Note> loopSequence(int count, {bool reversed = false, int step = 1}) sync* {
+    final len = Note.all.length;
+    if (reversed) {
+      // TODO: Does this work?
+      step = -step.abs();
+      for (int i = 0; i < count; i++) {
+        yield Note.all[(i * step) % len];
+      }
+    } else {
+      step = step.abs();
+      for (int i = 0; i < count; i++) {
+        yield Note.all[(i * step) % len];
+      }
+    }
+  }
 }
 
 extension NoteX on Note {
@@ -85,5 +101,3 @@ extension NoteX on Note {
 
   String get tonicSolfaText => Note.note2TonicSolfa[this] ?? "?";
 }
-
-class Sound {}

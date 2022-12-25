@@ -43,7 +43,6 @@ dependencies:
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.11
-  settings_ui: ^2.0.2
   provider: ^6.0.5
   animations: ^2.0.7
   hive_flutter: ^1.1.0
@@ -69,6 +68,7 @@ dependencies:
   share_plus: ^6.3.0
   image_picker: ^0.8.6
   flutter_svg: ^1.1.6
+  easy_localization: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -100,6 +100,7 @@ flutter:
      - assets/soundpack/default_long_tone/
      - assets/soundpack/classic/
      - assets/img/
+     - assets/l10n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,0 +1,59 @@
+{
+  "common": {
+    "operation": {
+      "revealInFolder": {
+        "mac": "Reveal in Finder",
+        "other": "Reveal in Folder"
+      },
+      "share": "Share",
+      "saveAs": "Save as",
+      "play": {
+        "music": "Play",
+        "game": "Play"
+      },
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete"
+    },
+    "soundpack": {
+      "name": "Soundpack Name",
+      "author": "Author",
+      "description": "Description",
+      "email": "E-mail",
+      "url": "URL"
+    }
+  },
+  "ui": {
+    "soundpack": {
+      "title": "Soundpack",
+      "createSoundpack": "Create a soundpack",
+      "importSoundpack": "Import Soundpack",
+      "link": "Link",
+      "localFile": "Local File",
+      "corruptedSoundpack": "A Corrupted Soundpack",
+      "corruptedSoundpackSubtitle": "Sorry, please delete this",
+      "compose": "Compose"
+    },
+    "soundpack_editor": {
+    },
+    "settings": {
+      "title": "Settings",
+      "appearance": {
+        "name": "Appearance",
+        "brightness": "Brightness",
+        "darkMode": "Dark Mode",
+        "lightMode": "Light Mode",
+        "language": "Language"
+      }
+    }
+  },
+  "app": {
+    "soundpack": "Soundpack",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "language": {
+    "en": "English",
+    "zh_CN": "Simplified Chinese"
+  }
+}

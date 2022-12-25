@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   if (!kIsWeb) {
     final appDocDir = await getApplicationDocumentsDirectory();
     R.appDir = appDocDir.path;
@@ -30,7 +31,18 @@ void main() async {
   initFoundation();
   initEssential();
   EventHandler.init();
-  runApp(const CalcuPianoApp());
+  runApp(wrapWithEasyLocalization(
+    const CalcuPianoApp(),
+  ));
+}
+
+Widget wrapWithEasyLocalization(Widget child) {
+  return EasyLocalization(
+    supportedLocales: R.supportedLocales,
+    path: 'assets/l10n',
+    fallbackLocale: R.defaultLocale,
+    child: child,
+  );
 }
 
 Future<void> initEssential() async {

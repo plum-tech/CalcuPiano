@@ -32,7 +32,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
   Widget build(BuildContext context) {
     return [
       buildList(context).expanded(),
-      VerticalDivider(),
+      const VerticalDivider(),
       buildContent(context).expanded(),
     ].row(mas: MainAxisSize.min);
   }

@@ -8,6 +8,7 @@ import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -17,6 +18,8 @@ import 'package:rettulf/rettulf.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'db.dart';
+
+part 'app.i18n.dart';
 
 class CalcuPianoApp extends StatefulWidget {
   const CalcuPianoApp({super.key});
@@ -50,6 +53,9 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
             child: Consumer<CalcuPianoThemeModel>(
               builder: (_, model, __) {
                 return MaterialApp(
+                  localizationsDelegates: context.localizationDelegates,
+                  supportedLocales: context.supportedLocales,
+                  locale: context.locale,
                   theme: bakeTheme(context, ThemeData.light(), model.data),
                   darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
                   themeMode: model.resolveThemeMode(),
@@ -294,7 +300,7 @@ class _HomeLandscapeState extends State<HomeLandscape> {
         ),
         const VerticalDivider(thickness: 1, width: 1),
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           child: routePage(),
         ).expanded(),
       ].row(),
@@ -338,16 +344,16 @@ class CalcuPianoDrawer extends HookWidget {
     final packageInfo = R.packageInfo;
     final version = packageInfo != null ? "v ${packageInfo.version}" : "v ${R.version}";
     return SizedBox(
-      width: 200,
+      width: 220,
       child: Drawer(
         child: [
           Column(
             children: [
-              DrawerHeader(child: SizedBox()).flexible(flex: 1),
+              const DrawerHeader(child: SizedBox()).flexible(flex: 1),
               ListTile(
-                leading: Icon(Icons.music_note),
-                title: Text('Soundpack'),
-                trailing: Icon(Icons.navigate_next),
+                leading: const Icon(Icons.music_note),
+                title: I18n.soundpack.text(),
+                trailing: const Icon(Icons.navigate_next),
                 onTap: () {
                   closeDrawer();
                   context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
@@ -357,15 +363,15 @@ class CalcuPianoDrawer extends HookWidget {
           ).expanded(),
           const Spacer(),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
+            leading: const Icon(Icons.settings),
+            title: I18n.settings.text(),
             onTap: () {
               closeDrawer();
               context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.build),
+            leading: const Icon(Icons.info_outline_rounded),
             title: version.text(),
           ),
         ].column(),
