@@ -1,9 +1,12 @@
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/i18n.dart';
 import 'package:calcupiano/r.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/core.dart';
 
 part 'soundpack.g.dart';
+
+part 'soundpack.i18n.dart';
 
 abstract class SoundpackProtocol {
   /// The identity.
@@ -11,8 +14,6 @@ abstract class SoundpackProtocol {
   String get id;
 
   SoundFileProtocol resolve(Note note);
-
-  String get displayName;
 
   ImageFileProtocol? get preview;
 }
@@ -38,9 +39,6 @@ class _SoundFileLocImpl implements SoundFileLoc {
 }
 
 class BuiltinSoundpack implements SoundpackProtocol {
-  @override
-  String get displayName => name;
-
   /// The internal name.
   final String name;
 
@@ -82,9 +80,6 @@ abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertib
 @JsonSerializable()
 class LocalSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.LocalSoundpack";
-
-  @override
-  String get displayName => meta.name ?? "No Name";
   @JsonKey()
   final String uuid;
   @override
@@ -160,8 +155,6 @@ class LocalSoundFileLoc implements SoundFileLoc {
 class UrlSoundpack implements ExternalSoundpackProtocol {
   static const String type = "calcupiano.UrlSoundpack";
 
-  @override
-  String get displayName => meta.name ?? "No Name";
   @JsonKey()
   final String uuid;
   @JsonKey()
@@ -248,6 +241,8 @@ class SoundpackMeta implements Convertible {
   String? author;
   @JsonKey(includeIfNull: false)
   String? url;
+  @JsonKey(includeIfNull: false)
+  String? email;
 
   SoundpackMeta();
 
@@ -266,12 +261,14 @@ class SoundpackMeta implements Convertible {
     String? description,
     String? author,
     String? url,
+    String? email,
   }) =>
       SoundpackMeta()
         ..name = name ?? this.name
         ..description = description ?? this.description
         ..author = author ?? this.author
-        ..url = url ?? this.url;
+        ..url = url ?? this.url
+        ..email = email ?? this.email;
 
   @override
   bool operator ==(Object other) {
@@ -280,7 +277,8 @@ class SoundpackMeta implements Convertible {
         name == other.name &&
         description == other.description &&
         author == other.author &&
-        url == other.url;
+        url == other.url &&
+        email == other.email;
   }
 
   @override
@@ -304,5 +302,55 @@ extension SoundpackX on SoundpackProtocol {
     for (final note in Note.all) {
       yield resolve(note);
     }
+  }
+
+  String get displayName {
+    final self = this;
+    if (self is ExternalSoundpackProtocol) {
+      return self.meta.name ?? I18n.soundpack.nameEmpty;
+    } else if (self is BuiltinSoundpack) {
+      return I18n.nameOf(self);
+    }
+    return I18n.soundpack.nameEmpty;
+  }
+
+  String get author {
+    final self = this;
+    if (self is ExternalSoundpackProtocol) {
+      return self.meta.author ?? I18n.soundpack.authorEmpty;
+    } else if (self is BuiltinSoundpack) {
+      return I18n.authorOf(self);
+    }
+    return I18n.soundpack.authorEmpty;
+  }
+
+  String get url {
+    final self = this;
+    if (self is ExternalSoundpackProtocol) {
+      return self.meta.url ?? "";
+    } else if (self is BuiltinSoundpack) {
+      return I18n.urlOf(self);
+    }
+    return "";
+  }
+
+  String get email {
+    final self = this;
+    if (self is ExternalSoundpackProtocol) {
+      return self.meta.email ?? "";
+    } else if (self is BuiltinSoundpack) {
+      return I18n.emailOf(self);
+    }
+    return "";
+  }
+
+  String get description {
+    final self = this;
+    if (self is ExternalSoundpackProtocol) {
+      return self.meta.description ?? I18n.soundpack.descriptionEmpty;
+    } else if (self is BuiltinSoundpack) {
+      return I18n.descriptionOf(self);
+    }
+    return I18n.soundpack.descriptionEmpty;
   }
 }

@@ -13,11 +13,17 @@ class $I18n {
 class $I18n$Soundpack {
   static const _ns = "${_$ns}.soundpack";
 
-  String get author => "$_ns.author".tr();
-
   String get name => "$_ns.name".tr();
 
+  String get nameEmpty => "$_ns.nameEmpty".tr();
+
+  String get author => "$_ns.author".tr();
+
+  String get authorEmpty => "$_ns.authorEmpty".tr();
+
   String get description => "$_ns.description".tr();
+
+  String get descriptionEmpty => "$_ns.descriptionEmpty".tr();
 
   String get email => "$_ns.email".tr();
 

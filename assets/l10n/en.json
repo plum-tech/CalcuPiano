@@ -20,7 +20,10 @@
       "author": "Author",
       "description": "Description",
       "email": "E-mail",
-      "url": "URL"
+      "url": "URL",
+      "nameEmpty": "Unnamed Soundpack",
+      "authorEmpty": "Anonymous",
+      "descriptionEmpty": "No description."
     }
   },
   "ui": {
@@ -55,5 +58,28 @@
   "language": {
     "en": "English",
     "zh_CN": "Simplified Chinese"
+  },
+  "builtinSoundpack": {
+    "default": {
+      "name": "Default",
+      "author": "CalcuPiano",
+      "email": "",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "The default soundpack derived from a musical calculator."
+    },
+    "default_long_tone": {
+      "name": "Default Long Tone",
+      "author": "CalcuPiano",
+      "email": "",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "The default long tone soundpack derived from a musical calculator."
+    },
+    "classic": {
+      "name": "Classical Piano",
+      "author": "CalcuPiano",
+      "email": "",
+      "url": "https://github.com/liplum/calcupiano",
+      "description": "A soundpack that simulates a real classical piano."
+    }
   }
 }

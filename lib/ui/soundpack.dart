@@ -272,11 +272,10 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
         eventBus.fire(SoundpackChangeEvent(soundpack));
       },
       selected: isSelected,
-      title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
+      title: soundpack.displayName.text(style: ctx.textTheme.headlineSmall),
       subtitle: [
-        // TODO: Better author text
-        (soundpack.meta.author ?? "No Author").text(),
-        (soundpack.meta.description ?? "No Info").text(),
+        soundpack.author.text(),
+        soundpack.description.text(),
       ].column(caa: CrossAxisAlignment.start),
       trailing: moreMenu(ctx, soundpack),
     );
@@ -290,8 +289,8 @@ class _CustomSoundpackItemState extends State<CustomSoundpackItem> {
       onTap: () {
         eventBus.fire(SoundpackChangeEvent(soundpack));
       },
-      title: (soundpack.meta.name ?? "No Name").text(style: ctx.textTheme.headlineSmall),
-      subtitle: (soundpack.meta.description ?? "No Info").text(),
+      title: soundpack.displayName.text(style: ctx.textTheme.headlineSmall),
+      subtitle: soundpack.description.text(),
       trailing: moreMenu(ctx, soundpack),
     );
   }
@@ -371,7 +370,7 @@ extension _MenuX on State {
           PopupMenuItem(
             child: ListTile(
               leading: const Icon(Icons.audio_file_outlined),
-              title:I18n.op.compose.text(),
+              title: I18n.op.compose.text(),
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
