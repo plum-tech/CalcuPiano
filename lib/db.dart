@@ -9,7 +9,7 @@ import 'package:hive_flutter/adapters.dart';
 class K {
   K._();
 
-  static const customSoundpackIdList = "Custom-Soundpack-ID-List";
+  static const externalSoundpackIdList = "External-Soundpack-ID-List";
   static const currentSoundpackID = "Current-Soundpack-ID";
   static const isDarkMode = "Is-Dark-Mode";
 }
@@ -29,9 +29,9 @@ class HImpl {
 
   set currentSoundpackID(String? id) => box.put(K.currentSoundpackID, id);
 
-  List<String>? get customSoundpackIdList => box.get(K.customSoundpackIdList) as List<String>?;
+  List<String>? get externalSoundpackIdList => box.get(K.externalSoundpackIdList) as List<String>?;
 
-  set customSoundpackIdList(List<String>? list) => box.put(K.customSoundpackIdList, list);
+  set externalSoundpackIdList(List<String>? list) => box.put(K.externalSoundpackIdList, list);
 
   bool? get isDarkMode => box.get(K.isDarkMode) as bool?;
 
@@ -42,13 +42,13 @@ class HImpl {
   }
 
   ValueListenable<Box<dynamic>> listenToCustomSoundpackIdList() {
-    return box.listenable(keys: const [K.customSoundpackIdList]);
+    return box.listenable(keys: const [K.externalSoundpackIdList]);
   }
 }
 
 extension HImplX on HImpl {
   void ensureCurrentSoundpackIdValid() {
-    final idList = H.customSoundpackIdList ?? [];
+    final idList = H.externalSoundpackIdList ?? [];
     final current = currentSoundpackID;
     if (current == null) {
       currentSoundpackID = R.defaultSoundpack.id;
@@ -77,7 +77,7 @@ class DBImpl {
   }
 
   /// Low-level operation.
-  /// Set the soundpack directly will not clear the local file, or change [H.customSoundpackIdList].
+  /// Set the soundpack directly will not clear the local file, or change [H.externalSoundpackIdList].
   /// Note: Any further change won't be saved.
   void setSoundpackSnapshotById(ExternalSoundpackProtocol soundpack) {
     final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
@@ -91,15 +91,15 @@ class DBImpl {
   /// Note: Any further change won't be saved.
   void addSoundpackSnapshot(ExternalSoundpackProtocol soundpack) {
     setSoundpackSnapshotById(soundpack);
-    final idList = H.customSoundpackIdList ?? [];
+    final idList = H.externalSoundpackIdList ?? [];
     idList.add(soundpack.id);
     idList.distinct();
-    H.customSoundpackIdList = idList;
+    H.externalSoundpackIdList = idList;
   }
 
   /// High-level operation
   Future<void> removeSoundpackById(String id) async {
-    final idList = H.customSoundpackIdList ?? [];
+    final idList = H.externalSoundpackIdList ?? [];
     String? nextOne;
     final deletedIndex = idList.indexOf(id);
     idList.remove(id);
@@ -107,7 +107,7 @@ class DBImpl {
       // Don't worry, `deletedIndex + 1` must be larger-equal then 0.
       nextOne = idList[(deletedIndex + 1) % idList.length];
     }
-    H.customSoundpackIdList = idList;
+    H.externalSoundpackIdList = idList;
     if (H.currentSoundpackID == id) {
       // If currently-used soundpack was deleted, jump to next one.
       if (nextOne != null) {

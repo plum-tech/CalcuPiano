@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:calcupiano/service/soundpack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rettulf/rettulf.dart';
@@ -16,15 +17,15 @@ class SoundFileExplorer extends StatefulWidget {
 class _SoundFileExplorerState extends State<SoundFileExplorer> {
   final List<SoundpackProtocol> soundpacks = [];
   SoundpackProtocol selected = R.defaultSoundpack;
+  static String? lastSelectedId;
 
   @override
   void initState() {
     super.initState();
-    /*for(final id in idList){
-      id2Soundpack[id] = SoundpackX.;
-    }*/
-    for (final builtin in R.builtinSoundpacks) {
-      soundpacks.add(builtin);
+    soundpacks.addAll(SoundpackService.iterateAllSoundpacks());
+    final lastSelected = SoundpackService.findById(lastSelectedId);
+    if (lastSelected != null) {
+      selected = lastSelected;
     }
   }
 
@@ -44,10 +45,11 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
           final soundpack = soundpacks[i];
           final tile = ListTile(
             title: soundpack.displayName.text(),
-            selected: selected == soundpack,
+            selected: selected.idEquals(soundpack),
             onTap: () {
               setState(() {
                 selected = soundpack;
+                lastSelectedId = soundpack.id;
               });
             },
           );
@@ -59,7 +61,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
     final note2Files = selected.iterateNote2SoundFile().toList();
 
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 80),
       itemCount: note2Files.length,
       itemBuilder: (BuildContext context, int index) {
         final p = note2Files[index];
@@ -92,7 +94,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
       ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(elevation: 6),
     );
     return LongPressDraggable<SoundFileLoc>(
-      data: SoundFileLoc.of(selected, note),
+      data: SoundFileLoc.fromSoundpackType(selected, note),
       dragAnchorStrategy: (_, __, ___) => Offset(60.w, 80.w),
       feedback: feedback,
       child: res,
