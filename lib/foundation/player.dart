@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class Player {
   Player._();
   static Future<void> playSound(SoundFileProtocol sound) async {
-    // TODO: Cache doesn't work on iOS safari.
+    // TODO: Cache doesn't work on both iOS and macOS safari with audioplayers.
     final player = AudioPlayer();
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
