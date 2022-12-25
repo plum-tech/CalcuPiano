@@ -49,5 +49,8 @@
     "soundpack": "Soundpack",
     "settings": "Settings",
     "about": "About"
+  },
+  "language": {
+    "en": "English"
   }
 }

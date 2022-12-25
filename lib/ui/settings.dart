@@ -2,10 +2,8 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
-import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -24,51 +22,134 @@ class _SettingsPageState extends State<SettingsPage> with LockOrientationMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return context.isPortrait ? buildPortrait(context) : buildLandscape(context);
-  }
-
-  Widget buildPortrait(BuildContext ctx) {
     return Scaffold(
       appBar: AppBar(
         title: I18n.title.text(),
-        centerTitle: ctx.isCupertino,
+        centerTitle: context.isCupertino,
       ),
-      body: buildSettings(ctx),
+      body: buildBody(context),
     );
   }
 
-  Widget buildLandscape(BuildContext ctx) {
-    // TODO: Adaptive to split screen.
-    return LayoutBuilder(builder: (ctx, box) {
-      final padding = box.maxWidth / 5;
-      return buildSettings(ctx).padH(padding);
-    });
-    // TODO: Add some notes around?
-    return [
-      SizedBox().flexible(flex: 1),
-      buildSettings(ctx).flexible(flex: 5),
-      SizedBox().flexible(flex: 1),
-    ].row();
+  Widget buildBody(BuildContext ctx) {
+    return ChangeNotifierProvider(
+      create: (_) => SettingsKeyTheme(),
+      child: buildSettings(ctx),
+    );
   }
 
   Widget buildSettings(BuildContext ctx) {
-    return ChangeNotifierProvider(
-      create: (_) => SettingsKeyTheme(),
-      child: sectionCommon(ctx),
-    );
+    return SettingsAdaptivePanel(groups: [
+      SettingsGroup(
+          name: "Appearance",
+          builder: (ctx) {
+            return [
+              sectionCommon(ctx),
+            ];
+          })
+    ]);
   }
 
   Widget sectionCommon(BuildContext ctx) {
     final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
-    return SettingsKeySwitch(
+    final toggle = SettingsKeySwitch(
       on: NotePair(Note.$5, const Icon(key: ValueKey("Light"), Icons.dark_mode)),
       off: NotePair(Note.$1, const Icon(key: ValueKey("Dark"), Icons.light_mode)),
       current: isDarkMode,
       onChanged: (newV) {
         Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = newV;
       },
-    ).sized(w: 180, h: 180);
+    ).sized(w: 80);
+    final mode = isDarkMode?  I18n.common.darkMode: I18n.common.lightMode;
+    return ListTile(
+      title: "Brightness".text(style: ctx.textTheme.headlineSmall),
+      subtitle: mode.text(),
+      trailing: toggle,
+    );
   }
+}
+
+class SettingsAdaptivePanel extends StatelessWidget {
+  final List<SettingsGroup> groups;
+
+  const SettingsAdaptivePanel({
+    super.key,
+    required this.groups,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (ctx, box) {
+      if (box.minWidth < 600) {
+        return SettingsPanelSmall(groups: groups);
+      } else {
+        return SettingsPanelLarge(groups: groups);
+      }
+    });
+  }
+}
+
+class SettingsPanelSmall extends StatefulWidget {
+  final List<SettingsGroup> groups;
+
+  const SettingsPanelSmall({
+    super.key,
+    required this.groups,
+  });
+
+  @override
+  State<SettingsPanelSmall> createState() => _SettingsPanelSmallState();
+}
+
+class _SettingsPanelSmallState extends State<SettingsPanelSmall> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const RangeMaintainingScrollPhysics(),
+      itemCount: widget.groups.length,
+      itemBuilder: (ctx, i) => buildGroup(ctx, widget.groups[i]),
+    );
+  }
+
+  Widget buildGroup(BuildContext ctx, SettingsGroup group) {
+    final titleStyle = ctx.textTheme.titleLarge;
+    final list = <Widget>[];
+    list.add(group.name.text(style: titleStyle?.copyWith(color: titleStyle.color?.withOpacity(0.8))).padAll(5));
+    final tiles = group.builder(ctx);
+    list.addAll(tiles);
+    return list.column();
+  }
+}
+
+class SettingsPanelLarge extends StatefulWidget {
+  final List<SettingsGroup> groups;
+
+  const SettingsPanelLarge({
+    super.key,
+    required this.groups,
+  });
+
+  @override
+  State<SettingsPanelLarge> createState() => _SettingsPanelLargeState();
+}
+
+class _SettingsPanelLargeState extends State<SettingsPanelLarge> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+typedef GroupBuilder = List<Widget> Function(BuildContext ctx);
+
+class SettingsGroup {
+  final String name;
+  final GroupBuilder builder;
+
+  SettingsGroup({
+    required this.name,
+    required this.builder,
+  });
 }
 
 class SettingsKeyThemeData {
@@ -167,7 +248,7 @@ class _SettingsKeySwitchState extends State<SettingsKeySwitch> {
       onTap: () {
         widget.onChanged(!widget.current);
       },
-      child: cur.child,
+      child: cur.child.center(),
     );
   }
 }
