@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+
 // Thanks to https://github.com/mohammadtaherri/flutter_flexible_ui
 /// It also stands for split screen.
 // Portrait
@@ -52,9 +53,7 @@ class BreakpointData {
       if (size.width <= minTabletPortraitSize.width || size.height <= minTabletPortraitSize.height) {
         return ScreenType.tabletPortrait;
       }
-      if (size.width <= minDesktopPortraitSize.width || size.height <= minDesktopPortraitSize.height) {
-        return ScreenType.desktopPortrait;
-      }
+      return ScreenType.desktopPortrait;
     } else {
       if (size.width <= minWatchLandscapeSize.width || size.height <= minWatchLandscapeSize.height) {
         return ScreenType.watchLandscape;
@@ -65,11 +64,8 @@ class BreakpointData {
       if (size.width <= minTabletPortraitSize.width || size.height <= minTabletPortraitSize.height) {
         return ScreenType.tabletLandscape;
       }
-      if (size.width <= minDesktopPortraitSize.width || size.height <= minDesktopPortraitSize.height) {
-        return ScreenType.desktopLandscape;
-      }
+      return ScreenType.desktopLandscape;
     }
-    return ScreenType.watchPortrait;
   }
 
   BreakpointData copyWith({
