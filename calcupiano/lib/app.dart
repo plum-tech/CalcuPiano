@@ -6,6 +6,7 @@ import 'package:calcupiano/design/animated.dart';
 import 'package:calcupiano/design/overlay.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
+import 'package:calcupiano/ui/about.dart';
 import 'package:calcupiano/ui/piano.dart';
 import 'package:calcupiano/ui/screen.dart';
 import 'package:calcupiano/ui/settings.dart';

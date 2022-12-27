@@ -142,8 +142,6 @@ class CalcuPianoDrawer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final packageInfo = R.packageInfo;
-    final version = packageInfo != null ? "v ${packageInfo.version}" : "v ${R.version}";
     return SizedBox(
       width: 220,
       child: Drawer(
@@ -153,7 +151,7 @@ class CalcuPianoDrawer extends HookWidget {
               const DrawerHeader(child: SizedBox()).flexible(flex: 1),
               ListTile(
                 leading: const Icon(Icons.music_note),
-                title: I18n.soundpack.text(),
+                title: AutoSizeText(I18n.soundpack, maxLines: 1),
                 trailing: const Icon(Icons.navigate_next),
                 onTap: () {
                   closeDrawer();
@@ -165,7 +163,7 @@ class CalcuPianoDrawer extends HookWidget {
           const Spacer(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: I18n.settings.text(),
+            title: AutoSizeText(I18n.settings, maxLines: 1),
             onTap: () {
               closeDrawer();
               context.navigator.push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
@@ -173,7 +171,11 @@ class CalcuPianoDrawer extends HookWidget {
           ),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
-            title: version.text(),
+            title: AutoSizeText(I18n.about, maxLines: 1),
+            onTap: () {
+              closeDrawer();
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => const AboutPage()));
+            },
           ),
         ].column(),
       ),

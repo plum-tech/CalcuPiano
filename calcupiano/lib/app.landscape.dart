@@ -94,8 +94,6 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
   }
 
   Widget buildLeft(BuildContext ctx) {
-    final packageInfo = R.packageInfo;
-    final version = packageInfo != null ? "v ${packageInfo.version}" : "v ${R.version}";
     return [
       Column(
         children: [
@@ -120,7 +118,10 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
       ),
       ListTile(
         leading: const Icon(Icons.info_outline_rounded),
-        title: AutoSizeText(version, maxLines: 1),
+        title: AutoSizeText(I18n.about, maxLines: 1),
+        onTap: () {
+          context.navigator.push(MaterialPageRoute(builder: (ctx) => const AboutPage()));
+        },
       ),
     ].column();
   }
