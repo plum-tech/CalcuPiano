@@ -1,16 +1,21 @@
-# calcupiano
+# CalcuPiano
+#### *A multiplatform musical calculator powered by Flutter.*
 
-A new Flutter project.
+Before you decide to install CalcuPiano on your device, you could take a look at the [Online Playground](https://liplum.github.io/CalcuPiano).
 
-## Getting Started
+## Acknowledgements
 
-This project is a starting point for a Flutter application.
+### Localization
 
-A few resources to get you started if this is your first Flutter project:
+- Russian: [@EdwardBrok](https://github.com/EdwardBrok)
+- Simplified Chinese: [@woodjecket](https://github.com/woodjecket)
+
+## Contribution
+
+CalcuPiano is a Flutter project, there's a few resources to get you started if you are not familiar with Flutter.
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Online documentation](https://docs.flutter.dev/)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you are not good at programming, please see the [Contribution Guide](CONTRIBUTING.md) to obtain more information.

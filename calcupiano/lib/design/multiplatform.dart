@@ -2,6 +2,8 @@ import 'package:rettulf/rettulf.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:calcupiano/platform/platform.dart';
+import 'package:unicons/unicons.dart';
 
 extension BuildContextDesignX on BuildContext {
   bool get isMaterial {
@@ -18,6 +20,19 @@ extension BuildContextDesignX on BuildContext {
   }
 
   bool get isCupertino => !isMaterial;
+}
+
+IconData getPlatformIcon() {
+  if (isAndroid) {
+    return UniconsLine.android;
+  } else if (isMacOS || isIOS) {
+    return UniconsLine.apple;
+  } else if (isWindows) {
+    return UniconsLine.windows;
+  } else if (isLinux) {
+    return UniconsLine.linux;
+  }
+  return UniconsLine.browser;
 }
 
 extension $BuildContextEx$ on BuildContext {

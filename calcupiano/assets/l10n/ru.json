@@ -48,6 +48,13 @@
         "darkMode": "Темная тема",
         "lightMode": "Светлая тема",
         "language": "Язык приложения"
+      },
+      "version": {
+        "name": "Version",
+        "version": "Version"
+      },
+      "about": {
+        "title": "About"
       }
     }
   },

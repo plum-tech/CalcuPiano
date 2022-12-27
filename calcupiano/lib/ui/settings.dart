@@ -4,6 +4,7 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
@@ -48,15 +49,33 @@ class _SettingsPageState extends State<SettingsPage> {
               brightness(ctx),
               language(ctx),
             ];
-          })
+          }),
+      if(!kIsWeb)
+      SettingsGroup(
+          icon: getPlatformIcon(),
+          name: I18n.version.name,
+          builder: (ctx) {
+            return [
+              currentVersion(ctx),
+            ];
+          }),
     ]);
+  }
+
+  Widget currentVersion(BuildContext ctx) {
+    final packageInfo = R.packageInfo;
+    final version = packageInfo != null ? "v${packageInfo.version}" : "v${R.version}";
+    return ListTile(
+      title: I18n.version.currentVersion.text(style: ctx.textTheme.headlineSmall),
+      subtitle: version.text(),
+    );
   }
 
   Widget brightness(BuildContext ctx) {
     final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
     final toggle = SettingsKeySwitch(
-      on: NotePair(Note.$5, const Icon(Icons.dark_mode)),
-      off: NotePair(Note.$1, const Icon(Icons.light_mode)),
+      on: NotePair(Note.$plus, const Icon(Icons.dark_mode)),
+      off: NotePair(Note.$6, const Icon(Icons.light_mode)),
       current: isDarkMode,
       onChanged: (newV) {
         Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = newV;
@@ -193,6 +212,11 @@ class _SettingsPanelLargeState extends State<SettingsPanelLarge> {
         return ListTile(
           leading: group.icon.make(),
           selected: i == selected,
+          onTap: (){
+            setState(() {
+              selected = i;
+            });
+          },
           title: group.name.text(),
         ).inCard();
       },

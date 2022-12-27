@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:calcupiano/design/adaptive.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
@@ -96,14 +94,14 @@ class _SoundpackPageState extends State<SoundpackPage> {
           final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.externalSoundpackIdList ?? const []);
           return AdaptiveBuilder(
             defaultBuilder: (ctx, screen) {
-              return buildSoundpackList(ctx, allSoundpacks,300);
+              return buildSoundpackList(ctx, allSoundpacks, 300);
             },
             layoutDelegate: AdaptiveLayoutDelegateWithScreenType(
               watchPortrait: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,300);
+                return buildSoundpackList(ctx, allSoundpacks, 300);
               },
               watchLandscape: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,300);
+                return buildSoundpackList(ctx, allSoundpacks, 300);
               },
               headsetPortrait: (ctx, screen) {
                 return buildSoundpackList(ctx, allSoundpacks, 300);
@@ -112,16 +110,16 @@ class _SoundpackPageState extends State<SoundpackPage> {
                 return buildSoundpackList(ctx, allSoundpacks, 200);
               },
               tabletPortrait: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,400);
+                return buildSoundpackList(ctx, allSoundpacks, 400);
               },
               tabletLandscape: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,300);
+                return buildSoundpackList(ctx, allSoundpacks, 300);
               },
               desktopPortrait: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,300);
+                return buildSoundpackList(ctx, allSoundpacks, 300);
               },
               desktopLandscape: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks,300);
+                return buildSoundpackList(ctx, allSoundpacks, 300);
               },
             ),
           );

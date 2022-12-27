@@ -7,6 +7,7 @@ class I18n {
 
   static String get title => "${_$ns}.title".tr();
   static final appearance = _Appearance._();
+  static final version = _Version._();
 }
 
 class _Appearance {
@@ -27,4 +28,14 @@ class _Appearance {
   String get darkMode => "$_ns.darkMode".tr();
 
   String nativeReadableNameOf(Locale locale) => "language.$locale".tr();
+}
+
+class _Version {
+  _Version._();
+
+  static const _ns = "${_$ns}.version";
+
+  String get name => "$_ns.name".tr();
+
+  String get currentVersion => "$_ns.version".tr();
 }
