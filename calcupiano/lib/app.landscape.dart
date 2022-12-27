@@ -102,7 +102,7 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
           const DrawerHeader(child: SizedBox()).flexible(flex: 1),
           ListTile(
             leading: const Icon(Icons.music_note),
-            title: AutoSizeText(I18n.soundpack),
+            title: AutoSizeText(I18n.soundpack, maxLines: 1),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
               context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
@@ -113,14 +113,14 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
       const Spacer(),
       ListTile(
         leading: const Icon(Icons.settings),
-        title: I18n.settings.text(),
+        title: AutoSizeText(I18n.settings, maxLines: 1),
         onTap: () {
           context.navigator.push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
         },
       ),
       ListTile(
         leading: const Icon(Icons.info_outline_rounded),
-        title: AutoSizeText(version),
+        title: AutoSizeText(version, maxLines: 1),
       ),
     ].column();
   }

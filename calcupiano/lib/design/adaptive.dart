@@ -4,13 +4,13 @@ import 'package:flutter/widgets.dart';
 /// It also stands for split screen.
 // Portrait
 const Size kDefaultMinWatchPortraitSize = Size(300, 480);
-const Size kDefaultMinHeadsetPortraitSize = Size(400, 600);
-const Size kDefaultMinTabletPortraitSize = Size(720, 800);
+const Size kDefaultMinHeadsetPortraitSize = Size(480, 720);
+const Size kDefaultMinTabletPortraitSize = Size(720, 1280);
 
 //Landscape
 const Size kDefaultMinWatchLandscapeSize = Size(360, 300);
-const Size kDefaultMinHeadsetLandscapeSize = Size(600, 400);
-const Size kDefaultMinTabletLandscapeSize = Size(1024, 720);
+const Size kDefaultMinHeadsetLandscapeSize = Size(720, 480);
+const Size kDefaultMinTabletLandscapeSize = Size(1280, 720);
 
 class BreakpointData {
   final Size minWatchPortraitSize;
@@ -50,10 +50,10 @@ class BreakpointData {
       if (size.width <= minWatchLandscapeSize.width || size.height <= minWatchLandscapeSize.height) {
         return ScreenType.watchLandscape;
       }
-      if (size.width <= minHeadsetPortraitSize.width || size.height <= minHeadsetPortraitSize.height) {
+      if (size.width <= minHeadsetLandscapeSize.width || size.height <= minHeadsetLandscapeSize.height) {
         return ScreenType.headsetLandscape;
       }
-      if (size.width <= minTabletPortraitSize.width || size.height <= minTabletPortraitSize.height) {
+      if (size.width <= minTabletLandscapeSize.width || size.height <= minTabletLandscapeSize.height) {
         return ScreenType.tabletLandscape;
       }
       return ScreenType.desktopLandscape;
