@@ -48,6 +48,10 @@
         "darkMode": "Dark Mode",
         "lightMode": "Light Mode",
         "language": "Language"
+      },
+      "version": {
+        "name": "Version",
+        "currentVersion": "Current Version"
       }
     }
   },
@@ -58,8 +62,8 @@
   },
   "language": {
     "en": "English",
-    "zh_CN": "简体中文 (Simplified Chinese)",
-    "ru": "Русский (Russian)"
+    "zh_CN": "简体中文",
+    "ru": "Русский"
   },
   "builtinSoundpack": {
     "default": {

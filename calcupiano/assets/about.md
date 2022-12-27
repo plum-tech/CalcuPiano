@@ -1,6 +1,6 @@
 # CalcuPiano
 
-Repository: https://github.com/liplum/CalcuPiano
+Github Repository: https://github.com/liplum/CalcuPiano
 
 Online Playground: https://liplum.github.io/CalcuPiano
 
