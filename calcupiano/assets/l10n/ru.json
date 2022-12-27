@@ -52,10 +52,10 @@
       "version": {
         "name": "Version",
         "version": "Version"
-      },
-      "about": {
-        "title": "About"
       }
+    },
+    "about": {
+      "title": "About"
     }
   },
   "app": {
