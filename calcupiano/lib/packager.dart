@@ -233,7 +233,7 @@ class Packager {
     if (isDesktop) {
       final path = joinPath(R.soundpacksRootDir, soundpack.id);
       final url = Uri.file(path, windows: isWindows);
-      launchUrl(url);
+      await launchUrl(url);
     }
   }
 
