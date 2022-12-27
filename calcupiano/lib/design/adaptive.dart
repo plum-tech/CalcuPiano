@@ -5,14 +5,12 @@ import 'package:flutter/widgets.dart';
 // Portrait
 const Size kDefaultMinWatchPortraitSize = Size(300, 480);
 const Size kDefaultMinHeadsetPortraitSize = Size(400, 600);
-const Size kDefaultMinTabletPortraitSize = Size(720, 600);
-const Size kDefaultMinDesktopPortraitSize = Size(720, 1024);
+const Size kDefaultMinTabletPortraitSize = Size(720, 800);
 
 //Landscape
 const Size kDefaultMinWatchLandscapeSize = Size(360, 300);
 const Size kDefaultMinHeadsetLandscapeSize = Size(600, 400);
-const Size kDefaultMinTabletLandscapeSize = Size(600, 720);
-const Size kDefaultMinDesktopLandscapeSize = Size(1024, 720);
+const Size kDefaultMinTabletLandscapeSize = Size(1024, 720);
 
 class BreakpointData {
   final Size minWatchPortraitSize;
@@ -27,10 +25,6 @@ class BreakpointData {
 
   final Size minTabletLandscapeSize;
 
-  final Size minDesktopPortraitSize;
-
-  final Size minDesktopLandscapeSize;
-
   const BreakpointData({
     this.minWatchPortraitSize = kDefaultMinWatchPortraitSize,
     this.minWatchLandscapeSize = kDefaultMinWatchLandscapeSize,
@@ -38,8 +32,6 @@ class BreakpointData {
     this.minHeadsetLandscapeSize = kDefaultMinHeadsetLandscapeSize,
     this.minTabletPortraitSize = kDefaultMinTabletPortraitSize,
     this.minTabletLandscapeSize = kDefaultMinTabletLandscapeSize,
-    this.minDesktopPortraitSize = kDefaultMinDesktopPortraitSize,
-    this.minDesktopLandscapeSize = kDefaultMinDesktopLandscapeSize,
   });
 
   ScreenType getScreenType(Size size, Orientation orientation) {
@@ -75,8 +67,6 @@ class BreakpointData {
     Size? minHeadsetLandscapeSize,
     Size? minTabletPortraitSize,
     Size? minTabletLandscapeSize,
-    Size? minDesktopPortraitSize,
-    Size? minDesktopLandscapeSize,
   }) =>
       BreakpointData(
         minWatchPortraitSize: minWatchPortraitSize ?? this.minWatchPortraitSize,
@@ -85,8 +75,6 @@ class BreakpointData {
         minHeadsetLandscapeSize: minHeadsetLandscapeSize ?? this.minHeadsetLandscapeSize,
         minTabletPortraitSize: minTabletPortraitSize ?? this.minTabletPortraitSize,
         minTabletLandscapeSize: minTabletLandscapeSize ?? this.minTabletLandscapeSize,
-        minDesktopPortraitSize: minDesktopPortraitSize ?? this.minDesktopPortraitSize,
-        minDesktopLandscapeSize: minDesktopLandscapeSize ?? this.minDesktopLandscapeSize,
       );
 
   @override
@@ -100,8 +88,6 @@ class BreakpointData {
     if (minHeadsetLandscapeSize != other.minHeadsetLandscapeSize) return false;
     if (minTabletPortraitSize != other.minTabletPortraitSize) return false;
     if (minTabletLandscapeSize != other.minTabletLandscapeSize) return false;
-    if (minDesktopPortraitSize != other.minDesktopPortraitSize) return false;
-    if (minDesktopLandscapeSize != other.minDesktopLandscapeSize) return false;
 
     return true;
   }
@@ -113,9 +99,7 @@ class BreakpointData {
       minHeadsetPortraitSize.hashCode ^
       minHeadsetLandscapeSize.hashCode ^
       minTabletPortraitSize.hashCode ^
-      minTabletLandscapeSize.hashCode ^
-      minDesktopPortraitSize.hashCode ^
-      minDesktopLandscapeSize.hashCode;
+      minTabletLandscapeSize.hashCode;
 }
 
 class Breakpoint extends InheritedWidget {

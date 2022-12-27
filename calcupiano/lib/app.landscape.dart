@@ -105,7 +105,7 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
             title: AutoSizeText(I18n.soundpack),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
             },
           )
         ],
@@ -115,7 +115,7 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
         leading: const Icon(Icons.settings),
         title: I18n.settings.text(),
         onTap: () {
-          context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
+          context.navigator.push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
         },
       ),
       ListTile(

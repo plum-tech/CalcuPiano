@@ -116,9 +116,9 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
           const PianoKeyboard().expanded(),
         ]
             .column(
-          mas: MainAxisSize.min,
-          maa: MainAxisAlignment.center,
-        )
+              mas: MainAxisSize.min,
+              maa: MainAxisAlignment.center,
+            )
             .safeArea()
       ].stack(),
     );
@@ -130,6 +130,7 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
     ctrl.dispose();
   }
 }
+
 class CalcuPianoDrawer extends HookWidget {
   final VoidCallback? onCloseDrawer;
 
@@ -156,7 +157,7 @@ class CalcuPianoDrawer extends HookWidget {
                 trailing: const Icon(Icons.navigate_next),
                 onTap: () {
                   closeDrawer();
-                  context.navigator.push(MaterialPageRoute(builder: (ctx) => SoundpackPage()));
+                  context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
                 },
               )
             ],
@@ -167,7 +168,7 @@ class CalcuPianoDrawer extends HookWidget {
             title: I18n.settings.text(),
             onTap: () {
               closeDrawer();
-              context.navigator.push(MaterialPageRoute(builder: (ctx) => SettingsPage()));
+              context.navigator.push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
             },
           ),
           ListTile(
