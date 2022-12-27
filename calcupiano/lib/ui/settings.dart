@@ -52,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
           }),
       if(!kIsWeb)
       SettingsGroup(
-          icon: Icons.update_rounded,
+          icon: getPlatformIcon(),
           name: I18n.version.name,
           builder: (ctx) {
             return [

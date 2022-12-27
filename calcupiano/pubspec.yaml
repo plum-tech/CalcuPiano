@@ -71,6 +71,7 @@ dependencies:
   easy_localization: ^3.0.1
   markdown: ^6.0.1
   flutter_markdown: ^0.6.13
+  unicons: ^2.1.0
 
 dev_dependencies:
   flutter_test:

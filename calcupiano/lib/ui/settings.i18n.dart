@@ -37,5 +37,5 @@ class _Version {
 
   String get name => "$_ns.name".tr();
 
-  String get currentVersion => "$_ns.currentVersion".tr();
+  String get currentVersion => "$_ns.version".tr();
 }

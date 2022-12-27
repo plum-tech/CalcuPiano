@@ -51,7 +51,7 @@
       },
       "version": {
         "name": "Version",
-        "currentVersion": "Current Version"
+        "version": "Version"
       }
     }
   },
