@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:calcupiano/design/adaptive.dart';
 import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
@@ -27,10 +30,9 @@ class SoundpackPage extends StatefulWidget {
   State<SoundpackPage> createState() => _SoundpackPageState();
 }
 
-class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin {
+class _SoundpackPageState extends State<SoundpackPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return WillPopScope(
       onWillPop: () async {
         await StageManager.closeSoundpackPreview(ctx: context);
@@ -91,15 +93,45 @@ class _SoundpackPageState extends State<SoundpackPage> with LockOrientationMixin
   Widget buildBody() {
     return H.listenToCustomSoundpackIdList() <<
         (ctx, _, c) {
-          return buildSoundpackList(ctx);
+          final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.externalSoundpackIdList ?? const []);
+          return AdaptiveBuilder(
+            defaultBuilder: (ctx, screen) {
+              return buildSoundpackList(ctx, allSoundpacks,300);
+            },
+            layoutDelegate: AdaptiveLayoutDelegateWithScreenType(
+              watchPortrait: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,300);
+              },
+              watchLandscape: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,300);
+              },
+              headsetPortrait: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks, 300);
+              },
+              headsetLandscape: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks, 200);
+              },
+              tabletPortrait: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,400);
+              },
+              tabletLandscape: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,300);
+              },
+              desktopPortrait: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,300);
+              },
+              desktopLandscape: (ctx, screen) {
+                return buildSoundpackList(ctx, allSoundpacks,300);
+              },
+            ),
+          );
         };
   }
 
   @ListenTo([K.externalSoundpackIdList])
-  Widget buildSoundpackList(BuildContext ctx) {
-    final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.externalSoundpackIdList ?? const []);
+  Widget buildSoundpackList(BuildContext ctx, List<String> allSoundpacks, double extent) {
     return MasonryGridView.extent(
-      maxCrossAxisExtent: 380,
+      maxCrossAxisExtent: extent,
       itemCount: allSoundpacks.length,
       physics: const RangeMaintainingScrollPhysics(),
       itemBuilder: (ctx, index) {
