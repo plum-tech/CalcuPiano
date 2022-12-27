@@ -126,8 +126,9 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
 
   @override
   void dispose() {
-    super.dispose();
+    // NOTE: Dispose the animation controller before `super.dispose()`
     ctrl.dispose();
+    super.dispose();
   }
 }
 

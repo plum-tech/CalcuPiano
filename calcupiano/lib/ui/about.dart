@@ -1,4 +1,4 @@
-import 'package:calcupiano/r.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -31,7 +31,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: "About".text(),
+        title: I18n.title.text(),
       ),
       body: buildMain(context),
     );

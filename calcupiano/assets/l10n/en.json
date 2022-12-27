@@ -53,6 +53,9 @@
         "name": "Version",
         "version": "Version"
       }
+    },
+    "about": {
+      "title": "About"
     }
   },
   "app": {
