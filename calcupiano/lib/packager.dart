@@ -252,7 +252,8 @@ class Packager {
   static Future<String?> pickImage() async {
     final ImagePicker picker = ImagePicker();
     // Pick an image
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    // set `requestFullMetadata` to false to avoid additional permission in Plist.
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, requestFullMetadata: false);
     return image?.path;
   }
 
