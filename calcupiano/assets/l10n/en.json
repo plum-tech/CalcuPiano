@@ -47,11 +47,8 @@
         "brightness": "Brightness",
         "darkMode": "Dark Mode",
         "lightMode": "Light Mode",
+        "followingSystem": "Following System",
         "language": "Language"
-      },
-      "version": {
-        "name": "Version",
-        "version": "Version"
       }
     },
     "about": {

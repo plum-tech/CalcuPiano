@@ -13,10 +13,15 @@ class Note {
   static const $7 = Note.named("7");
   static const $8 = Note.named("8");
   static const $9 = Note.named("9");
+  /// 10
   static const $plus = Note.named("plus");
+  /// 11
   static const $minus = Note.named("minus");
+  /// 12
   static const $mul = Note.named("mul");
+  /// 13
   static const $div = Note.named("div");
+  /// 14
   static const $eq = Note.named("eq");
 
   @override

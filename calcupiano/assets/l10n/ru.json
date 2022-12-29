@@ -47,11 +47,8 @@
         "brightness": "Яркость",
         "darkMode": "Темная тема",
         "lightMode": "Светлая тема",
+        "followingSystem": "Following System",
         "language": "Язык приложения"
-      },
-      "version": {
-        "name": "Version",
-        "version": "Version"
       }
     },
     "about": {

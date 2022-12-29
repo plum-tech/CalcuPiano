@@ -39,9 +39,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   @override
   void initState() {
     super.initState();
-    final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final isSystemDarkMode = brightness == Brightness.dark;
-    isDarkModeInitial = H.isDarkMode ?? isSystemDarkMode;
+    isDarkModeInitial = H.isDarkMode;
   }
 
   // This widget is the root of your application.

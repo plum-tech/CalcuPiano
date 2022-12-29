@@ -47,11 +47,8 @@
         "brightness": "亮度",
         "darkMode": "深色模式",
         "lightMode": "浅色模式",
+        "followingSystem": "Following System",
         "language": "语言"
-      },
-      "version": {
-        "name": "Version",
-        "version": "Version"
       }
     },
     "about": {

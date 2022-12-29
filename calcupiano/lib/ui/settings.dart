@@ -4,7 +4,6 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
@@ -50,15 +49,6 @@ class _SettingsPageState extends State<SettingsPage> {
               language(ctx),
             ];
           }),
-      if(!kIsWeb)
-      SettingsGroup(
-          icon: getPlatformIcon(),
-          name: I18n.version.name,
-          builder: (ctx) {
-            return [
-              currentVersion(ctx),
-            ];
-          }),
     ]);
   }
 
@@ -73,13 +63,30 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget brightness(BuildContext ctx) {
     final isDarkMode = Provider.of<CalcuPianoThemeModel>(ctx).isDarkMode;
-    final toggle = SettingsKeySwitch(
-      on: NotePair(Note.$plus, const Icon(Icons.dark_mode)),
-      off: NotePair(Note.$6, const Icon(Icons.light_mode)),
-      current: isDarkMode,
+    final int selected;
+    if (isDarkMode == null) {
+      selected = 2;
+    } else {
+      selected = isDarkMode ? 0 : 1;
+    }
+    final toggle = SettingsKeyMultiSwitch(
+      current: selected,
       onChanged: (newV) {
-        Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = newV;
+        bool? newIsDarkMode;
+        if (newV == 0) {
+          newIsDarkMode = true;
+        } else if (newV == 1) {
+          newIsDarkMode = false;
+        } else {
+          newIsDarkMode = null;
+        }
+        Provider.of<CalcuPianoThemeModel>(ctx, listen: false).isDarkMode = newIsDarkMode;
       },
+      states: [
+        NotePair(Note.$mul, const Icon(Icons.dark_mode)),
+        NotePair(Note.$8, const Icon(Icons.light_mode)),
+        NotePair(Note.$4, const Icon(Icons.brightness_6_outlined)),
+      ],
     ).sized(w: 80);
     return ListTile(
       title: I18n.appearance.brightness.text(style: ctx.textTheme.headlineSmall),
@@ -212,13 +219,12 @@ class _SettingsPanelLargeState extends State<SettingsPanelLarge> {
         return ListTile(
           leading: group.icon.make(),
           selected: i == selected,
-          onTap: (){
-            setState(() {
-              selected = i;
-            });
-          },
           title: group.name.text(),
-        ).inCard();
+        ).inCard().onTap(() {
+          setState(() {
+            selected = i;
+          });
+        });
       },
     );
   }

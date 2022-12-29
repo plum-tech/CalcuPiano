@@ -21,11 +21,15 @@ class _Appearance {
 
   String get language => "$_ns.language".tr();
 
-  String themeMode(bool isDarkMode) => isDarkMode ? darkMode : lightMode;
+  String themeMode(bool? isDarkMode) => isDarkMode == null
+      ? followingSystem
+      : (isDarkMode ? darkMode : lightMode);
 
   String get lightMode => "$_ns.lightMode".tr();
 
   String get darkMode => "$_ns.darkMode".tr();
+
+  String get followingSystem => "$_ns.followingSystem".tr();
 
   String nativeReadableNameOf(Locale locale) => "language.$locale".tr();
 }

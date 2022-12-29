@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 class CalcuPianoThemeData {
   final bool enableRipple;
-  final Brightness brightness;
+  final Brightness? brightness;
 
   const CalcuPianoThemeData({
     this.enableRipple = true,
-    this.brightness = Brightness.light,
+    this.brightness,
   });
 
   const CalcuPianoThemeData.isDarkMode(
     bool? isDarkMode,
-  ) : this(brightness: isDarkMode == true ? Brightness.dark : Brightness.light);
+  ) : this(brightness: isDarkMode == null ? null : (isDarkMode == true ? Brightness.dark : Brightness.light));
 
   CalcuPianoThemeData copyWith({
     bool? enableRipple,
@@ -20,7 +20,7 @@ class CalcuPianoThemeData {
   }) {
     return CalcuPianoThemeData(
       enableRipple: enableRipple ?? this.enableRipple,
-      brightness: brightness ?? this.brightness,
+      brightness: brightness,
     );
   }
 }
@@ -41,12 +41,26 @@ class CalcuPianoThemeModel with ChangeNotifier {
     notifyListeners();
   }
 
-  ThemeMode resolveThemeMode() => data.brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark;
+  ThemeMode resolveThemeMode() {
+    final brightness = data.brightness;
+    if (brightness == null) {
+      return ThemeMode.system;
+    } else if (brightness == Brightness.light) {
+      return ThemeMode.light;
+    } else {
+      return ThemeMode.dark;
+    }
+  }
 
-  bool get isDarkMode => data.brightness == Brightness.dark;
+  bool? get isDarkMode => data.brightness == null ? null : data.brightness == Brightness.dark;
 
-  set isDarkMode(bool isDark) {
-    final brightness = isDark ? Brightness.dark : Brightness.light;
+  set isDarkMode(bool? isDark) {
+    Brightness? brightness;
+    if (isDark == null) {
+      brightness == null;
+    } else {
+      brightness = isDark ? Brightness.dark : Brightness.light;
+    }
     if (brightness != data.brightness) {
       _data = data.copyWith(
         brightness: brightness,
