@@ -58,6 +58,7 @@
   "app": {
     "soundpack": "Soundpack",
     "settings": "Settings",
+    "sheet": "Sheet",
     "about": "About"
   },
   "language": {

@@ -45,6 +45,7 @@ Widget wrapWithEasyLocalization(Widget child) {
     supportedLocales: R.supportedLocales,
     path: 'assets/l10n',
     fallbackLocale: R.defaultLocale,
+    useFallbackTranslations: true,
     child: child,
   );
 }

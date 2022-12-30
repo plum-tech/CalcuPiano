@@ -13,18 +13,14 @@
       },
       "edit": "编辑",
       "duplicate": "复制",
-      "delete": "删除",
-      "info": "Info"
+      "delete": "删除"
     },
     "soundpack": {
       "name": "音色包名称",
       "author": "作者",
       "description": "描述",
       "email": "E-mail",
-      "url": "链接",
-      "nameEmpty": "Unnamed Soundpack",
-      "authorEmpty": "Anonymous",
-      "descriptionEmpty": "No description."
+      "url": "链接"
     }
   },
   "ui": {
@@ -47,12 +43,8 @@
         "brightness": "亮度",
         "darkMode": "深色模式",
         "lightMode": "浅色模式",
-        "followingSystem": "Following System",
         "language": "语言"
       }
-    },
-    "about": {
-      "title": "About"
     }
   },
   "app": {

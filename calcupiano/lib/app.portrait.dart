@@ -158,6 +158,15 @@ class CalcuPianoDrawer extends HookWidget {
                   closeDrawer();
                   context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
                 },
+              ),
+              ListTile(
+                leading: const Icon(CupertinoIcons.doc_text),
+                title: AutoSizeText(I18n.sheet, maxLines: 1),
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () {
+                  closeDrawer();
+                  //context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
+                },
               )
             ],
           ).expanded(),
