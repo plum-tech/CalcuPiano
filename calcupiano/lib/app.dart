@@ -71,6 +71,9 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
 
   ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+      ),
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent), //the outline color
