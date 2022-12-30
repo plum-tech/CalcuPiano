@@ -3,6 +3,7 @@ import 'package:calcupiano/sheet/interpreter.dart';
 import 'package:calcupiano/sheet/parser.dart';
 import 'package:calcupiano/sheet/sheet.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rettulf/rettulf.dart';
 
 class SheetScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class SheetScreen extends StatefulWidget {
 }
 
 const _test = """
-33455432 1123322 33455432 1123211
+33455432 1123322 33455432 1123211 +-*/=
 """;
 
 class _SheetScreenState extends State<SheetScreen> {
@@ -58,6 +59,6 @@ class NoteCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return note.numberedText.text(style: TextStyle(fontSize: 30)).center();
+    return note.numberedText.text(style: GoogleFonts.jetBrainsMono(fontSize: 30)).center();
   }
 }

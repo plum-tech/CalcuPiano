@@ -6,6 +6,7 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/service/soundpack.dart';
 import 'package:calcupiano/sheet/interpreter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -32,6 +33,7 @@ void main() async {
   AudioCache.instance = AudioCache(prefix: "");
   await initFoundation();
   await initEssential();
+  initLicense();
   runApp(wrapWithEasyLocalization(
     const CalcuPianoApp(),
   ));
@@ -56,4 +58,11 @@ Future<void> initEssential() async {
   H.ensureCurrentSoundpackIdValid();
   EventHandler.init();
   SheetInterpreter.init();
+}
+
+void initLicense() {
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString("assets/google_fonts/JetBrainsMono-OFL.txt");
+    yield LicenseEntryWithLineBreaks(["JetBrains Mono"], license);
+  });
 }

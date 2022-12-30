@@ -72,6 +72,7 @@ dependencies:
   markdown: ^6.0.1
   flutter_markdown: ^0.6.13
   unicons: ^2.1.0
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +100,7 @@ flutter:
 
   assets:
      - assets/
+     - assets/google_fonts/
      - assets/about.md
      - assets/soundpack/default/
      - assets/soundpack/default_long_tone/
