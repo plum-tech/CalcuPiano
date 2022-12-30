@@ -131,6 +131,7 @@ class _PianoKeyState extends State<PianoKey> {
       borderRadius: context.cardBorderRadius,
       child: txt,
       onTapDown: (_) async {
+        eventBus.fire(KeyUserPressedEvent(note));
         await playSound();
       },
     );

@@ -14,17 +14,17 @@ final eventBus = EventBus();
 /// Fire when the user pressed a Piano Key.
 /// The sound should not be played in subscribers.
 class KeyUserPressedEvent {
-  final String key;
+  final Note note;
 
-  const KeyUserPressedEvent(this.key);
+  const KeyUserPressedEvent(this.note);
 }
 
 /// Fire when a Piano Key will be pressed automatically.
 /// The sound and ripple effect should be played in subscribers
 class KeyAutoWillPressEvent {
-  final String key;
+  final Note note;
 
-  const KeyAutoWillPressEvent(this.key);
+  const KeyAutoWillPressEvent(this.note);
 }
 
 class SoundpackChangeEvent {

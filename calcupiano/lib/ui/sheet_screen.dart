@@ -26,19 +26,21 @@ class _SheetScreenState extends State<SheetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (ctx,box){
-      // v1: try 8x4
-      final cellSize = Size(box.maxWidth / 8.0, box.maxHeight / 4.0);
+    return LayoutBuilder(builder: (ctx, box) {
       final cells = <Widget>[];
-      for(int i =0;i < SheetInterpreter.sheet.nodes.length; i ++){
+      for (int i = 0; i < SheetInterpreter.sheet.nodes.length; i++) {
         final node = SheetInterpreter.sheet.nodes[i];
-        if(node is NoteNode){
+        if (node is NoteNode) {
           cells.add(NoteCell(note: node.note, index: i));
-        }else {
+        } else {
           cells.add(SizedBox());
         }
       }
-      return GridView.count(crossAxisCount: 8,children: cells,);
+      return GridView.extent(
+        physics: const NeverScrollableScrollPhysics(),
+        maxCrossAxisExtent: 60,
+        children: cells,
+      );
     });
     return SheetInterpreter.sheet.toString().text();
   }
@@ -56,6 +58,6 @@ class NoteCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return note.numberedText.text().center();
+    return note.numberedText.text(style: TextStyle(fontSize: 30)).center();
   }
 }

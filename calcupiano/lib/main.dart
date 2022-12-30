@@ -4,6 +4,7 @@ import 'package:calcupiano/event_handler.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/service/soundpack.dart';
+import 'package:calcupiano/sheet/interpreter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -31,7 +32,6 @@ void main() async {
   AudioCache.instance = AudioCache(prefix: "");
   await initFoundation();
   await initEssential();
-  EventHandler.init();
   runApp(wrapWithEasyLocalization(
     const CalcuPianoApp(),
   ));
@@ -54,4 +54,6 @@ Future<void> preloadCurrentSoundpack() async {
 
 Future<void> initEssential() async {
   H.ensureCurrentSoundpackIdValid();
+  EventHandler.init();
+  SheetInterpreter.init();
 }
