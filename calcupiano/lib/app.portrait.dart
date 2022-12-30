@@ -95,6 +95,16 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
   Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
     return Scaffold(
       body: [
+        [
+          const SheetScreen().expanded(),
+          // Why doesn't the constraint apply on this?
+          const PianoKeyboard().expanded(),
+        ]
+            .column(
+              mas: MainAxisSize.min,
+              maa: MainAxisAlignment.center,
+            )
+            .safeArea(),
         IconButton(
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
@@ -110,16 +120,6 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
             }
           },
         ).safeArea(),
-        [
-          const SheetScreen().expanded(),
-          // Why doesn't the constraint apply on this?
-          const PianoKeyboard().expanded(),
-        ]
-            .column(
-              mas: MainAxisSize.min,
-              maa: MainAxisAlignment.center,
-            )
-            .safeArea()
       ].stack(),
     );
   }
