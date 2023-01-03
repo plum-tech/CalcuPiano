@@ -4,9 +4,6 @@ import 'package:rettulf/rettulf.dart';
 
 import 'multiplatform.dart';
 
-typedef PickerActionWidgetBuilder = Widget Function(BuildContext context, int? selectedIndex);
-typedef DualPickerActionWidgetBuilder = Widget Function(BuildContext context, int? selectedIndexA, int? selectedIndexB);
-
 extension DialogEx on BuildContext {
   /// return: whether the button was hit
   Future<bool> showTip({
