@@ -99,7 +99,7 @@ class Packager {
     SoundpackMeta? meta;
     if (soundpackJsonLocalPath != null) {
       final metaContent = await File(soundpackJsonLocalPath).readAsString();
-      meta = Converter.fromUntypedJson(metaContent, SoundpackMeta.fromJson);
+      meta = JConverter.fromUntypedJson(metaContent, SoundpackMeta.fromJson);
     }
     // ----------------------------------------------------------------
     // Find the `preview.png`
@@ -192,7 +192,7 @@ class Packager {
   /// Write [LocalSoundpack.meta] to local storage.
   static Future<void> writeSoundpackMetaFile(LocalSoundpack soundpack) async {
     final rootDir = joinPath(R.soundpacksRootDir, soundpack.uuid);
-    final soundpackJson = Converter.toUntypedJson(soundpack.meta, indent: 2);
+    final soundpackJson = JConverter.toUntypedJson(soundpack.meta, indent: 2);
     if (soundpackJson != null) {
       await File(joinPath(rootDir, "soundpack.json")).writeAsString(soundpackJson);
     }

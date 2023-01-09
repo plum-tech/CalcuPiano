@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:calcupiano/foundation.dart';
 
-abstract class Convertible {
-  String get typeName;
+/// Extends this class to get default behaviour.
+abstract class JConvertibleProtocol {
+  String get typeName => runtimeType.toString();
 
   int get version => 1;
 }
@@ -12,14 +13,67 @@ typedef ToJsonFunc<T> = Map<String, dynamic> Function(T obj);
 typedef FromJsonFunc<T> = T Function(Map<String, dynamic> json);
 typedef Migration = Map<dynamic, dynamic> Function(Map<dynamic, dynamic> origin, int oldVersion);
 
-class _K {
-  _K._();
+abstract class JConverterKeys {
+  String get type;
 
-  static const type = "@type";
-  static const version = "@version";
+  String get version;
 }
 
+class _DefaultConvertKeysImpl implements JConverterKeys {
+  const _DefaultConvertKeysImpl();
+
+  @override
+  String get type => "@type";
+
+  @override
+  String get version => "@version";
+}
+
+const _defaultConvertKeys = _DefaultConvertKeysImpl();
+
 bool isSubtype<Child, Parent>() => <Child>[] is List<Parent>;
+
+abstract class ConverterLoggerProtocol {
+  void error(dynamic message, dynamic error, StackTrace? stackTrace);
+
+  void info(String message);
+}
+
+class JConverterLogger implements ConverterLoggerProtocol {
+  final void Function(dynamic message, dynamic error, StackTrace? stackTrace)? onError;
+  final void Function(String message)? onInfo;
+
+  const JConverterLogger({
+    this.onError,
+    this.onInfo,
+  });
+
+  @override
+  void error(message, error, StackTrace? stackTrace) {
+    onError?.call(message, error, stackTrace);
+  }
+
+  @override
+  void info(String message) {
+    onInfo?.call(message);
+  }
+}
+
+class _ConvertibleProtocolEntry {
+  final ToJsonFunc? toJson;
+  final FromJsonFunc fromJson;
+
+  const _ConvertibleProtocolEntry(this.toJson, this.fromJson);
+}
+
+class _TypeEntry {
+  final String typeName;
+  final int version;
+  final ToJsonFunc? toJson;
+  final FromJsonFunc fromJson;
+
+  const _TypeEntry(this.typeName, this.version, this.toJson, this.fromJson);
+}
 
 ///
 /// Generate the json converter with this template:
@@ -28,59 +82,111 @@ bool isSubtype<Child, Parent>() => <Child>[] is List<Parent>;
 /// Map<String, dynamic> toJson() => _$ToJson(this);
 /// ```
 ///
-class Converter {
-  Converter._();
+/// see also [json_serializable](https://pub.dev/packages/json_serializable), [json_annotation](https://pub.dev/packages/json_annotation)
+class JConverter {
+  JConverter._();
 
-  static final Map<String, ToJsonFunc> _typeName2ToJson = {};
-  static final Map<String, FromJsonFunc> _typeName2FromJson = {};
+  static final Map<String, _ConvertibleProtocolEntry> _typeName2Entry = {};
+  static final Map<Type, _TypeEntry> _type2Entry = {};
   static final Map<String, Migration> _migrations = {};
+  static JConverterKeys keys = _defaultConvertKeys;
+  static ConverterLoggerProtocol? logger;
+
+  /// To add version into each json object for migration, which will significantly inflate the file size.
+  static bool enableMigration = false;
   static const JsonCodec _jsonCodec = JsonCodec(reviver: _reviver, toEncodable: _toEncodable);
+
+  static dynamic directConvertFunc(dynamic any) => any;
 
   static Object? _reviver(Object? key, Object? value) {
     if (value is Map) {
-      final type = value[_K.type];
+      final type = value[keys.type];
       if (type == null) {
         // It's a normal map, so return itself.
         return value;
       }
-      final fromFunc = _typeName2FromJson[type];
-      if (fromFunc == null) {
+      final entry = _typeName2Entry[type];
+      if (entry == null) {
         throw Exception("No FromJson for ${value.runtimeType} was found.");
       }
-      final version = value[_K.version];
-      if (version is int) {
-        final migration = _migrations[type];
-        if (migration != null) {
-          value = migration(value, version);
+      if (enableMigration) {
+        final version = value[keys.version];
+        if (version is int) {
+          final migration = _migrations[type];
+          if (migration != null) {
+            value = migration(value, version);
+          }
         }
       }
-      return fromFunc(value as Map<String, dynamic>);
+      return entry.fromJson(value as Map<String, dynamic>);
     } else {
       return value;
     }
   }
 
   static Object? _toEncodable(dynamic object) {
-    if (object is Convertible) {
+    if (object is JConvertibleProtocol) {
       final type = object.typeName;
-      final toFunc = _typeName2ToJson[type];
-      if (toFunc == null) {
+      final entry = _typeName2Entry[type];
+      if (entry == null) {
         throw Exception("No ToJson for ${object.typeName} was found.");
       }
-      final json = toFunc(object);
-      json[_K.type] = type;
-      json[_K.version] = object.version;
+      final toJsonFunc = entry.toJson;
+      final Map<String, dynamic> json;
+      if (toJsonFunc != null) {
+        json = toJsonFunc(object);
+      } else {
+        json = (object as dynamic).toJson();
+      }
+      json[keys.type] = type;
+      if (enableMigration) {
+        json[keys.version] = object.version;
+      }
       return json;
+    } else {
+      final entry = _type2Entry[object.runtimeType];
+      if (entry != null) {
+        final toJsonFunc = entry.toJson;
+        final Map<String, dynamic> json;
+        if (toJsonFunc != null) {
+          json = toJsonFunc(object);
+        } else {
+          json = object.toJson();
+        }
+        json[keys.type] = entry.typeName;
+        if (enableMigration) {
+          json[keys.version] = entry.version;
+        }
+        return json;
+      } else {
+        return object;
+      }
     }
-    return object;
   }
 
-  static void registerConverter<T extends Convertible>(String typeName, ToJsonFunc toJson, FromJsonFunc<T> fromJson) {
-    _typeName2ToJson[typeName] = toJson;
-    _typeName2FromJson[typeName] = fromJson;
+  static void registerTypeAuto<T>(FromJsonFunc<T> fromJson, [String? typeName, int version = 1]) {
+    typeName = typeName ?? T.toString();
+    _type2Entry[T] = _TypeEntry(typeName, version, null, fromJson);
+  }
+
+  static void registerType<T>(FromJsonFunc<T> fromJson, ToJsonFunc? toJson, [String? typeName, int version = 1]) {
+    typeName = typeName ?? T.toString();
+    _type2Entry[T] = _TypeEntry(typeName, version, toJson, fromJson);
+  }
+
+  static void registerConvertible<T extends JConvertibleProtocol>(
+      String typeName, FromJsonFunc<T> fromJson, ToJsonFunc? toJson) {
+    _typeName2Entry[typeName] = _ConvertibleProtocolEntry(toJson, fromJson);
+  }
+
+  static void registerConvertibleAuto<T extends JConvertibleProtocol>(String typeName, FromJsonFunc<T> fromJson) {
+    _typeName2Entry[typeName] = _ConvertibleProtocolEntry(null, fromJson);
   }
 
   static void registerMigration(String typeName, Migration migration) {
+    if (enableMigration) {
+      logger?.info("[enableMigration] is false,");
+    }
     _migrations[typeName] = migration;
   }
 
@@ -93,13 +199,10 @@ class Converter {
         return _jsonCodec.encode(obj);
       }
     } on JsonUnsupportedObjectError catch (e) {
-      Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
-      return null;
-    } on Error catch (e) {
-      Log.e("Failed to convert $T to json", e, e.stackTrace);
+      logger?.error("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
     } catch (any, stacktrace) {
-      Log.e("Failed to convert $T to json", any, stacktrace);
+      logger?.error("Failed to convert $T to json", any, stacktrace);
       return null;
     }
   }
@@ -112,11 +215,8 @@ class Converter {
     } on JsonUnsupportedObjectError catch (e) {
       Log.e("Failed to convert json to $T", e.cause, e.stackTrace);
       return null;
-    } on Error catch (e) {
-      Log.e("Failed to convert json to $T", e, e.stackTrace);
-      return null;
     } catch (any, stacktrace) {
-      Log.e("Failed to convert json to $T", any, stacktrace);
+      logger?.error("Failed to convert json to $T", any, stacktrace);
       return null;
     }
   }
@@ -127,13 +227,10 @@ class Converter {
       final jObj = jsonDecode(json);
       return fromJson(jObj);
     } on JsonUnsupportedObjectError catch (e) {
-      Log.e("Failed to convert json to $T", e.cause, e.stackTrace);
-      return null;
-    } on Error catch (e) {
-      Log.e("Failed to convert json to $T", e, e.stackTrace);
+      logger?.error("Failed to convert json to $T", e.cause, e.stackTrace);
       return null;
     } catch (any, stacktrace) {
-      Log.e("Failed to convert json to $T", any, stacktrace);
+      logger?.error("Failed to convert json to $T", any, stacktrace);
       return null;
     }
   }
@@ -149,16 +246,11 @@ class Converter {
         return jsonEncode(jObj);
       }
     } on JsonUnsupportedObjectError catch (e) {
-      Log.e("Failed to convert $T to json", e.cause, e.stackTrace);
-      return null;
-    } on Error catch (e) {
-      Log.e("Failed to convert $T to json", e, e.stackTrace);
+      logger?.error("Failed to convert $T to json", e.cause, e.stackTrace);
       return null;
     } catch (any, stacktrace) {
-      Log.e("Failed to convert $T to json", any, stacktrace);
+      logger?.error("Failed to convert $T to json", any, stacktrace);
       return null;
     }
   }
-
-  static dynamic directConvertFunc(dynamic any) => any;
 }

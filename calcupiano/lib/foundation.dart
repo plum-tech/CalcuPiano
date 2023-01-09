@@ -35,19 +35,20 @@ Future<void> initFoundation() async {
 }
 
 void initConverter() {
+  JConverter.logger = JConverterLogger(onError: Log.e, onInfo: print);
   // SoundFile
-  Converter.registerConverter(BundledSoundFile.type, (obj) => obj.toJson(), BundledSoundFile.fromJson);
-  Converter.registerConverter(LocalSoundFile.type, (obj) => obj.toJson(), LocalSoundFile.fromJson);
-  Converter.registerConverter(UrlSoundFile.type, (obj) => obj.toJson(), UrlSoundFile.fromJson);
+  JConverter.registerConvertibleAuto(BundledSoundFile.type, BundledSoundFile.fromJson);
+  JConverter.registerConvertibleAuto(LocalSoundFile.type, LocalSoundFile.fromJson);
+  JConverter.registerConvertibleAuto(UrlSoundFile.type, UrlSoundFile.fromJson);
   // Soundpack
-  Converter.registerConverter(LocalSoundpack.type, (obj) => obj.toJson(), LocalSoundpack.fromJson);
-  Converter.registerConverter(UrlSoundpack.type, (obj) => obj.toJson(), UrlSoundpack.fromJson);
+  JConverter.registerConvertibleAuto(LocalSoundpack.type, LocalSoundpack.fromJson);
+  JConverter.registerConvertibleAuto(UrlSoundpack.type, UrlSoundpack.fromJson);
   // Soundpack Meta
-  Converter.registerConverter(SoundpackMeta.type, (obj) => obj.toJson(), SoundpackMeta.fromJson);
+  JConverter.registerConvertibleAuto(SoundpackMeta.type, SoundpackMeta.fromJson);
   // ImageFile
-  Converter.registerConverter(LocalImageFile.type, (obj) => obj.toJson(), LocalImageFile.fromJson);
-  Converter.registerConverter(BundledImageFile.type, (obj) => obj.toJson(), BundledImageFile.fromJson);
-  Converter.registerConverter(UrlImageFile.type, (obj) => obj.toJson(), UrlImageFile.fromJson);
+  JConverter.registerConvertibleAuto(LocalImageFile.type, LocalImageFile.fromJson);
+  JConverter.registerConvertibleAuto(BundledImageFile.type, BundledImageFile.fromJson);
+  JConverter.registerConvertibleAuto(UrlImageFile.type, UrlImageFile.fromJson);
 }
 
 extension ColorX on Color {

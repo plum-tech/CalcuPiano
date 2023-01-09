@@ -18,14 +18,14 @@ void main() {
     test("toJson", () {
       initConverter();
       const local = LocalSoundFile(localPath: '/usr/liplum/soundpack/1.wav');
-      final res = Converter.toJson(local);
+      final res = JConverter.toJson(local);
       assert(res != null);
       assert(res!.contains(LocalSoundFile.type));
     });
     test("fromJson", () {
       initConverter();
       const json = '{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}';
-      final res = Converter.fromJson<LocalSoundFile>(json);
+      final res = JConverter.fromJson<LocalSoundFile>(json);
       assert(res != null);
       assert(res!.localPath == "/usr/liplum/soundpack/1.wav");
     });
@@ -35,25 +35,26 @@ void main() {
         BundledSoundFile(path: "assets/default/1.wav"),
         LocalSoundFile(localPath: '/usr/liplum/soundpack/1.wav'),
       ];
-      final res = Converter.toJson(list);
+      final res = JConverter.toJson(list);
       assert(res != null);
       assert(res!.contains("/usr/liplum/soundpack/1.wav"));
-      final restored = Converter.fromJson<List>(res);
+      final restored = JConverter.fromJson<List>(res);
       assert(restored != null);
       assert(restored![1] is LocalSoundFile);
       assert((restored![1] as LocalSoundFile).localPath == "/usr/liplum/soundpack/1.wav");
     });
     test("migration", () {
       const json =
-          '[{"pathInAssets":"default/1.wav","@type":"calcupiano.BundledSoundFile","@version":1},{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}]';
+          '[{"path":"default/1.wav","@type":"calcupiano.BundledSoundFile","@version":1},{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}]';
       initConverter();
-      Converter.registerMigration("calcupiano.BundledSoundFile", (origin, oldVersion) {
+      JConverter.enableMigration = true;
+      JConverter.registerMigration("calcupiano.BundledSoundFile", (origin, oldVersion) {
         if (oldVersion == 1) {
-          origin["pathInAssets"] = "MIGRATED";
+          origin["path"] = "MIGRATED";
         }
         return origin;
       });
-      final restored = Converter.fromJson<List>(json);
+      final restored = JConverter.fromJson<List>(json);
       assert(restored != null);
       assert(restored![0] is BundledSoundFile);
       assert((restored![0] as BundledSoundFile).path == "MIGRATED");
@@ -61,8 +62,8 @@ void main() {
   });
   group("Stuff", () {
     test("Test generic inheritance checking", () {
-      assert(isSubtype<String, Convertible>() == false);
-      assert(isSubtype<BundledSoundFile, Convertible>() == true);
+      assert(isSubtype<String, JConvertibleProtocol>() == false);
+      assert(isSubtype<BundledSoundFile, JConvertibleProtocol>() == true);
     });
   });
 }
@@ -85,7 +86,7 @@ void workWithGeneratedAdapter() {
   }
 
   Object? toEncodable(dynamic object) {
-    if (object is Convertible) {
+    if (object is JConvertibleProtocol) {
       final type = object.typeName;
       final toFunc = to[type]!;
       final json = toFunc(object);
