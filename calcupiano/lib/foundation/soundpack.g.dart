@@ -9,25 +9,25 @@ part of 'soundpack.dart';
 LocalSoundpack _$LocalSoundpackFromJson(Map<String, dynamic> json) =>
     LocalSoundpack(
       uuid: json['uuid'] as String,
-      meta: JConverter.directConvertFunc(json['meta']),
-      preview: JConverter.directConvertFunc(json['preview']),
+      meta: directConvertFunc(json['meta']),
+      preview: directConvertFunc(json['preview']),
     )..note2SoundFile = LocalSoundpack._note2FilesFromJson(
         json['note2SoundFile'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$LocalSoundpackToJson(LocalSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
-      'meta': JConverter.directConvertFunc(instance.meta),
+      'meta': directConvertFunc(instance.meta),
       'note2SoundFile':
           LocalSoundpack._note2FilesToJson(instance.note2SoundFile),
-      'preview': JConverter.directConvertFunc(instance.preview),
+      'preview': directConvertFunc(instance.preview),
     };
 
 UrlSoundpack _$UrlSoundpackFromJson(Map<String, dynamic> json) => UrlSoundpack(
       uuid: json['uuid'] as String,
-      meta: JConverter.directConvertFunc(json['meta']),
+      meta: directConvertFunc(json['meta']),
       url: json['url'] as String,
-      preview: JConverter.directConvertFunc(json['preview']),
+      preview: directConvertFunc(json['preview']),
     )..note2SoundFile = UrlSoundpack._note2FilesFromJson(
         json['note2SoundFile'] as Map<String, dynamic>);
 
@@ -35,8 +35,8 @@ Map<String, dynamic> _$UrlSoundpackToJson(UrlSoundpack instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
       'url': instance.url,
-      'meta': JConverter.directConvertFunc(instance.meta),
-      'preview': JConverter.directConvertFunc(instance.preview),
+      'meta': directConvertFunc(instance.meta),
+      'preview': directConvertFunc(instance.preview),
       'note2SoundFile': UrlSoundpack._note2FilesToJson(instance.note2SoundFile),
     };
 

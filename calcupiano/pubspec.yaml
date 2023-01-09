@@ -73,7 +73,10 @@ dependencies:
   flutter_markdown: ^0.6.13
   unicons: ^2.1.0
   google_fonts: ^3.0.1
-
+  jconverter:
+    git:
+      url: https://github.com/liplum/DartPackage.git
+      path: jconverter
 dev_dependencies:
   flutter_test:
     sdk: flutter

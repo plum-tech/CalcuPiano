@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:calcupiano/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:jconverter/jconverter.dart';
 
 abstract class FileProtocol extends JConvertibleProtocol {
   /// Return the target path.

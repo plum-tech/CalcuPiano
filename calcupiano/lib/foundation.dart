@@ -2,13 +2,11 @@
 
 import 'dart:ui';
 
-import 'package:calcupiano/converter.dart';
 import 'package:calcupiano/foundation/image_file.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
-
-export 'package:calcupiano/converter.dart';
+import 'package:jconverter/jconverter.dart';
 export 'package:calcupiano/packager.dart';
 export 'package:calcupiano/db.dart';
 export 'package:easy_localization/easy_localization.dart';
@@ -29,26 +27,27 @@ export 'package:calcupiano/platform/platform.dart';
 final Log = Logger();
 const UUID = Uuid();
 final Web = Dio();
+final Converter = JConverter();
 
 Future<void> initFoundation() async {
   initConverter();
 }
 
 void initConverter() {
-  JConverter.logger = JConverterLogger(onError: Log.e, onInfo: print);
+  Converter.logger = JConverterLogger(onError: Log.e, onInfo: print);
   // SoundFile
-  JConverter.registerConvertibleAuto(BundledSoundFile.type, BundledSoundFile.fromJson);
-  JConverter.registerConvertibleAuto(LocalSoundFile.type, LocalSoundFile.fromJson);
-  JConverter.registerConvertibleAuto(UrlSoundFile.type, UrlSoundFile.fromJson);
+  Converter.registerConvertibleAuto(BundledSoundFile.type, BundledSoundFile.fromJson);
+  Converter.registerConvertibleAuto(LocalSoundFile.type, LocalSoundFile.fromJson);
+  Converter.registerConvertibleAuto(UrlSoundFile.type, UrlSoundFile.fromJson);
   // Soundpack
-  JConverter.registerConvertibleAuto(LocalSoundpack.type, LocalSoundpack.fromJson);
-  JConverter.registerConvertibleAuto(UrlSoundpack.type, UrlSoundpack.fromJson);
+  Converter.registerConvertibleAuto(LocalSoundpack.type, LocalSoundpack.fromJson);
+  Converter.registerConvertibleAuto(UrlSoundpack.type, UrlSoundpack.fromJson);
   // Soundpack Meta
-  JConverter.registerConvertibleAuto(SoundpackMeta.type, SoundpackMeta.fromJson);
+  Converter.registerConvertibleAuto(SoundpackMeta.type, SoundpackMeta.fromJson);
   // ImageFile
-  JConverter.registerConvertibleAuto(LocalImageFile.type, LocalImageFile.fromJson);
-  JConverter.registerConvertibleAuto(BundledImageFile.type, BundledImageFile.fromJson);
-  JConverter.registerConvertibleAuto(UrlImageFile.type, UrlImageFile.fromJson);
+  Converter.registerConvertibleAuto(LocalImageFile.type, LocalImageFile.fromJson);
+  Converter.registerConvertibleAuto(BundledImageFile.type, BundledImageFile.fromJson);
+  Converter.registerConvertibleAuto(UrlImageFile.type, UrlImageFile.fromJson);
 }
 
 extension ColorX on Color {

@@ -73,14 +73,14 @@ class DBImpl {
   /// High-level operation
   ExternalSoundpackProtocol? getSoundpackById(String id) {
     final json = box.get(id);
-    return JConverter.fromJson<ExternalSoundpackProtocol>(json);
+    return Converter.fromJson<ExternalSoundpackProtocol>(json);
   }
 
   /// Low-level operation.
   /// Set the soundpack directly will not clear the local file, or change [H.externalSoundpackIdList].
   /// Note: Any further change won't be saved.
   void setSoundpackSnapshotById(ExternalSoundpackProtocol soundpack) {
-    final json = JConverter.toJson<ExternalSoundpackProtocol>(soundpack);
+    final json = Converter.toJson<ExternalSoundpackProtocol>(soundpack);
     if (json != null) {
       box.put(soundpack.id, json);
     }
