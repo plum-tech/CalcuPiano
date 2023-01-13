@@ -495,7 +495,7 @@ packages:
     description:
       path: jconverter
       ref: HEAD
-      resolved-ref: "1e4d5ea2db2f5bf91e410625262b9d2772db8705"
+      resolved-ref: "2dd759008d04c2c26c03ded5f27262bc86e2efc0"
       url: "https://github.com/liplum/DartPackage.git"
     source: git
     version: "1.0.0"
@@ -695,6 +695,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  platform_safe_func:
+    dependency: "direct main"
+    description:
+      path: platform_safe_func
+      ref: HEAD
+      resolved-ref: "2dd759008d04c2c26c03ded5f27262bc86e2efc0"
+      url: "https://github.com/liplum/DartPackage.git"
+    source: git
+    version: "1.0.0"
   plugin_platform_interface:
     dependency: transitive
     description:

@@ -287,7 +287,7 @@ extension _MenuX on State {
           ),
         ));
       }
-
+      final isSupportShareFiles = isAndroid || isIOS || isMacOS || isWeb;
       if (isSupportShareFiles) {
         add(I18n.op.share, Icons.share_rounded, () async {
           await StageManager.closeSoundpackPreview(ctx: context);

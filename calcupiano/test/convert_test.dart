@@ -13,7 +13,8 @@ void main() {
     });
     test("fromJson", () {
       initConverter();
-      const json = '{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}';
+      const json =
+          '{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}';
       final res = Converter.fromJson<LocalSoundFile>(json);
       assert(res != null);
       assert(res!.localPath == "/usr/liplum/soundpack/1.wav");
@@ -30,14 +31,15 @@ void main() {
       final restored = Converter.fromJson<List>(res);
       assert(restored != null);
       assert(restored![1] is LocalSoundFile);
-      assert((restored![1] as LocalSoundFile).localPath == "/usr/liplum/soundpack/1.wav");
+      assert((restored![1] as LocalSoundFile).localPath ==
+          "/usr/liplum/soundpack/1.wav");
     });
     test("migration", () {
       const json =
           '[{"path":"default/1.wav","@type":"calcupiano.BundledSoundFile","@version":1},{"localPath":"/usr/liplum/soundpack/1.wav","@type":"calcupiano.LocalSoundFile","@version":1}]';
       initConverter();
       Converter.enableMigration = true;
-      Converter.registerMigration("calcupiano.BundledSoundFile", (origin, oldVersion) {
+      Converter.migrate("calcupiano.BundledSoundFile", (origin, oldVersion) {
         if (oldVersion == 1) {
           origin["path"] = "MIGRATED";
         }

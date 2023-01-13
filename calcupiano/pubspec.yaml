@@ -77,6 +77,10 @@ dependencies:
     git:
       url: https://github.com/liplum/DartPackage.git
       path: jconverter
+  platform_safe_func:
+    git:
+      url: https://github.com/liplum/DartPackage.git
+      path: platform_safe_func
 dev_dependencies:
   flutter_test:
     sdk: flutter
