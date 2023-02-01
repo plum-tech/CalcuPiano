@@ -48,12 +48,14 @@ class HImpl {
 
 extension HImplX on HImpl {
   void ensureCurrentSoundpackIdValid() {
-    final idList = H.externalSoundpackIdList ?? [];
+    final externalIdList = H.externalSoundpackIdList ?? [];
     final current = currentSoundpackID;
     if (current == null) {
       currentSoundpackID = R.defaultSoundpack.id;
-    } else if (!idList.contains(current)) {
-      currentSoundpackID = idList.isNotEmpty ? idList.first : R.defaultSoundpack.id;
+    } else if (R.builtinSoundpacks.any((s) => s.id == current)) {
+      return;
+    } else if (!externalIdList.contains(current)) {
+      currentSoundpackID = externalIdList.isNotEmpty ? externalIdList.first : R.defaultSoundpack.id;
     }
   }
 }
