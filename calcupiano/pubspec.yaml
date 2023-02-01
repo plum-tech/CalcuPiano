@@ -39,7 +39,7 @@ dependencies:
   hive: ^2.2.3
   flutter_hooks: ^0.18.5+1
   rettulf: ^0.0.13
-  audioplayers: ^1.1.1
+  audioplayers: ^3.0.1
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.11
