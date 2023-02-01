@@ -8,13 +8,13 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/theme.dart';
 import 'package:calcupiano/ui/about.dart';
 import 'package:calcupiano/ui/piano.dart';
-import 'package:calcupiano/ui/screen.dart';
+import 'package:calcupiano/ui/sheet_screen.dart';
 import 'package:calcupiano/ui/settings.dart';
 import 'package:calcupiano/ui/soundpack.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
@@ -49,7 +49,8 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       MultiProvider(
         providers: [
           ChangeNotifierProvider<CalcuPianoThemeModel>(
-              create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+              create: (_) => CalcuPianoThemeModel(
+                  CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
         ],
         child: Consumer<CalcuPianoThemeModel>(
           builder: (_, model, __) {
@@ -58,8 +59,10 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
-                theme: bakeTheme(context, ThemeData.light(), model.data),
-                darkTheme: bakeTheme(context, ThemeData.dark(), model.data),
+                theme: bakeTheme(
+                    context, ThemeData.light(useMaterial3: true), model.data),
+                darkTheme: bakeTheme(
+                    context, ThemeData.dark(useMaterial3: true), model.data),
                 themeMode: model.resolveThemeMode(),
                 home: const CalcuPianoHomePage(),
               ),
@@ -70,8 +73,12 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
     );
   }
 
-  ThemeData bakeTheme(BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
+  ThemeData bakeTheme(
+      BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+      ),
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent), //the outline color
@@ -79,11 +86,11 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       ),
       splashColor: theme.enableRipple ? null : Colors.transparent,
       highlightColor: theme.enableRipple ? null : Colors.transparent,
-      useMaterial3: true,
       // TODO: Temporarily debug Visual effects on iOS.
       //   platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+            transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),

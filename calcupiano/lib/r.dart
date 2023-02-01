@@ -7,6 +7,7 @@ import 'package:version/version.dart';
 class R {
   R._();
 
+  static const appName = "CalcuPiano";
   static const defaultLocale = Locale('en');
   static const supportedLocales = [
     defaultLocale,

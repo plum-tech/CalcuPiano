@@ -1,4 +1,5 @@
 import 'package:calcupiano/foundation.dart';
+import 'package:calcupiano/r.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,20 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       appBar: AppBar(
         title: I18n.title.text(),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.navigator.push(MaterialPageRoute(builder: (_) {
+                  final packageInfo = R.packageInfo;
+                  final version = packageInfo != null ? "v${packageInfo.version}" : "v${R.version}";
+                  return LicensePage(
+                    applicationName: R.appName,
+                    applicationVersion: version,
+                  );
+                }));
+              },
+              icon: const Icon(Icons.policy_outlined))
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {

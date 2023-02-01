@@ -1,8 +1,8 @@
+import 'package:calcupiano/foundation.dart';
 import 'package:rettulf/rettulf.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:calcupiano/platform/platform.dart';
 import 'package:unicons/unicons.dart';
 
 extension BuildContextDesignX on BuildContext {
@@ -115,7 +115,10 @@ class $Dialog$ extends StatelessWidget {
     final first = primary;
     if (context.isCupertino) {
       dialog = CupertinoAlertDialog(
-        title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? context.$red$ : null)),
+        title: title?.text(
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: serious ? context.$red$ : null)),
         content: make(context),
         actions: [
           if (second != null)
@@ -134,14 +137,18 @@ class $Dialog$ extends StatelessWidget {
               onPressed: () {
                 first.onPressed?.call();
               },
-              child: primary.text.text(),
+              child: first.text.text(),
             )
         ],
       );
     } else {
       dialog = AlertDialog(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
-        title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? context.$red$ : null)),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(28.0))),
+        title: title?.text(
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: serious ? context.$red$ : null)),
         content: make(context),
         actions: [
           if (second != null)
@@ -161,7 +168,7 @@ class $Dialog$ extends StatelessWidget {
                 onPressed: () {
                   first.onPressed?.call();
                 },
-                child: primary.text.text(
+                child: first.text.text(
                   style: TextStyle(
                     color: first.warning ? context.$red$ : null,
                     fontWeight: first.isDefault ? FontWeight.w600 : null,
@@ -265,5 +272,7 @@ const Border _kDefaultRoundedBorder = Border(
 );
 
 extension ColorEx on BuildContext {
-  Color get $red$ => isCupertino ? CupertinoDynamicColor.resolve(CupertinoColors.systemRed, this) : Colors.redAccent;
+  Color get $red$ => isCupertino
+      ? CupertinoDynamicColor.resolve(CupertinoColors.systemRed, this)
+      : Colors.redAccent;
 }

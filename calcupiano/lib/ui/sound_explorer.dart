@@ -80,10 +80,7 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
     res = InkWell(
             borderRadius: ctx.cardBorderRadius,
             onTap: () async {
-              final player = AudioPlayer();
-              await file.loadInto(player);
-              await player.setPlayerMode(PlayerMode.lowLatency);
-              await player.resume();
+              Player.playSound(file);
             },
             child: res)
         .inCard(elevation: 6);

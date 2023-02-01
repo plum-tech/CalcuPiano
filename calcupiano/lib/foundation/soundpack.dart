@@ -2,6 +2,7 @@ import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/i18n.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/utils.dart';
+import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:quiver/core.dart';
 
@@ -84,7 +85,7 @@ class BuiltinSoundFileLoc implements SoundFileLoc {
   BundledSoundFile resolve() => soundpack.resolve(note);
 }
 
-abstract class ExternalSoundpackProtocol implements SoundpackProtocol, Convertible {
+abstract class ExternalSoundpackProtocol implements SoundpackProtocol, JConvertibleProtocol {
   SoundpackMeta get meta;
 }
 
@@ -94,14 +95,14 @@ class LocalSoundpack implements ExternalSoundpackProtocol {
   @JsonKey()
   final String uuid;
   @override
-  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  @JsonKey(fromJson: directConvertFunc, toJson: directConvertFunc)
   SoundpackMeta meta;
 
   /// A LocalSoundpack can only hold [LocalSoundFile].
   @JsonKey(fromJson: _note2FilesFromJson, toJson: _note2FilesToJson)
   Map<Note, LocalSoundFile> note2SoundFile = {};
   @override
-  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  @JsonKey(fromJson: directConvertFunc, toJson: directConvertFunc)
   LocalImageFile? preview;
 
   LocalSoundpack({required this.uuid, required this.meta, this.preview});
@@ -170,11 +171,11 @@ class UrlSoundpack implements ExternalSoundpackProtocol {
   final String uuid;
   @JsonKey()
   final String url;
-  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  @JsonKey(fromJson: directConvertFunc, toJson: directConvertFunc)
   @override
   SoundpackMeta meta;
   @override
-  @JsonKey(fromJson: Converter.directConvertFunc, toJson: Converter.directConvertFunc)
+  @JsonKey(fromJson: directConvertFunc, toJson: directConvertFunc)
   ImageFileProtocol? preview;
 
   /// A LocalSoundpack can only hold [LocalSoundFile].
@@ -242,7 +243,7 @@ class UrlSoundFileLoc implements SoundFileLoc {
 }
 
 @JsonSerializable()
-class SoundpackMeta implements Convertible {
+class SoundpackMeta implements JConvertibleProtocol {
   static const String type = "calcupiano.SoundpackMeta";
   @JsonKey(includeIfNull: false)
   String? name;

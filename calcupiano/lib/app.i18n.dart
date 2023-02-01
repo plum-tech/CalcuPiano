@@ -7,6 +7,8 @@ class I18n {
 
   static String get soundpack => "$_ns.soundpack".tr();
 
+  static String get sheet => "$_ns.sheet".tr();
+
   static String get settings => "$_ns.settings".tr();
 
   static String get about => "$_ns.about".tr();

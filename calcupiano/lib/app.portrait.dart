@@ -94,8 +94,8 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
 
   Widget buildMain(BuildContext ctx, AnimationController ctrl, bool isDrawerOpen) {
     return Scaffold(
-      body: [
-        IconButton(
+      appBar: AppBar(
+        leading: IconButton(
           icon: AnimatedIcon(
             icon: AnimatedIcons.menu_close,
             progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
@@ -109,18 +109,18 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
               });
             }
           },
-        ).safeArea(),
-        [
-          const SheetScreen().expanded(),
-          // Why doesn't the constraint apply on this?
-          const PianoKeyboard().expanded(),
-        ]
-            .column(
-              mas: MainAxisSize.min,
-              maa: MainAxisAlignment.center,
-            )
-            .safeArea()
-      ].stack(),
+        ),
+      ),
+      body: [
+        const SheetScreen().expanded(),
+        // Why doesn't the constraint apply on this?
+        const PianoKeyboard().expanded(),
+      ]
+          .column(
+            mas: MainAxisSize.min,
+            maa: MainAxisAlignment.center,
+          )
+          .safeArea(),
     );
   }
 
@@ -157,6 +157,15 @@ class CalcuPianoDrawer extends HookWidget {
                 onTap: () {
                   closeDrawer();
                   context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
+                },
+              ),
+              ListTile(
+                leading: const Icon(CupertinoIcons.doc_text),
+                title: AutoSizeText(I18n.sheet, maxLines: 1),
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () {
+                  closeDrawer();
+                  //context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
                 },
               )
             ],

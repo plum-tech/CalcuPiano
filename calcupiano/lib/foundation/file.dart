@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:calcupiano/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:jconverter/jconverter.dart';
 
-abstract class FileProtocol implements Convertible {
+abstract class FileProtocol extends JConvertibleProtocol {
   /// Return the target path.
   /// The file name should follow [extSuggestion], but it is not required to.
   /// ## For example:
@@ -41,7 +42,7 @@ mixin BundledFileMixin implements BundledFileProtocol {
   String toString() => "Bundled($path)";
 }
 
-abstract class LocalFileProtocol implements FileProtocol, Convertible {
+abstract class LocalFileProtocol implements FileProtocol, JConvertibleProtocol {
   String get localPath;
 }
 
@@ -73,7 +74,7 @@ extension LocalFileProtocolX on LocalFileProtocol {
   File toFile() => File(localPath);
 }
 
-abstract class UrlFileProtocol implements FileProtocol, Convertible {
+abstract class UrlFileProtocol implements FileProtocol, JConvertibleProtocol {
   String get url;
 }
 

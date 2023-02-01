@@ -1,4 +1,4 @@
-import 'package:calcupiano/platform/platform.dart';
+import 'package:calcupiano/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 const _$ns = "common";
