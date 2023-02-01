@@ -6,8 +6,6 @@ import 'package:rettulf/rettulf.dart';
 
 const _kWindowAspectRatio = 4 / 3;
 
-typedef SizedWidgetBuilder = Widget Function(BuildContext ctx, Size size);
-
 Future<void> showWindow({
   Key? key,
   required String title,

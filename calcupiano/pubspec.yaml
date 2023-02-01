@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   hive: ^2.2.3
   flutter_hooks: ^0.18.5+1
-  rettulf: ^0.0.9
+  rettulf: ^0.0.13
   audioplayers: ^1.1.1
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
@@ -66,6 +66,7 @@ dependencies:
   sanitize_filename: ^1.0.4
   quiver: ^3.2.1
   share_plus: ^6.3.0
+  modal_bottom_sheet: ^3.0.0-pre
   image_picker: ^0.8.6
   flutter_svg: ^1.1.6
   easy_localization: ^3.0.1
@@ -106,14 +107,14 @@ flutter:
   uses-material-design: true
 
   assets:
-     - assets/
-     - assets/google_fonts/
-     - assets/about.md
-     - assets/soundpack/default/
-     - assets/soundpack/default_long_tone/
-     - assets/soundpack/classic/
-     - assets/img/
-     - assets/l10n/
+    - assets/
+    - assets/google_fonts/
+    - assets/about.md
+    - assets/soundpack/default/
+    - assets/soundpack/default_long_tone/
+    - assets/soundpack/classic/
+    - assets/img/
+    - assets/l10n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -14,7 +14,7 @@ class SheetScreen extends StatefulWidget {
 }
 
 const _test = """
-33455432 1123322 33455432 1123211 +-*/=
+33455432 1123322 33455432 1123211
 """;
 
 class _SheetScreenState extends State<SheetScreen> {
