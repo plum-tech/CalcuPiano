@@ -91,8 +91,7 @@ class _SoundpackPageState extends State<SoundpackPage> {
   Widget buildBody() {
     return H.listenToCustomSoundpackIdList() >>
         (ctx, _) {
-          final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() +
-              (H.externalSoundpackIdList ?? const []);
+          final allSoundpacks = R.id2BuiltinSoundpacks.keys.toList() + (H.externalSoundpackIdList ?? const []);
           return AdaptiveBuilder(
             defaultBuilder: (ctx, screen) {
               return buildSoundpackList(ctx, allSoundpacks, 300);
@@ -128,8 +127,7 @@ class _SoundpackPageState extends State<SoundpackPage> {
   }
 
   @ListenTo([K.externalSoundpackIdList])
-  Widget buildSoundpackList(
-      BuildContext ctx, List<String> allSoundpacks, double extent) {
+  Widget buildSoundpackList(BuildContext ctx, List<String> allSoundpacks, double extent) {
     return MasonryGridView.extent(
       maxCrossAxisExtent: extent,
       itemCount: allSoundpacks.length,
@@ -153,8 +151,7 @@ class SoundpackItem extends StatefulWidget {
   State<SoundpackItem> createState() => _SoundpackItemState();
 }
 
-class _SoundpackItemState extends State<SoundpackItem>
-    with TickerProviderStateMixin {
+class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateMixin {
   /// Cache the Soundpack object, because deserialization is expensive.
   SoundpackProtocol? _soundpack;
   var isPlaying = false;
@@ -220,8 +217,7 @@ class _SoundpackItemState extends State<SoundpackItem>
         subtitle: [
           soundpack.author.text(style: ctx.textTheme.bodyLarge),
           soundpack.description.text(
-            style:
-                ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+            style: ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           ),
         ].column(caa: CrossAxisAlignment.start),
       ),
@@ -262,12 +258,10 @@ class _SoundpackItemState extends State<SoundpackItem>
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
     return ListTile(
-      leading: const Icon(Icons.sentiment_very_dissatisfied_outlined,
-          size: _iconSize),
+      leading: const Icon(Icons.sentiment_very_dissatisfied_outlined, size: _iconSize),
       title: I18n.corruptedSoundpack.text(),
       subtitle: I18n.corruptedSoundpackSubtitle.text(),
-      trailing: Icon(Icons.delete_outline, color: ctx.$red$, size: _iconSize)
-          .onTap(() async {
+      trailing: Icon(Icons.delete_outline, color: ctx.$red$, size: _iconSize).onTap(() async {
         await DB.removeSoundpackById(widget.id);
       }),
     );
@@ -319,8 +313,8 @@ extension _MenuX on State {
             onTap: () async {
               await StageManager.closeSoundpackPreview(ctx: context);
               ctx.navigator.pop();
-              final anyChanged = await ctx.navigator.push(MaterialPageRoute(
-                  builder: (_) => LocalSoundpackEditor(soundpack)));
+              final anyChanged =
+                  await ctx.navigator.push(MaterialPageRoute(builder: (_) => LocalSoundpackEditor(soundpack)));
               if (anyChanged == true) {
                 if (!mounted) return;
                 // ignore: invalid_use_of_protected_member
@@ -337,8 +331,7 @@ extension _MenuX on State {
             onTap: () async {
               await StageManager.closeSoundpackPreview(ctx: context);
               ctx.navigator.pop();
-              ctx.navigator.push(MaterialPageRoute(
-                  builder: (_) => SoundpackViewer(soundpack)));
+              ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackViewer(soundpack)));
             },
           ),
         );
@@ -346,8 +339,7 @@ extension _MenuX on State {
     }
 
     final btn = PopupMenuButton(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
       position: PopupMenuPosition.under,
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context) => <PopupMenuEntry>[
@@ -369,8 +361,7 @@ extension _MenuX on State {
               onTap: () async {
                 await StageManager.closeSoundpackPreview(ctx: context);
                 ctx.navigator.pop();
-                ctx.navigator.push(MaterialPageRoute(
-                    builder: (_) => SoundpackComposer(soundpack)));
+                ctx.navigator.push(MaterialPageRoute(builder: (_) => SoundpackComposer(soundpack)));
               },
             ),
           ),
@@ -400,8 +391,7 @@ extension _MenuX on State {
               },
             ),
           ),
-        if (soundpack is LocalSoundpack)
-          ...buildExportSoundpackButtons(soundpack),
+        if (soundpack is LocalSoundpack) ...buildExportSoundpackButtons(soundpack),
         if (soundpack is! BuiltinSoundpack)
           PopupMenuItem(
             child: ListTile(

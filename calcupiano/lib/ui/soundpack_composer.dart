@@ -171,7 +171,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     return Text.rich([
       TextSpan(text: note.numberedText),
       WidgetSpan(child: sound != null ? const Icon(Icons.music_note) : const Icon(Icons.music_off)),
-    ].textSpan(style: ctx.textTheme.headlineLarge))
+    ].span(style: ctx.textTheme.headlineLarge))
         .padAll(5)
         .center();
   }
@@ -182,7 +182,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
       children: [
         if (sound != null) buildPlaySoundBtn(sound),
       ],
-    ).container(decoration: BoxDecoration(color: ctx.theme.backgroundColor, borderRadius: ctx.cardBorderRadiusBottom));
+    ).container(decoration: BoxDecoration(color: ctx.colorScheme.background, borderRadius: ctx.cardBorderRadiusBottom));
   }
 
   Widget buildAudioFileArea(BuildContext ctx, SoundFileResolveProtocol? loc) {
@@ -265,7 +265,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
         side: BorderSide(
           color: Theme.of(context).colorScheme.outline,
         ),
-        borderRadius: ctx.cardBorderRadius ?? BorderRadius.zero,
+        borderRadius: ctx.cardBorderRadius,
       ),
     );
     return res;
