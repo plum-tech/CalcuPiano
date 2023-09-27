@@ -49,8 +49,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       MultiProvider(
         providers: [
           ChangeNotifierProvider<CalcuPianoThemeModel>(
-              create: (_) => CalcuPianoThemeModel(
-                  CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
+              create: (_) => CalcuPianoThemeModel(CalcuPianoThemeData.isDarkMode(isDarkModeInitial))),
         ],
         child: Consumer<CalcuPianoThemeModel>(
           builder: (_, model, __) {
@@ -59,10 +58,8 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
-                theme: bakeTheme(
-                    context, ThemeData.light(useMaterial3: true), model.data),
-                darkTheme: bakeTheme(
-                    context, ThemeData.dark(useMaterial3: true), model.data),
+                theme: bakeTheme(ThemeData.light(useMaterial3: true), model.data),
+                darkTheme: bakeTheme(ThemeData.dark(useMaterial3: true), model.data),
                 themeMode: model.resolveThemeMode(),
                 home: const CalcuPianoHomePage(),
               ),
@@ -73,8 +70,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
     );
   }
 
-  ThemeData bakeTheme(
-      BuildContext ctx, ThemeData raw, CalcuPianoThemeData theme) {
+  ThemeData bakeTheme(ThemeData raw, CalcuPianoThemeData theme) {
     return raw.copyWith(
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -89,8 +85,7 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
       // TODO: Temporarily debug Visual effects on iOS.
       //   platform: TargetPlatform.iOS,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
-            transitionType: SharedAxisTransitionType.horizontal),
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
