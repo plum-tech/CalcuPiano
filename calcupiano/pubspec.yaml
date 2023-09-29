@@ -37,23 +37,22 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   hive: ^2.2.3
-  flutter_hooks: ^0.18.5+1
   rettulf: ^1.0.1
   audioplayers: ^5.1.0
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
-  path_provider: ^2.0.11
+  path_provider: ^2.1.1
   provider: ^6.0.5
   animations: ^2.0.7
   hive_flutter: ^1.1.0
   json_serializable: ^6.5.4
   json_annotation: ^4.7.0
-  url_launcher: ^6.1.7
+  url_launcher: ^6.1.14
   version: ^3.0.2
   logger: ^1.1.0
-  file_picker: ^5.2.4
+  file_picker: ^5.5.0
   pull_down_button: ^0.4.1
-  archive: ^3.3.5
+  archive: ^3.4.3
   loading_animation_widget: ^1.2.0+4
   collection: ^1.16.0
   path: ^1.8.2
@@ -62,18 +61,18 @@ dependencies:
   package_info_plus: ^4.1.0
   auto_animated: ^3.1.0
   dio: ^4.0.6
-  flutter_staggered_grid_view: ^0.6.2
+  flutter_staggered_grid_view: ^0.7.0
   sanitize_filename: ^1.0.4
   quiver: ^3.2.1
   share_plus: ^7.1.0
   modal_bottom_sheet: ^3.0.0-pre
-  image_picker: ^0.8.6
-  flutter_svg: ^1.1.6
+  image_picker: ^1.0.4
+  flutter_svg: ^2.0.7
   easy_localization: ^3.0.1
-  markdown: ^6.0.1
-  flutter_markdown: ^0.6.13
+  markdown: ^7.1.1
+  flutter_markdown: ^0.6.17+3
   unicons: ^2.1.0
-  google_fonts: ^5.1.0
+  google_fonts: ^6.1.0
   jconverter:
     git:
       url: https://github.com/liplum/DartPackage.git

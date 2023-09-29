@@ -132,7 +132,7 @@ class _HomePortraitState extends State<HomePortrait> with TickerProviderStateMix
   }
 }
 
-class CalcuPianoDrawer extends HookWidget {
+class CalcuPianoDrawer extends StatelessWidget {
   final VoidCallback? onCloseDrawer;
 
   const CalcuPianoDrawer({super.key, this.onCloseDrawer});
