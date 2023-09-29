@@ -147,12 +147,6 @@ class _CalcuPianoHomePageState extends State<CalcuPianoHomePage> {
         tabletLandscape: (ctx, screen) {
           return const HomeTabletLandscape();
         },
-        desktopPortrait: (ctx, screen) {
-          return const HomePortrait();
-        },
-        desktopLandscape: (ctx, screen) {
-          return const HomeDesktopLandscape();
-        },
       ),
     );
   }

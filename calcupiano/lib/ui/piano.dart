@@ -7,7 +7,6 @@ import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class PianoKeyboard extends StatefulWidget {
   /// For preview.

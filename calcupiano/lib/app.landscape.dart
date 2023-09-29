@@ -53,23 +53,21 @@ class _HomeTabletLandscapeState extends State<HomeTabletLandscape> {
   Widget buildMain(BuildContext ctx) {
     return Scaffold(
       body: [
-        IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: () {
-            _openDrawer();
-          },
-        ).safeArea(),
-        [
-          const SheetScreen().expanded(),
-          // Why doesn't the constraint apply on this?
-          const PianoKeyboard().expanded(),
-        ]
-            .row(
-              mas: MainAxisSize.min,
-              maa: MainAxisAlignment.center,
-            )
-            .safeArea()
-      ].stack(),
+        NavigationDrawer(children: [
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.menu_rounded),
+            label: "Menu".text(),
+          )
+        ]).expanded(flex: 1),
+        const SheetScreen().expanded(flex: 2),
+        // Why doesn't the constraint apply on this?
+        const PianoKeyboard().expanded(flex: 3),
+      ]
+          .row(
+            mas: MainAxisSize.min,
+            maa: MainAxisAlignment.center,
+          )
+          .safeArea(),
     );
   }
 }
@@ -103,7 +101,8 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
             title: AutoSizeText(I18n.soundpack, maxLines: 1),
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              context.navigator.push(MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
+              context.navigator.push(
+                  MaterialPageRoute(builder: (ctx) => const SoundpackPage()));
             },
           )
         ],
@@ -113,14 +112,16 @@ class _HomeDesktopLandscapeState extends State<HomeDesktopLandscape> {
         leading: const Icon(Icons.settings),
         title: AutoSizeText(I18n.settings, maxLines: 1),
         onTap: () {
-          context.navigator.push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
+          context.navigator
+              .push(MaterialPageRoute(builder: (ctx) => const SettingsPage()));
         },
       ),
       ListTile(
         leading: const Icon(Icons.info_outline_rounded),
         title: AutoSizeText(I18n.about, maxLines: 1),
         onTap: () {
-          context.navigator.push(MaterialPageRoute(builder: (ctx) => const AboutPage()));
+          context.navigator
+              .push(MaterialPageRoute(builder: (ctx) => const AboutPage()));
         },
       ),
     ].column();

@@ -115,12 +115,6 @@ class _SoundpackPageState extends State<SoundpackPage> {
               tabletLandscape: (ctx, screen) {
                 return buildSoundpackList(ctx, allSoundpacks, 300);
               },
-              desktopPortrait: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks, 300);
-              },
-              desktopLandscape: (ctx, screen) {
-                return buildSoundpackList(ctx, allSoundpacks, 300);
-              },
             ),
           );
         };
