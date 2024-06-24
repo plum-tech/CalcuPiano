@@ -42,10 +42,7 @@ class BreakpointData {
       if (size.width <= minHeadsetPortraitSize.width || size.height <= minHeadsetPortraitSize.height) {
         return ScreenType.headsetPortrait;
       }
-      if (size.width <= minTabletPortraitSize.width || size.height <= minTabletPortraitSize.height) {
-        return ScreenType.tabletPortrait;
-      }
-      return ScreenType.desktopPortrait;
+      return ScreenType.tabletPortrait;
     } else {
       if (size.width <= minWatchLandscapeSize.width || size.height <= minWatchLandscapeSize.height) {
         return ScreenType.watchLandscape;
@@ -53,10 +50,7 @@ class BreakpointData {
       if (size.width <= minHeadsetLandscapeSize.width || size.height <= minHeadsetLandscapeSize.height) {
         return ScreenType.headsetLandscape;
       }
-      if (size.width <= minTabletLandscapeSize.width || size.height <= minTabletLandscapeSize.height) {
-        return ScreenType.tabletLandscape;
-      }
-      return ScreenType.desktopLandscape;
+      return ScreenType.tabletLandscape;
     }
   }
 
@@ -166,8 +160,6 @@ class AdaptiveLayoutDelegateWithScreenType implements AdaptiveLayoutDelegate {
     this.headsetLandscape,
     this.tabletPortrait,
     this.tabletLandscape,
-    this.desktopPortrait,
-    this.desktopLandscape,
   });
 
   final AdaptiveWidgetBuilder? defaultBuilder;
@@ -177,8 +169,6 @@ class AdaptiveLayoutDelegateWithScreenType implements AdaptiveLayoutDelegate {
   final AdaptiveWidgetBuilder? headsetLandscape;
   final AdaptiveWidgetBuilder? tabletPortrait;
   final AdaptiveWidgetBuilder? tabletLandscape;
-  final AdaptiveWidgetBuilder? desktopPortrait;
-  final AdaptiveWidgetBuilder? desktopLandscape;
 
   @override
   @protected
@@ -196,10 +186,6 @@ class AdaptiveLayoutDelegateWithScreenType implements AdaptiveLayoutDelegate {
         return tabletPortrait;
       case ScreenType.tabletLandscape:
         return tabletLandscape;
-      case ScreenType.desktopPortrait:
-        return desktopPortrait;
-      case ScreenType.desktopLandscape:
-        return desktopLandscape;
     }
   }
 }
@@ -237,7 +223,7 @@ class AdaptiveScreen {
   factory AdaptiveScreen.fromWindow() {
     WidgetsFlutterBinding.ensureInitialized();
     return AdaptiveScreen(
-      mediaQueryData: MediaQueryData.fromWindow(WidgetsBinding.instance.window),
+      mediaQueryData: MediaQueryData.fromView(WidgetsBinding.instance.window),
       breakpointData: const BreakpointData(),
     );
   }
@@ -250,6 +236,4 @@ enum ScreenType {
   headsetLandscape,
   tabletPortrait,
   tabletLandscape,
-  desktopPortrait,
-  desktopLandscape;
 }

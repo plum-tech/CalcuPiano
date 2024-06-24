@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 part 'app.i18n.dart';
 
@@ -147,12 +146,6 @@ class _CalcuPianoHomePageState extends State<CalcuPianoHomePage> {
         },
         tabletLandscape: (ctx, screen) {
           return const HomeTabletLandscape();
-        },
-        desktopPortrait: (ctx, screen) {
-          return const HomePortrait();
-        },
-        desktopLandscape: (ctx, screen) {
-          return const HomeDesktopLandscape();
         },
       ),
     );
