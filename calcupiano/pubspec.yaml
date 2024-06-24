@@ -20,7 +20,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: ^3.22.2
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -37,9 +38,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   hive: ^2.2.3
-  flutter_hooks: ^0.18.5+1
-  rettulf: ^1.0.1
-  audioplayers: ^5.1.0
+  flutter_hooks: ^0.20.5
+  rettulf: ^2.1.1
+  audioplayers: ^6.0.0
   auto_size_text: ^3.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.11
@@ -50,30 +51,30 @@ dependencies:
   json_annotation: ^4.7.0
   url_launcher: ^6.1.7
   version: ^3.0.2
-  logger: ^1.1.0
-  file_picker: ^5.2.4
-  pull_down_button: ^0.4.1
+  logger: ^2.3.0
+  file_picker: ^8.0.5
+  pull_down_button: ^0.9.4
   archive: ^3.3.5
   loading_animation_widget: ^1.2.0+4
   collection: ^1.16.0
   path: ^1.8.2
-  uuid: ^3.0.7
+  uuid: ^4.4.0
   flutter_screenutil: ^5.9.0
-  package_info_plus: ^4.1.0
+  package_info_plus: ^8.0.0
   auto_animated: ^3.1.0
-  dio: ^4.0.6
-  flutter_staggered_grid_view: ^0.6.2
+  dio: ^5.4.3+1
+  flutter_staggered_grid_view: ^0.7.0
   sanitize_filename: ^1.0.4
   quiver: ^3.2.1
-  share_plus: ^7.1.0
+  share_plus: ^9.0.0
   modal_bottom_sheet: ^3.0.0-pre
-  image_picker: ^0.8.6
-  flutter_svg: ^1.1.6
+  image_picker: ^1.1.2
+  flutter_svg: ^2.0.10+1
   easy_localization: ^3.0.1
-  markdown: ^6.0.1
-  flutter_markdown: ^0.6.13
+  markdown: ^7.2.2
+  flutter_markdown: ^0.7.2+1
   unicons: ^2.1.0
-  google_fonts: ^5.1.0
+  google_fonts: ^6.2.1
   jconverter:
     git:
       url: https://github.com/liplum/DartPackage.git
@@ -91,7 +92,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
   hive_generator: ^2.0.0
   build_runner: ^2.3.3
 

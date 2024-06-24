@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -7,7 +6,6 @@ import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class PianoKeyboard extends StatefulWidget {
   /// For preview.
@@ -128,7 +126,6 @@ class _PianoKeyState extends State<PianoKey> {
       style: const TextStyle(fontSize: 24),
     ).center();
     txt = InkWell(
-      borderRadius: context.cardBorderRadius,
       child: txt,
       onTapDown: (_) async {
         eventBus.fire(KeyUserPressedEvent(note));
@@ -136,6 +133,7 @@ class _PianoKeyState extends State<PianoKey> {
       },
     );
     return txt.inCard(
+      clip: Clip.hardEdge,
       elevation: theme?.data.elevation,
     );
   }

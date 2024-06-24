@@ -1,5 +1,5 @@
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/design/theme.dart';
+
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/i18n.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +86,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
       ).fitted().constrained(maxW: fullW * 0.4, maxH: fullH * 0.4);
     }
     img = ClipRRect(
-      borderRadius: ctx.cardBorderRadius,
+      borderRadius: BorderRadius.circular(12.0),
       child: img,
     ).padAll(20.w);
     img = img.onTap(() async {

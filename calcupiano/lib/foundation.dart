@@ -15,9 +15,6 @@ export 'foundation/file.dart';
 export 'foundation/player.dart';
 import 'foundation/sound_file.dart';
 import 'foundation/soundpack.dart';
-import 'foundation/note.dart';
-import 'foundation/page.dart';
-import 'package:platform_safe_func/platform_safe_func.dart';
 export 'foundation/soundpack.dart';
 export 'foundation/note.dart';
 export 'foundation/page.dart';
@@ -35,7 +32,14 @@ Future<void> initFoundation() async {
 }
 
 void initConverter() {
-  Converter.logger = JConverterLogger(onError: Log.e, onInfo: print);
+  Converter.logger = JConverterLogger(
+    onError: (message, error, stacktrace) => Log.e(
+      message,
+      error: error,
+      stackTrace: stacktrace,
+    ),
+    onInfo: print,
+  );
   // SoundFile
   Converter.addAuto(BundledSoundFile.type, BundledSoundFile.fromJson);
   Converter.addAuto(LocalSoundFile.type, LocalSoundFile.fromJson);

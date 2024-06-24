@@ -1,5 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:calcupiano/design/theme.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/service/soundpack.dart';
@@ -73,28 +71,30 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
   }
 
   Widget buildSoundFile(BuildContext ctx, Note note, SoundFileProtocol file) {
-    Widget res = [
-      const Icon(Icons.audio_file_outlined),
-      note.id.text(),
-    ].column(maa: MainAxisAlignment.center);
-    res = InkWell(
-            borderRadius: ctx.cardBorderRadius,
-            onTap: () async {
-              Player.playSound(file);
-            },
-            child: res)
-        .inCard(elevation: 6);
     final feedback = AbsorbPointer(
       child: [
         const Icon(Icons.audio_file_outlined, size: 36),
         note.id.text(style: ctx.textTheme.headlineSmall),
-      ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(elevation: 6),
+      ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(
+            elevation: 6,
+          ),
     );
     return LongPressDraggable<SoundFileLoc>(
       data: SoundFileLoc.fromSoundpackType(selected, note),
       dragAnchorStrategy: (_, __, ___) => Offset(60.w, 80.w),
       feedback: feedback,
-      child: res,
+      child: InkWell(
+              onTap: () async {
+                Player.playSound(file);
+              },
+              child: [
+                const Icon(Icons.audio_file_outlined),
+                note.id.text(),
+              ].column(maa: MainAxisAlignment.center))
+          .inCard(
+        clip: Clip.hardEdge,
+        elevation: 6,
+      ),
     );
   }
 }

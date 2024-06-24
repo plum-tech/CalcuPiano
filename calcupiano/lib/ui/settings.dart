@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/design/theme.dart';
+
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:flutter/material.dart';
@@ -279,15 +279,14 @@ class SettingsKey extends StatefulWidget {
 class _SettingsKeyState extends State<SettingsKey> {
   @override
   Widget build(BuildContext context) {
-    final content = InkWell(
-      borderRadius: context.cardBorderRadius,
+    return InkWell(
       child: widget.child,
       onTap: () async {
         await Player.playSound(widget.sound);
         widget.onTap?.call();
       },
-    );
-    return content.inCard(
+    ).inCard(
+      clip: Clip.hardEdge,
       elevation: widget.elevation,
     );
   }

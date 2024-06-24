@@ -1,13 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/design/theme.dart';
+
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/stage_manager.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:rettulf/widget/text_span.dart';
 
 class SoundpackComposer extends StatefulWidget {
   final LocalSoundpack soundpack;
@@ -145,47 +144,46 @@ class _SoundFileRowState extends State<_SoundFileRow> {
 
   @override
   Widget build(BuildContext context) {
-    return buildBody(context);
-  }
-
-  Widget buildBody(BuildContext ctx) {
     final sound = file;
     return IntrinsicHeight(
       child: [
         [
-          buildTitle(ctx, sound),
-          buildBottomBar(ctx, sound),
+          buildTitle(sound),
+          buildBottomBar(sound),
         ]
             .column()
             .inCard(
               elevation: 0,
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
             )
             .expanded(),
-        buildUploadArea(ctx, sound).expanded(),
+        buildUploadArea(sound).expanded(),
       ].row(caa: CrossAxisAlignment.stretch),
     );
   }
 
-  Widget buildTitle(BuildContext ctx, SoundFileResolveProtocol? sound) {
+  Widget buildTitle(SoundFileResolveProtocol? sound) {
     return Text.rich([
       TextSpan(text: note.numberedText),
       WidgetSpan(child: sound != null ? const Icon(Icons.music_note) : const Icon(Icons.music_off)),
-    ].span(style: ctx.textTheme.headlineLarge))
+    ].span(style: context.textTheme.headlineLarge))
         .padAll(5)
         .center();
   }
 
-  Widget buildBottomBar(BuildContext ctx, SoundFileResolveProtocol? sound) {
+  Widget buildBottomBar(SoundFileResolveProtocol? sound) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
         if (sound != null) buildPlaySoundBtn(sound),
       ],
-    ).container(decoration: BoxDecoration(color: ctx.colorScheme.background, borderRadius: ctx.cardBorderRadiusBottom));
+    ).container(
+        decoration: BoxDecoration(
+      color: context.colorScheme.surface,
+    ));
   }
 
-  Widget buildAudioFileArea(BuildContext ctx, SoundFileResolveProtocol? loc) {
+  Widget buildAudioFileArea(SoundFileResolveProtocol? loc) {
     const icon = Icon(Icons.upload_file_outlined, size: 36);
     Widget audioFileArea;
     if (loc != null) {
@@ -207,7 +205,6 @@ class _SoundFileRowState extends State<_SoundFileRow> {
       audioFileArea = icon;
     }
     return InkWell(
-      borderRadius: ctx.cardBorderRadius,
       onTap: () async {
         final audio = await Packager.tryPickAudioFile();
         if (audio != null) {
@@ -218,7 +215,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     );
   }
 
-  Widget buildDropIndicator(BuildContext ctx, SoundFileLoc loc) {
+  Widget buildDropIndicator(SoundFileLoc loc) {
     const icon = Icon(Icons.move_to_inbox_outlined, size: 36);
     // TODO: I18n
     final String subtitle;
@@ -234,24 +231,24 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     return dropIndicator;
   }
 
-  Widget buildUploadArea(BuildContext ctx, SoundFileResolveProtocol? loc) {
-    Widget audioFileArea = buildAudioFileArea(ctx, loc);
+  Widget buildUploadArea(SoundFileResolveProtocol? loc) {
+    Widget audioFileArea = buildAudioFileArea(loc);
     final dropArea = DragTarget<SoundFileLoc>(
       builder: (ctx, candidateData, rejectedData) {
         final Widget res;
         final first = candidateData.firstOrNull;
         if (first != null) {
-          res = buildDropIndicator(ctx, first);
+          res = buildDropIndicator(first);
         } else {
           res = audioFileArea;
         }
         return res;
       },
-      onAccept: (loc) {
-        file = loc;
+      onAcceptWithDetails: (details) {
+        file = details.data;
       },
-      onWillAccept: (loc) {
-        if (loc == null) return false;
+      onWillAcceptWithDetails: (details) {
+        final loc = details.data;
         if (loc is LocalSoundFileLoc && loc.soundpack.idEquals(edited)) {
           return loc.note != note;
         } else {
@@ -261,11 +258,11 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     );
     final res = dropArea.inCard(
       elevation: 0,
+      clip: Clip.hardEdge,
       shape: RoundedRectangleBorder(
         side: BorderSide(
           color: Theme.of(context).colorScheme.outline,
         ),
-        borderRadius: ctx.cardBorderRadius,
       ),
     );
     return res;

@@ -1,6 +1,6 @@
 import 'package:calcupiano/design/adaptive.dart';
 import 'package:calcupiano/design/multiplatform.dart';
-import 'package:calcupiano/design/theme.dart';
+
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
@@ -194,14 +194,19 @@ class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateM
     SoundpackProtocol soundpack,
   ) {
     final isSelected = H.currentSoundpackID == soundpack.id;
-    Widget card = [
-      [
-        AnimatedOpacity(
-          opacity: isSelected ? 1.0 : 0.15,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.fastLinearToSlowEaseIn,
-          child: ClipRRect(
-            borderRadius: ctx.cardBorderRadius,
+    return InkWell(
+      onTap: () async {
+        if (H.currentSoundpackID != soundpack.id) {
+          eventBus.fire(SoundpackChangeEvent(soundpack));
+          await Player.preloadSoundpack(soundpack);
+        }
+      },
+      child: [
+        [
+          AnimatedOpacity(
+            opacity: isSelected ? 1.0 : 0.15,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.fastLinearToSlowEaseIn,
             child: soundpack.preview
                 ?.build(
                   ctx,
@@ -209,51 +214,43 @@ class _SoundpackItemState extends State<SoundpackItem> with TickerProviderStateM
                 )
                 .container(w: double.infinity),
           ),
-        ),
-      ].stack(),
-      ListTile(
-        selected: isSelected,
-        title: soundpack.displayName.text(style: ctx.textTheme.titleLarge),
-        subtitle: [
-          soundpack.author.text(style: ctx.textTheme.bodyLarge),
-          soundpack.description.text(
-            style: ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          ),
-        ].column(caa: CrossAxisAlignment.start),
-      ),
-      ButtonBar(
-        children: [
-          IconButton(
-            icon: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+        ].stack(),
+        ListTile(
+          selected: isSelected,
+          title: soundpack.displayName.text(style: ctx.textTheme.titleLarge),
+          subtitle: [
+            soundpack.author.text(style: ctx.textTheme.bodyLarge),
+            soundpack.description.text(
+              style: ctx.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
             ),
-            onPressed: () {
-              setState(() {
-                isPlaying = !isPlaying;
-              });
-              if (isPlaying) {
-                ctrl.forward();
-              } else {
-                ctrl.reverse();
-              }
-            },
-          ),
-          moreMenu(ctx, soundpack).align(at: Alignment.topRight),
-        ],
-      ),
-    ].column();
-    card = InkWell(
-      borderRadius: ctx.cardBorderRadius,
-      onTap: () async {
-        if (H.currentSoundpackID != soundpack.id) {
-          eventBus.fire(SoundpackChangeEvent(soundpack));
-          await Player.preloadSoundpack(soundpack);
-        }
-      },
-      child: card,
-    ).inSoundpackCard(isSelected: isSelected);
-    return card;
+          ].column(caa: CrossAxisAlignment.start),
+        ),
+        ButtonBar(
+          children: [
+            IconButton(
+              icon: AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                progress: CurveTween(curve: Curves.easeIn).animate(ctrl),
+              ),
+              onPressed: () {
+                setState(() {
+                  isPlaying = !isPlaying;
+                });
+                if (isPlaying) {
+                  ctrl.forward();
+                } else {
+                  ctrl.reverse();
+                }
+              },
+            ),
+            moreMenu(ctx, soundpack).align(at: Alignment.topRight),
+          ],
+        ),
+      ].column(),
+    ).inCard(
+      elevation: isSelected ? 15 : 2,
+      clip: Clip.hardEdge,
+    );
   }
 
   Widget buildCorruptedSoundpack(BuildContext ctx) {
@@ -413,13 +410,5 @@ extension _MenuX on State {
       )),
     );
     return btn;
-  }
-}
-
-extension _SoundpackCardX on Widget {
-  Widget inSoundpackCard({required bool isSelected}) {
-    return inCard(
-      elevation: isSelected ? 15 : 2,
-    );
   }
 }
