@@ -51,7 +51,7 @@ dependencies:
   json_annotation: ^4.7.0
   url_launcher: ^6.1.7
   version: ^3.0.2
-  logger: ^2.3.0
+  logger: ^2.4.0
   file_picker: ^8.0.6
   pull_down_button: ^0.9.4
   archive: ^3.3.5
