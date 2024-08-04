@@ -810,10 +810,10 @@ packages:
     dependency: "direct main"
     description:
       name: path_provider
-      sha256: c9e7d3a4cd1410877472158bee69963a4579f78b68c65a2b7d40d1a7a88bb161
+      sha256: fec0d61223fba3154d87759e3cc27fe2c8dc498f6386c6d6fc80d1afdd1bf378
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   path_provider_android:
     dependency: transitive
     description:
@@ -923,10 +923,10 @@ packages:
     dependency: "direct main"
     description:
       name: pull_down_button
-      sha256: "48b928203afdeafa4a8be5dc96980523bc8a2ddbd04569f766071a722be22379"
+      sha256: e0bb612f8f0971e71355b02a46039f969f0dc88892cfaaeb7c31550e06032b78
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.4"
+    version: "0.10.0"
   quiver:
     dependency: "direct main"
     description:
