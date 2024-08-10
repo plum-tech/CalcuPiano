@@ -6,7 +6,7 @@ class Player {
   Player._();
   static Future<void> playSound(SoundFileProtocol sound) async {
     // TODO: Cache doesn't work on both iOS and macOS safari with audioplayers.
-    final player = AudioPlayer();
+    final player = AudioPlayer(playerId: sound.id);
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
     await player.resume();

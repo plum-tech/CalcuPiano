@@ -11,6 +11,8 @@ abstract class SoundFileResolveProtocol {
 /// SoundFile is an abstract file of a sound.
 /// It could be the ref of a bundled file, or a real local file.
 abstract class SoundFileProtocol implements FileProtocol, SoundFileResolveProtocol {
+  String get id;
+
   Future<void> loadInto(AudioPlayer player);
 }
 
@@ -18,6 +20,8 @@ abstract class SoundFileProtocol implements FileProtocol, SoundFileResolveProtoc
 @JsonSerializable()
 class BundledSoundFile with BundledFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.BundledSoundFile";
+  @override
+  String get id => "bundle.$path";
   @override
   @JsonKey()
   final String path;
@@ -47,6 +51,8 @@ class BundledSoundFile with BundledFileMixin implements SoundFileProtocol {
 class LocalSoundFile with LocalFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.LocalSoundFile";
   @override
+  String get id => "bundle.$localPath";
+  @override
   @JsonKey()
   final String localPath;
 
@@ -74,6 +80,8 @@ class LocalSoundFile with LocalFileMixin implements SoundFileProtocol {
 @JsonSerializable()
 class UrlSoundFile with UrlFileMixin implements SoundFileProtocol {
   static const String type = "calcupiano.UrlSoundFile";
+  @override
+  String get id => "bundle.$url";
   @override
   @JsonKey()
   final String url;

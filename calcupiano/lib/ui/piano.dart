@@ -2,10 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calcupiano/events.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
-import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:rettulf/rettulf.dart';
 
 class PianoKeyboard extends StatefulWidget {
@@ -157,6 +156,7 @@ class _PianoKeyState extends State<PianoKey> {
   void onTap() async {
     eventBus.fire(KeyUserPressedEvent(note));
     await playSound();
+    HapticFeedback.mediumImpact();
   }
 
   Future<void> playSound() async {
