@@ -9,6 +9,7 @@ class Player {
     final player = AudioPlayer(playerId: sound.id);
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
+    await player.setReleaseMode(ReleaseMode.stop);
     await player.resume();
   }
 
