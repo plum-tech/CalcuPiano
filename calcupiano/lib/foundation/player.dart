@@ -4,11 +4,23 @@ import 'package:flutter/foundation.dart';
 
 class Player {
   Player._();
+
+  static final _context = AudioContext(
+    android: const AudioContextAndroid(
+      usageType: AndroidUsageType.game,
+      audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+    ),
+    iOS: AudioContextIOS(options: const {
+      AVAudioSessionOptions.duckOthers,
+    }),
+  );
+
   static Future<void> playSound(SoundFileProtocol sound) async {
     // TODO: Cache doesn't work on both iOS and macOS safari with audioplayers.
     final player = AudioPlayer(playerId: sound.id);
     await sound.loadInto(player);
     await player.setPlayerMode(PlayerMode.lowLatency);
+    // await player.setAudioContext(_context);
     await player.setReleaseMode(ReleaseMode.stop);
     await player.resume();
   }
