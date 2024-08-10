@@ -158,7 +158,7 @@ class _WindowState extends State<Window> {
       content,
     ].stack();
     content = content.inCard(color: Colors.transparent);*/
-    content = content.inCard();
+    content = content.inFilledCard();
     return content;
   }
 
@@ -180,7 +180,7 @@ class _WindowState extends State<Window> {
             .text(style: style, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1)
             .padSymmetric(h: 10, v: 10)
             .align(at: Alignment.center),
-      ].stack().inCard(elevation: 2);
+      ].stack().inCard();
     }
     return AnimatedSize(
       duration: const Duration(milliseconds: 500),

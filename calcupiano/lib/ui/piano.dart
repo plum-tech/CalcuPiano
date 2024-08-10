@@ -4,6 +4,7 @@ import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/theme/keyboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -73,7 +74,10 @@ class _PianoKeyboardState extends State<PianoKeyboard> {
   }
 
   Widget k(Note note, Size size) {
-    return PianoKey(note, fixedSoundpack: widget.fixedSoundpack).sizedIn(size);
+    return PianoKey(
+      note,
+      fixedSoundpack: widget.fixedSoundpack,
+    ).sizedIn(size);
   }
 }
 
@@ -81,7 +85,11 @@ class PianoKey extends StatefulWidget {
   final Note note;
   final SoundpackProtocol? fixedSoundpack;
 
-  const PianoKey(this.note, {super.key, this.fixedSoundpack});
+  const PianoKey(
+    this.note, {
+    super.key,
+    this.fixedSoundpack,
+  });
 
   @override
   State<PianoKey> createState() => _PianoKeyState();
@@ -119,23 +127,36 @@ class _PianoKeyState extends State<PianoKey> {
     return buildKey(context);
   }
 
+  final $inkWell = GlobalKey();
+
   Widget buildKey(BuildContext context) {
-    final theme = Provider.of<KeyboardThemeModel?>(context);
     Widget txt = AutoSizeText(
       note.numberedText,
       style: const TextStyle(fontSize: 24),
     ).center();
-    txt = InkWell(
-      child: txt,
-      onTapDown: (_) async {
-        eventBus.fire(KeyUserPressedEvent(note));
-        await playSound();
-      },
-    );
-    return txt.inCard(
-      clip: Clip.hardEdge,
-      elevation: theme?.data.elevation,
-    );
+    return [
+      GestureDetector(
+        onTapDown: (_) {
+          onTap();
+        },
+      ),
+      Positioned.fill(
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            child: txt,
+            onTapDown: (_) {
+              onTap();
+            },
+          ),
+        ),
+      )
+    ].stack();
+  }
+
+  void onTap() async {
+    eventBus.fire(KeyUserPressedEvent(note));
+    await playSound();
   }
 
   Future<void> playSound() async {
