@@ -58,7 +58,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   collection: ^1.16.0
   path: ^1.8.2
-  uuid: ^4.4.2
+  uuid: ^4.5.0
   flutter_screenutil: ^5.9.0
   package_info_plus: ^8.0.2
   auto_animated: ^3.1.0
