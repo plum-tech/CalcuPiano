@@ -52,7 +52,7 @@ dependencies:
   url_launcher: ^6.1.7
   version: ^3.0.2
   logger: ^2.4.0
-  file_picker: ^8.0.7
+  file_picker: ^8.1.2
   pull_down_button: ^0.10.1
   archive: ^3.3.5
   loading_animation_widget: ^1.2.0+4
