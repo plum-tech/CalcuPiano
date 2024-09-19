@@ -4,7 +4,6 @@ import 'package:calcupiano/r.dart';
 import 'package:calcupiano/utils.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:quiver/core.dart';
 
 part 'soundpack.g.dart';
 
@@ -294,7 +293,12 @@ class SoundpackMeta implements JConvertibleProtocol {
   }
 
   @override
-  int get hashCode => hash4(name, description, author, url);
+  int get hashCode => Object.hash(
+        name,
+        description,
+        author,
+        url,
+      );
 }
 
 class NoSoundFileOfNoteException implements Exception {
