@@ -15,7 +15,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -87,25 +86,13 @@ class CalcuPianoAppState extends State<CalcuPianoApp> {
   }
 
   Widget wrapWithService(Widget mainBody) {
-    return wrapWithScreenUtil(
-      wrapWithTop(
-        mainBody,
-      ),
+    return  wrapWithTop(
+      mainBody,
     );
   }
 
   Widget wrapWithTop(Widget mainBody) {
     return Top.global(child: mainBody);
-  }
-
-  Widget wrapWithScreenUtil(Widget mainBody) {
-    return ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return mainBody;
-        });
   }
 }
 

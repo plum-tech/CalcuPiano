@@ -2,7 +2,6 @@ import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/r.dart';
 import 'package:calcupiano/service/soundpack.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rettulf/rettulf.dart';
 
 class SoundFileExplorer extends StatefulWidget {
@@ -75,13 +74,13 @@ class _SoundFileExplorerState extends State<SoundFileExplorer> {
       child: [
         const Icon(Icons.audio_file_outlined, size: 36),
         note.id.text(style: ctx.textTheme.headlineSmall),
-      ].column(maa: MainAxisAlignment.center).padAll(10.w).inCard(
+      ].column(maa: MainAxisAlignment.center).padAll(10).inCard(
             elevation: 6,
           ),
     );
     return LongPressDraggable<SoundFileLoc>(
       data: SoundFileLoc.fromSoundpackType(selected, note),
-      dragAnchorStrategy: (_, __, ___) => Offset(60.w, 80.w),
+      dragAnchorStrategy: (_, __, ___) => Offset(60, 80),
       feedback: feedback,
       child: InkWell(
               onTap: () async {

@@ -3,7 +3,6 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -88,7 +87,7 @@ class _LocalSoundpackEditorState extends State<LocalSoundpackEditor> {
     img = ClipRRect(
       borderRadius: BorderRadius.circular(12.0),
       child: img,
-    ).padAll(20.w);
+    ).padAll(20);
     img = img.onTap(() async {
       final path = await Packager.pickImage();
       if (path != null) {

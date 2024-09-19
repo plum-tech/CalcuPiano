@@ -3,7 +3,6 @@ import 'package:calcupiano/design/multiplatform.dart';
 import 'package:calcupiano/foundation.dart';
 import 'package:calcupiano/i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -64,7 +63,7 @@ class _SoundpackViewerState extends State<SoundpackViewer> {
     img = ClipRRect(
       borderRadius: BorderRadius.circular(12.0),
       child: img,
-    ).padAll(20.w);
+    ).padAll(20);
     return AnimatedSize(
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
