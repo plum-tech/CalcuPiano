@@ -15,5 +15,4 @@ jobs:
           flutter-version: 3.24.0
       - uses: bluefireteam/flutter-gh-pages@v8
         with:
-          workingDir: calcupiano
           baseHref: /CalcuPiano/

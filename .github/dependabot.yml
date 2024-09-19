@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "pub"
-    directory: "/calcupiano"
+    directory: "/"
     schedule:
       interval: weekly
       time: "09:00"
