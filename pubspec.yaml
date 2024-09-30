@@ -42,7 +42,7 @@ dependencies:
   rettulf: ^2.1.1
   audioplayers: ^6.1.0
   auto_size_text: ^3.0.0
-  event_bus: ^2.0.0
+  event_bus: ^2.0.1
   path_provider: ^2.1.4
   provider: ^6.0.5
   animations: ^2.0.7
