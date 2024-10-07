@@ -53,7 +53,7 @@ dependencies:
   version: ^3.0.2
   logger: ^2.4.0
   file_picker: ^8.1.2
-  pull_down_button: ^0.10.1
+  pull_down_button: ^0.10.2
   archive: ^3.3.5
   loading_animation_widget: ^1.2.0+4
   collection: ^1.16.0
