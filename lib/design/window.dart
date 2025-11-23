@@ -24,8 +24,8 @@ Future<void> showWindow({
   closeable = CloseableDelegate(self: entry);
 }
 
-Future<void> closeWindowByKey(Key key, {BuildContext? ctx}) async {
-  final entry = getTopEntry(key: key, context: ctx);
+Future<void> closeWindowByKey(Key key, {BuildContext? context}) async {
+  final entry = getTopEntry(key: key, context: context);
   entry?.closeWindow();
 }
 

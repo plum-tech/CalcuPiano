@@ -29,7 +29,7 @@ class StageManagerImpl {
   }
 
   Future<void> closeSoundpackPreview({BuildContext? ctx}) async {
-    closeWindowByKey(_soundpackPreviewKey, ctx: ctx);
+    closeWindowByKey(_soundpackPreviewKey, context: ctx);
   }
 
   Future<void> showSoundFileExplorer({BuildContext? ctx}) async {
@@ -41,12 +41,12 @@ class StageManagerImpl {
     );
   }
 
-  Future<void> closeSoundFileExplorerKey({BuildContext? ctx}) async {
-    closeWindowByKey(_soundFileExplorerKey, ctx: ctx);
+  Future<void> closeSoundFileExplorerKey({BuildContext? context}) async {
+    closeWindowByKey(_soundFileExplorerKey, context: context);
   }
 
-  Future<void> closeAllPageSpecificWindow({BuildContext? ctx}) async {
-    await closeWindowByKey(_soundpackPreviewKey, ctx: ctx);
-    await closeWindowByKey(_soundFileExplorerKey, ctx: ctx);
+  Future<void> closeAllPageSpecificWindow({BuildContext? context}) async {
+    await closeWindowByKey(_soundpackPreviewKey, context: context);
+    await closeWindowByKey(_soundFileExplorerKey, context: context);
   }
 }

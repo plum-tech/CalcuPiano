@@ -35,7 +35,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await StageManager.closeSoundFileExplorerKey(ctx: context);
+        await StageManager.closeSoundFileExplorerKey(context: context);
         return true;
       },
       child: Scaffold(
@@ -44,10 +44,13 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
           centerTitle: context.isCupertino,
           actions: [
             IconButton(
-                icon: const Icon(Icons.playlist_play_outlined), onPressed: () async => await playSoundInNoteOrder()),
+              icon: const Icon(Icons.playlist_play_outlined),
+              onPressed: () async => await playSoundInNoteOrder(),
+            ),
             IconButton(
-                icon: const Icon(Icons.search_rounded),
-                onPressed: () async => await StageManager.showSoundFileExplorer(ctx: context)),
+              icon: const Icon(Icons.search_rounded),
+              onPressed: () async => await StageManager.showSoundFileExplorer(ctx: context),
+            ),
             IconButton(icon: const Icon(Icons.save_rounded), onPressed: () async => await onSave(context)),
           ],
         ),
@@ -64,7 +67,7 @@ class _SoundpackComposerState extends State<SoundpackComposer> {
       // TODO: I don't know why it doesn't work on Android. Users have to restart Calcupiano.
       await AudioCache.instance.clearAll();
     }
-    await StageManager.closeSoundFileExplorerKey(ctx: ctx);
+    await StageManager.closeSoundFileExplorerKey(context: ctx);
     if (!mounted) return;
     ctx.navigator.pop();
   }
@@ -119,12 +122,7 @@ class _SoundFileRow extends StatefulWidget {
   final ValueSetter<SoundFileResolveProtocol?> setFile;
   final LocalSoundpack edited;
 
-  const _SoundFileRow({
-    required this.edited,
-    required this.note,
-    required this.getFile,
-    required this.setFile,
-  });
+  const _SoundFileRow({required this.edited, required this.note, required this.getFile, required this.setFile});
 
   @override
   State<_SoundFileRow> createState() => _SoundFileRowState();
@@ -150,37 +148,26 @@ class _SoundFileRowState extends State<_SoundFileRow> {
         [
           buildTitle(sound),
           buildBottomBar(sound),
-        ]
-            .column()
-            .inCard(
-              elevation: 0,
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            )
-            .expanded(),
+        ].column().inCard(elevation: 0, color: Theme.of(context).colorScheme.surfaceContainerHighest).expanded(),
         buildUploadArea(sound).expanded(),
       ].row(caa: CrossAxisAlignment.stretch),
     );
   }
 
   Widget buildTitle(SoundFileResolveProtocol? sound) {
-    return Text.rich([
-      TextSpan(text: note.numberedText),
-      WidgetSpan(child: sound != null ? const Icon(Icons.music_note) : const Icon(Icons.music_off)),
-    ].span(style: context.textTheme.headlineLarge))
-        .padAll(5)
-        .center();
+    return Text.rich(
+      [
+        TextSpan(text: note.numberedText),
+        WidgetSpan(child: sound != null ? const Icon(Icons.music_note) : const Icon(Icons.music_off)),
+      ].span(style: context.textTheme.headlineLarge),
+    ).padAll(5).center();
   }
 
   Widget buildBottomBar(SoundFileResolveProtocol? sound) {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        if (sound != null) buildPlaySoundBtn(sound),
-      ],
-    ).container(
-        decoration: BoxDecoration(
-      color: context.colorScheme.surface,
-    ));
+    return OverflowBar(
+      alignment: .center,
+      children: [if (sound != null) buildPlaySoundBtn(sound)],
+    ).container(decoration: BoxDecoration(color: context.colorScheme.surface));
   }
 
   Widget buildAudioFileArea(SoundFileResolveProtocol? loc) {
@@ -224,10 +211,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     } else {
       subtitle = "${loc.note.id} from ${loc.soundpack.displayName}";
     }
-    Widget dropIndicator = [
-      icon,
-      basenameOfPath(subtitle).text(),
-    ].column(maa: MainAxisAlignment.center);
+    Widget dropIndicator = [icon, basenameOfPath(subtitle).text()].column(maa: MainAxisAlignment.center);
     return dropIndicator;
   }
 
@@ -259,11 +243,7 @@ class _SoundFileRowState extends State<_SoundFileRow> {
     final res = dropArea.inCard(
       elevation: 0,
       clip: Clip.hardEdge,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outline,
-        ),
-      ),
+      shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline)),
     );
     return res;
   }
